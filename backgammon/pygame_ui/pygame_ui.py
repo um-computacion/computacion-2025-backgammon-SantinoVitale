@@ -1,0 +1,1 @@
+# Acá se implementa la interfaz gráfica utilizando Pygame
