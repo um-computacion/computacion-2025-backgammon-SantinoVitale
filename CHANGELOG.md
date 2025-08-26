@@ -7,6 +7,22 @@ y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.1] - 2025-08-26
+
+### Agregado
+
+- Carpeta `documentacion/` con los siguientes archivos:
+	- `documentacion/JUSTIFICACION.md` — plantilla y contenido mínimo para la justificación del diseño (resumen del diseño general, justificación de clases y atributos, decisiones de diseño, manejo de excepciones, estrategias de testing, referencias SOLID, anexos UML).
+	- `documentacion/prompts-desarrollo.md` — formato para registrar prompts usados en desarrollo (modelo, prompt exacto, instrucciones de sistema, respuesta y uso).
+	- `documentacion/prompts-documentacion.md` — formato para registrar prompts usados para generar documentación.
+	- `documentacion/prompts-testing.md` — formato para registrar prompts usados en la fase de testing.
+
+### Notas
+
+- Estos archivos son documentación inicial / plantillas que acompañan la estructura del proyecto.
+- No se añadieron cambios funcionales al código; se trata de material de apoyo para diseño y trazabilidad de prompts.
+- Actualiza estas entradas con más detalle si quieres que incluya extractos o referencias específicas de cada archivo.
+
 ## [0.1.0] - 2025-08-25
 
 ### Agregado
