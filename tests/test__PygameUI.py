@@ -1,5 +1,5 @@
 import unittest
-from core.pygame_ui import Board
+from backgammon.core import PygameUI
 
 class TestPygameUI(unittest.TestCase):
 
