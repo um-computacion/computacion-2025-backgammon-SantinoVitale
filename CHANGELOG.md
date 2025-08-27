@@ -7,6 +7,23 @@ y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.4] - 2025-08-27
+
+### Agregado
+
+- `tests/` — archivos de pruebas unitarias para las clases actuales definidas en `core/`. Los tests sirven como esqueleto inicial y cubren las responsabilidades principales de las clases presentes.
+- `backgammon/subcarpeta/__init__.py` — reemplazo de los archivos sueltos en `backgammon/subcarpeta` por un `__init__.py` para que el paquete sea importable y la estructura funcione correctamente.
+- Nuevos archivos de clases en `core/` añadidos (p. ej.: `Board.py`, `BackgammonGame.py`, `Player.py`, `Checker.py`, `Dice.py`). Estos archivos contienen las clases pensadas hasta el momento y sus interfaces iniciales.
+
+### Cambiado
+
+- `.gitignore` — corrección de exclusiones que estaban agregadas innecesariamente.
+
+### Notas
+
+- Los tests añadidos son iniciales y deben ampliarse y refinarse a medida que evolucionen las clases.
+- El cambio en `backgammon/` es estructural (paquete) y no introduce lógica adicional.
+
 ## [0.1.1] - 2025-08-26
 
 ### Agregado
@@ -21,7 +38,6 @@ y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Estos archivos son documentación inicial / plantillas que acompañan la estructura del proyecto.
 - No se añadieron cambios funcionales al código; se trata de material de apoyo para diseño y trazabilidad de prompts.
-- Actualiza estas entradas con más detalle si quieres que incluya extractos o referencias específicas de cada archivo.
 
 ## [0.1.0] - 2025-08-25
 
