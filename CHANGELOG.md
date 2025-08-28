@@ -7,6 +7,28 @@ y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.5] - 2025-08-28
+
+### Agregado
+
+- Tests completos para las clases principales del juego:
+  - `backgammon/tests/test_Dice.py` — tests completos para la clase `Dice` incluyendo tiradas, detección de dobles, gestión de movimientos disponibles y casos edge
+  - `backgammon/tests/test_Checker.py` — tests completos para la clase `Checker` incluyendo posicionamiento, validaciones, movimientos especiales (bar/off) y funcionalidades del home board
+  - `backgammon/tests/test_Player.py` — tests completos para la clase `Player` incluyendo gestión de fichas, condiciones de victoria, movimientos y validaciones de estado
+
+### Cambiado
+
+- Estructura de testing: movida la carpeta `tests/` desde la raíz del proyecto a `backgammon/tests/` para respetar el documento del proyecto.
+- Tests existentes actualizados para seguir principios TDD con cobertura del ~90%
+- Implementación de mocks en tests de `Player` para aislar dependencias con `Board`
+
+### Notas
+
+- Los tests implementados siguen principios TDD y fallarán hasta que se implementen las clases correspondientes
+- Se utilizó indentación de 2 espacios en todos los tests para consistencia
+- Los tests incluyen validaciones exhaustivas, casos edge y manejo de errores
+- Cobertura de tests diseñada para alcanzar aproximadamente 90% cuando las clases estén implementadas
+
 ## [0.1.4] - 2025-08-27
 
 ### Agregado
