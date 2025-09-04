@@ -543,10 +543,491 @@ Usé todo el código excepto por los comentarios.
 Buenas, ando queriendo hacer tests para un juego de Backgammon hecho en python el cual se permita jugar tanto en pygame como en CLI, estos tests deberian cumplir los principios TDD de manera que primero fallen porque no está escrito la logica de la clase aún, a su vez deberia cubrir un 90% cuando se haga un coverage del mismo. Podrias crear los tests para la clase Player?
 
 ### Respuesta:
+Aquí tienes los tests completos para la clase Player siguiendo los principios TDD:
 
 ```
+import unittest
+from unittest.mock import Mock, patch
+from backgammon.core import Player, Checker
 
+class TestPlayer(unittest.TestCase):
+
+  def setUp(self):
+    self.player_white = Player("Player1", "white")
+    self.player_black = Player("Player2", "black")
+    self.player_default = Player()
+
+  def test_player_initialization_with_params(self):
+    """Test player creation with name and color"""
+    self.assertEqual(self.player_white.name, "Player1")
+    self.assertEqual(self.player_white.color, "white")
+    self.assertEqual(self.player_white.checkers_on_board, 15)
+    self.assertEqual(self.player_white.checkers_off_board, 0)
+    self.assertEqual(self.player_white.checkers_on_bar, 0)
+
+  def test_player_initialization_default(self):
+    """Test player creation with default values"""
+    self.assertIsNone(self.player_default.name)
+    self.assertIsNone(self.player_default.color)
+    self.assertEqual(self.player_default.checkers_on_board, 15)
+    self.assertEqual(self.player_default.checkers_off_board, 0)
+    self.assertEqual(self.player_default.checkers_on_bar, 0)
+
+  def test_invalid_color_initialization(self):
+    """Test player creation with invalid color"""
+    with self.assertRaises(ValueError):
+      Player("Test", "red")
+    with self.assertRaises(ValueError):
+      Player("Test", "blue")
+
+  def test_set_name(self):
+    """Test setting player name"""
+    self.player_default.set_name("NewPlayer")
+    self.assertEqual(self.player_default.name, "NewPlayer")
+
+  def test_set_color(self):
+    """Test setting player color"""
+    self.player_default.set_color("black")
+    self.assertEqual(self.player_default.color, "black")
+
+  def test_set_invalid_color(self):
+    """Test setting invalid color"""
+    with self.assertRaises(ValueError):
+      self.player_default.set_color("green")
+
+  def test_move_checker_off_board(self):
+    """Test moving checker off board"""
+    initial_on_board = self.player_white.checkers_on_board
+    initial_off_board = self.player_white.checkers_off_board
+    
+    self.player_white.move_checker_off()
+    
+    self.assertEqual(self.player_white.checkers_on_board, initial_on_board - 1)
+    self.assertEqual(self.player_white.checkers_off_board, initial_off_board + 1)
+
+  def test_move_checker_off_board_no_checkers(self):
+    """Test moving checker off board when no checkers available"""
+    self.player_white.checkers_on_board = 0
+    
+    with self.assertRaises(ValueError):
+      self.player_white.move_checker_off()
+
+  def test_move_checker_to_bar(self):
+    """Test moving checker to bar"""
+    initial_on_board = self.player_white.checkers_on_board
+    initial_on_bar = self.player_white.checkers_on_bar
+    
+    self.player_white.move_checker_to_bar()
+    
+    self.assertEqual(self.player_white.checkers_on_board, initial_on_board - 1)
+    self.assertEqual(self.player_white.checkers_on_bar, initial_on_bar + 1)
+
+  def test_move_checker_from_bar(self):
+    """Test moving checker from bar"""
+    # First put a checker on bar
+    self.player_white.move_checker_to_bar()
+    
+    initial_on_board = self.player_white.checkers_on_board
+    initial_on_bar = self.player_white.checkers_on_bar
+    
+    self.player_white.move_checker_from_bar()
+    
+    self.assertEqual(self.player_white.checkers_on_board, initial_on_board + 1)
+    self.assertEqual(self.player_white.checkers_on_bar, initial_on_bar - 1)
+
+  def test_move_checker_from_bar_no_checkers(self):
+    """Test moving checker from bar when no checkers on bar"""
+    with self.assertRaises(ValueError):
+      self.player_white.move_checker_from_bar()
+
+  def test_has_won_true(self):
+    """Test win condition when all checkers off board"""
+    self.player_white.checkers_off_board = 15
+    self.player_white.checkers_on_board = 0
+    self.player_white.checkers_on_bar = 0
+    
+    self.assertTrue(self.player_white.has_won())
+
+  def test_has_won_false(self):
+    """Test win condition when not all checkers off board"""
+    self.assertFalse(self.player_white.has_won())
+    
+    # Some checkers off but not all
+    self.player_white.checkers_off_board = 10
+    self.player_white.checkers_on_board = 5
+    self.assertFalse(self.player_white.has_won())
+
+  def test_has_checkers_on_bar(self):
+    """Test checking if player has checkers on bar"""
+    self.assertFalse(self.player_white.has_checkers_on_bar())
+    
+    self.player_white.move_checker_to_bar()
+    self.assertTrue(self.player_white.has_checkers_on_bar())
+
+  def test_can_bear_off(self):
+    """Test if player can bear off checkers"""
+    # Mock board to test bear off condition
+    mock_board = Mock()
+    mock_board.all_checkers_in_home_board.return_value = True
+    
+    self.assertTrue(self.player_white.can_bear_off(mock_board))
+    
+    mock_board.all_checkers_in_home_board.return_value = False
+    self.assertFalse(self.player_white.can_bear_off(mock_board))
+
+  def test_get_checkers_count(self):
+    """Test getting total checkers count"""
+    total = self.player_white.get_total_checkers()
+    self.assertEqual(total, 15)
+    
+    self.player_white.move_checker_off()
+    total = self.player_white.get_total_checkers()
+    self.assertEqual(total, 15)  # Total should remain the same
+
+  def test_get_checkers_distribution(self):
+    """Test getting checkers distribution"""
+    distribution = self.player_white.get_checkers_distribution()
+    
+    self.assertEqual(distribution['on_board'], 15)
+    self.assertEqual(distribution['off_board'], 0)
+    self.assertEqual(distribution['on_bar'], 0)
+
+  def test_reset_player(self):
+    """Test resetting player to initial state"""
+    # Modify player state
+    self.player_white.move_checker_off()
+    self.player_white.move_checker_to_bar()
+    
+    # Reset
+    self.player_white.reset()
+    
+    self.assertEqual(self.player_white.checkers_on_board, 15)
+    self.assertEqual(self.player_white.checkers_off_board, 0)
+    self.assertEqual(self.player_white.checkers_on_bar, 0)
+
+  def test_get_direction(self):
+    """Test getting movement direction for player"""
+    # White moves from 24 to 1 (negative direction)
+    self.assertEqual(self.player_white.get_direction(), -1)
+    
+    # Black moves from 1 to 24 (positive direction)
+    self.assertEqual(self.player_black.get_direction(), 1)
+
+  def test_get_home_board_range(self):
+    """Test getting home board range for player"""
+    white_home = self.player_white.get_home_board_range()
+    self.assertEqual(white_home, range(1, 7))
+    
+    black_home = self.player_black.get_home_board_range()
+    self.assertEqual(black_home, range(19, 25))
+
+  def test_get_starting_position(self):
+    """Test getting starting position for bearing in"""
+    white_start = self.player_white.get_starting_position()
+    self.assertEqual(white_start, 25)  # White enters from position 25
+    
+    black_start = self.player_black.get_starting_position()
+    self.assertEqual(black_start, 0)   # Black enters from position 0
+
+  def test_is_valid_move(self):
+    """Test validating moves for player"""
+    # Mock board
+    mock_board = Mock()
+    
+    # Valid move
+    mock_board.is_valid_move.return_value = True
+    self.assertTrue(self.player_white.is_valid_move(1, 4, mock_board))
+    
+    # Invalid move
+    mock_board.is_valid_move.return_value = False
+    self.assertFalse(self.player_white.is_valid_move(1, 4, mock_board))
+
+  def test_get_possible_moves(self):
+    """Test getting possible moves for player"""
+    mock_board = Mock()
+    mock_dice = Mock()
+    
+    mock_board.get_possible_moves.return_value = [(1, 4), (6, 9)]
+    
+    moves = self.player_white.get_possible_moves(mock_board, mock_dice)
+    self.assertEqual(moves, [(1, 4), (6, 9)])
+
+  def test_make_move(self):
+    """Test making a move"""
+    mock_board = Mock()
+    mock_board.move_checker.return_value = True
+    
+    result = self.player_white.make_move(1, 4, mock_board)
+    self.assertTrue(result)
+    mock_board.move_checker.assert_called_once_with(1, 4, "white")
+
+  def test_str_representation(self):
+    """Test string representation of player"""
+    player_str = str(self.player_white)
+    self.assertIn("Player1", player_str)
+    self.assertIn("white", player_str)
+
+  def test_repr_representation(self):
+    """Test repr representation of player"""
+    player_repr = repr(self.player_white)
+    self.assertIn("Player", player_repr)
+    self.assertIn("Player1", player_repr)
+    self.assertIn("white", player_repr)
+
+  def test_player_equality(self):
+    """Test player equality comparison"""
+    player1 = Player("Test", "white")
+    player2 = Player("Test", "white")
+    player3 = Player("Other", "white")
+    
+    self.assertEqual(player1.name, player2.name)
+    self.assertEqual(player1.color, player2.color)
+    self.assertNotEqual(player1.name, player3.name)
+
+  def test_copy_player(self):
+    """Test copying player state"""
+    copied_player = self.player_white.copy()
+    
+    self.assertEqual(copied_player.name, self.player_white.name)
+    self.assertEqual(copied_player.color, self.player_white.color)
+    self.assertEqual(copied_player.checkers_on_board, self.player_white.checkers_on_board)
+    self.assertIsNot(copied_player, self.player_white)
+
+  def test_get_opponent_color(self):
+    """Test getting opponent color"""
+    self.assertEqual(self.player_white.get_opponent_color(), "black")
+    self.assertEqual(self.player_black.get_opponent_color(), "white")
+
+  def test_checkers_invariant(self):
+    """Test that total checkers always equals 15"""
+    # Initial state
+    total = (self.player_white.checkers_on_board + 
+             self.player_white.checkers_off_board + 
+             self.player_white.checkers_on_bar)
+    self.assertEqual(total, 15)
+    
+    # After moving to bar
+    self.player_white.move_checker_to_bar()
+    total = (self.player_white.checkers_on_board + 
+             self.player_white.checkers_off_board + 
+             self.player_white.checkers_on_bar)
+    self.assertEqual(total, 15)
+    
+    # After bearing off
+    self.player_white.move_checker_from_bar()
+    self.player_white.move_checker_off()
+    total = (self.player_white.checkers_on_board + 
+             self.player_white.checkers_off_board + 
+             self.player_white.checkers_on_bar)
+    self.assertEqual(total, 15)
+
+if __name__ == '__main__':
+  unittest.main()
 ```
+
+
+Aquí tienes los tests completos para la clase Player siguiendo los principios TDD con indentación de 2 espacios:
+
+Estos tests cubren:
+
+✅ Funcionalidades básicas:
+
+Inicialización con/sin parámetros
+Configuración de nombre y color
+Gestión de fichas (tablero, barra, fuera)
+✅ Lógica del juego:
+
+Condiciones de victoria
+Capacidad de bearing off
+Direcciones de movimiento
+Rangos de home board
+✅ Validaciones:
+
+Colores válidos/inválidos
+Movimientos válidos
+Estados de fichas
+✅ Interacciones:
+
+Movimientos en tablero (con mocks)
+Obtención de movimientos posibles
+Validación de movimientos
+✅ Estado del jugador:
+
+Distribución de fichas
+Reset de estado
+Copia de jugador
+Invariantes (total de fichas = 15)
+✅ Principios TDD:
+
+Tests fallarán hasta implementar la clase
+Cobertura ~90%
+Tests granulares y específicos
+Uso de mocks para dependencias
 
 ### Respuesta usada:
 Usé todo el código excepto por los comentarios.
+
+## Prompt 4
+
+### Modelo: Claude sonnet 4
+
+### Prompt: 
+Buenas, ando queriendo hacer tests para un juego de Backgammon hecho en python el cual se permita jugar tanto en pygame como en CLI, estos tests deberian cumplir los principios TDD de manera que primero fallen porque no está escrito la logica de la clase aún, a su vez deberia cubrir un 90% cuando se haga un coverage del mismo.
+Podrias crear los tests para la clase Board?
+
+### Respuesta:
+```
+import unittest
+from unittest.mock import Mock
+from backgammon.core import Board, Checker
+
+class TestBoard(unittest.TestCase):
+
+  def setUp(self):
+    self.board = Board()
+    self.white = "white"
+    self.black = "black"
+
+  def test_board_initialization(self):
+    # basic structural expectations
+    self.assertTrue(hasattr(self.board, "points"))
+    self.assertEqual(len(self.board.points), 24)
+    self.assertTrue(all(isinstance(p, list) for p in self.board.points))
+    # bar and off storage for both colors
+    self.assertTrue(hasattr(self.board, "bar"))
+    self.assertTrue(hasattr(self.board, "off"))
+    self.assertIn(self.white, self.board.bar)
+    self.assertIn(self.black, self.board.bar)
+    self.assertIn(self.white, self.board.off)
+    self.assertIn(self.black, self.board.off)
+
+  def test_setup_initial_position_total_checkers(self):
+    # after setup initial position there should be 30 checkers on board (15 per player)
+    self.board.setup_initial_position()
+    total = sum(len(p) for p in self.board.points)
+    self.assertEqual(total, 30)
+
+  def test_get_point_count_and_top_color(self):
+    # manually place some checkers and test helpers
+    self.board.points[0] = [Checker(self.white) for _ in range(3)]
+    self.board.points[5] = [Checker(self.black) for _ in range(2)]
+    self.assertEqual(self.board.get_point_count(0), 3)
+    self.assertEqual(self.board.get_point_count(5), 2)
+    self.assertEqual(self.board.get_point_top_color(0), self.white)
+    self.assertEqual(self.board.get_point_top_color(5), self.black)
+    self.assertIsNone(self.board.get_point_top_color(10))
+
+  def test_is_point_available_simple(self):
+    # empty point is available
+    self.board.points[7] = []
+    self.assertTrue(self.board.is_point_available(7, self.white))
+    # point with single opponent checker is available (can hit)
+    self.board.points[8] = [Checker(self.black)]
+    self.assertTrue(self.board.is_point_available(8, self.white))
+    # point with two opponent checkers is blocked
+    self.board.points[9] = [Checker(self.black), Checker(self.black)]
+    self.assertFalse(self.board.is_point_available(9, self.white))
+
+  def test_move_checker_valid_to_empty(self):
+    # move a checker from point A to empty point B
+    self.board.points[2] = [Checker(self.white), Checker(self.white)]
+    self.board.points[4] = []
+    result = self.board.move_checker(2, 4, self.white)
+    self.assertTrue(result)
+    self.assertEqual(self.board.get_point_count(2), 1)
+    self.assertEqual(self.board.get_point_count(4), 1)
+    self.assertEqual(self.board.get_point_top_color(4), self.white)
+
+  def test_move_checker_hit_opponent_to_bar(self):
+    # placing attacker and single opponent, expect opponent moved to bar
+    self.board.points[3] = [Checker(self.white)]
+    self.board.points[6] = [Checker(self.black)]
+    result = self.board.move_checker(3, 6, self.white)
+    self.assertTrue(result)
+    # destination should now be white
+    self.assertEqual(self.board.get_point_top_color(6), self.white)
+    # opponent should be on bar
+    self.assertEqual(len(self.board.bar[self.black]), 1)
+    self.assertEqual(self.board.bar[self.black][0].color, self.black)
+
+  def test_move_checker_invalid_from_empty(self):
+    # trying to move from empty point should fail
+    self.board.points[10] = []
+    result = self.board.move_checker(10, 12, self.white)
+    self.assertFalse(result)
+
+  def test_move_checker_blocked_destination(self):
+    # destination blocked by two or more opponent checkers
+    self.board.points[1] = [Checker(self.white)]
+    self.board.points[2] = [Checker(self.black), Checker(self.black)]
+    result = self.board.move_checker(1, 2, self.white)
+    self.assertFalse(result)
+    # original should remain unchanged
+    self.assertEqual(self.board.get_point_count(1), 1)
+
+  def test_move_from_bar_and_to_bar(self):
+    # simulate a checker on bar and re-entering board
+    # put a black checker on white's bar
+    self.board.bar[self.white].append(Checker(self.white))
+    # assume entering at position 23 for white (implementation dependent)
+    # we only verify interface: move_from_bar returns True/False
+    success = self.board.move_from_bar(self.white, 22)  # try to enter at 22
+    # either True (entered) or False (blocked) -- assert signature and bar updated on success
+    self.assertIn(success, (True, False))
+    if success:
+      self.assertEqual(len(self.board.bar[self.white]), 0)
+
+  def test_bearing_off_and_off_storage(self):
+    # move a checker off the board and verify off storage increments
+    self.board.points[0] = [Checker(self.white)]
+    prev_off = len(self.board.off[self.white])
+    result = self.board.bear_off(0, self.white)
+    # bear_off returns True on success
+    self.assertIn(result, (True, False))
+    if result:
+      self.assertEqual(len(self.board.off[self.white]), prev_off + 1)
+      self.assertEqual(self.board.get_point_count(0), 0)
+
+  def test_get_state_and_set_state(self):
+    # set some simple state and roundtrip
+    self.board.points[0] = [Checker(self.white)]
+    self.board.bar[self.black].append(Checker(self.black))
+    state = self.board.get_state()
+    new = Board()
+    new.set_state(state)
+    new_state = new.get_state()
+    self.assertEqual(len(new_state["points"][0]), 1)
+    self.assertEqual(len(new_state["bar"][self.black]), 1)
+
+  def test_reset_board(self):
+    # modify board then reset
+    self.board.points[0] = [Checker(self.white)]
+    self.board.bar[self.black].append(Checker(self.black))
+    self.board.reset()
+    # after reset no custom placement should remain (points may be empty or set by default setup)
+    # ensure bar and off are empty after reset
+    self.assertEqual(len(self.board.bar[self.white]), 0)
+    self.assertEqual(len(self.board.bar[self.black]), 0)
+    self.assertEqual(len(self.board.off[self.white]), 0)
+    self.assertEqual(len(self.board.off[self.black]), 0)
+
+  def test_string_and_repr(self):
+    s = str(self.board)
+    r = repr(self.board)
+    self.assertIsInstance(s, str)
+    self.assertIsInstance(r, str)
+
+  def test_invalid_point_indexes(self):
+    # out of range indexes for helpers should raise IndexError or return sensible defaults
+    with self.assertRaises(IndexError):
+      _ = self.board.get_point_count(24)
+    with self.assertRaises(IndexError):
+      _ = self.board.get_point_top_color(-25)
+
+if __name__ == "__main__":
+  unittest.main()
+```
+
+
+### Respuesta usada:
+Todo el código excepto los comentarios
