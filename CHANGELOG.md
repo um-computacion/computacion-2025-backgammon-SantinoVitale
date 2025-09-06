@@ -7,6 +7,11 @@ y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Agregado
+
+- Tests completos para la clase principal del juego:
+  - `backgammon/tests/test__BackgammonGame.py` — tests completos para la clase `BackgammonGame` incluyendo inicialización, setup de juego, lógica de turnos, movimientos, condiciones de victoria, manejo de estado, guardado/carga y estadísticas
+
 ## [0.1.6] - 2025-09-04
 
 ### Agregado

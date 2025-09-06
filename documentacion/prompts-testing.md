@@ -19,7 +19,7 @@ Buenas, ando queriendo hacer tests para un juego de Backgammon hecho en python e
 
 Aquí tienes los tests completos para la clase Dice siguiendo los principios TDD:
 
-``` 
+```python 
 import unittest
 from unittest.mock import patch
 from backgammon.core import Dice
@@ -249,7 +249,7 @@ Buenas, ando queriendo hacer tests para un juego de Backgammon hecho en python e
 ### Respuesta:
 Aquí tienes los tests completos para la clase Checker siguiendo los principios TDD:
 
-```
+```python
 import unittest
 from backgammon.core import Checker
 
@@ -545,7 +545,7 @@ Buenas, ando queriendo hacer tests para un juego de Backgammon hecho en python e
 ### Respuesta:
 Aquí tienes los tests completos para la clase Player siguiendo los principios TDD:
 
-```
+```python
 import unittest
 from unittest.mock import Mock, patch
 from backgammon.core import Player, Checker
@@ -876,7 +876,7 @@ Buenas, ando queriendo hacer tests para un juego de Backgammon hecho en python e
 Podrias crear los tests para la clase Board?
 
 ### Respuesta:
-```
+```python
 import unittest
 from unittest.mock import Mock
 from backgammon.core import Board, Checker
@@ -1056,7 +1056,7 @@ Single Responsibility: CLI solo maneja interfaz de usuario
 Dependency Inversion: CLI depende de abstracciones (Board, Player) no implementaciones
 Aquí están los tests completos para la clase CLI:
 
-```
+```python
 import unittest
 from unittest.mock import patch, MagicMock, call
 from io import StringIO
@@ -1387,7 +1387,7 @@ Interface Segregation: Interfaz específica para UI gráfica
 Dependency Inversion: Depende de abstracciones (Board, Player) no implementaciones
 Aquí están los tests completos para la clase PygameUI:
 
-```
+```python
 import unittest
 from unittest.mock import patch, MagicMock, Mock
 from backgammon.core import PygameUI
@@ -1730,3 +1730,131 @@ Animaciones de fichas
 Estos tests siguen los principios SOLID y TDD, fallarán inicialmente hasta implementar la clase PygameUI, y proporcionarán ~90% de cobertura una vez implementada.
 ### Respuesta usada:
 Todo el código excepto los comentarios
+
+## Prompt 7
+
+### Modelo: Claude Sonnet 4
+
+### Prompt: 
+Buenas, ando queriendo hacer tests para un juego de Backgammon hecho en python el cual se permita jugar tanto en pygame como en CLI, estos tests deberian cumplir los principios TDD de manera que primero fallen porque no está escrito la logica de la clase aún, a su vez deberia cubrir un 90% cuando se haga un coverage del mismo. Podrias crear los tests para la clase BackgammonGame?
+
+### Respuesta:
+
+Aquí tienes los tests completos para la clase BackgammonGame siguiendo los principios TDD:
+
+```python
+import unittest
+from unittest.mock import MagicMock, patch, Mock
+from backgammon.core import BackgammonGame, Board, Player, Dice, CLI, PygameUI
+
+class TestBackgammonGame(unittest.TestCase):
+
+  def setUp(self):
+    self.game = BackgammonGame()
+
+  def test_game_initialization(self):
+    """Test BackgammonGame initializes correctly"""
+    self.assertIsNotNone(self.game)
+    self.assertTrue(hasattr(self.game, 'board'))
+    self.assertTrue(hasattr(self.game, 'dice'))
+    self.assertTrue(hasattr(self.game, 'players'))
+    self.assertTrue(hasattr(self.game, 'current_player_index'))
+
+  def test_setup_board(self):
+    """Test board setup initialization"""
+    self.game.board = MagicMock()
+    self.game.setup_board()
+    self.game.board.setup_initial_position.assert_called_once()
+
+  def test_setup_players_default(self):
+    """Test players setup with default names"""
+    self.game.setup_players()
+    self.assertEqual(len(self.game.players), 2)
+    self.assertIsInstance(self.game.players[0], Player)
+    self.assertIsInstance(self.game.players[1], Player)
+
+  def test_start_game(self):
+    """Test starting the game calls setup methods"""
+    self.game.setup_board = MagicMock()
+    self.game.setup_players = MagicMock()
+    self.game.start_game()
+    self.game.setup_board.assert_called_once()
+    self.game.setup_players.assert_called_once()
+
+  def test_switch_turns(self):
+    """Test switching turns between players"""
+    self.game.current_player_index = 0
+    self.game.switch_turns()
+    self.assertEqual(self.game.current_player_index, 1)
+
+  def test_get_current_player(self):
+    """Test getting the current player"""
+    self.game.players = [Mock(), Mock()]
+    self.game.current_player_index = 0
+    self.assertEqual(self.game.get_current_player(), self.game.players[0])
+
+  def test_roll_dice(self):
+    """Test rolling dice updates dice values"""
+    self.game.dice = MagicMock()
+    self.game.dice.roll.return_value = [3, 5]
+    values = self.game.roll_dice()
+    self.assertEqual(values, [3, 5])
+
+  def test_is_game_over_false(self):
+    """Test game over returns False when no player has won"""
+    player1 = MagicMock()
+    player2 = MagicMock()
+    player1.has_won.return_value = False
+    player2.has_won.return_value = False
+    self.game.players = [player1, player2]
+    self.assertFalse(self.game.is_game_over())
+
+  def test_make_move_valid(self):
+    """Test making a valid move calls board.move_checker"""
+    self.game.board = MagicMock()
+    self.game.board.move_checker.return_value = True
+    current_player = MagicMock()
+    current_player.color = "white"
+    self.game.get_current_player = MagicMock(return_value=current_player)
+    result = self.game.make_move(1, 4)
+    self.assertTrue(result)
+
+  def test_play_turn_with_valid_move(self):
+    """Test playing a turn with valid move"""
+    self.game.roll_dice = MagicMock(return_value=[3, 5])
+    self.game.ui = MagicMock()
+    self.game.ui.get_move_input = MagicMock(return_value=(1, 4))
+    self.game.make_move = MagicMock(return_value=True)
+    self.game.has_valid_moves = MagicMock(return_value=True)
+    self.game.switch_turns = MagicMock()
+    self.game.play_turn()
+    self.game.roll_dice.assert_called_once()
+
+  def test_reset_game(self):
+    """Test resetting the game calls reset on components"""
+    self.game.board = MagicMock()
+    self.game.dice = MagicMock()
+    player1 = MagicMock()
+    player2 = MagicMock()
+    self.game.players = [player1, player2]
+    self.game.reset_game()
+    self.game.board.reset.assert_called_once()
+    self.game.dice.reset.assert_called_once()
+```
+
+### Instrucciones del sistema:
+- Seguir principios SOLID
+- Seguir metodología TDD
+- Documentar prompts en archivos específicos
+- Actualizar CHANGELOG.md según normas
+
+### Uso en el proyecto:
+- Implementación completa utilizada sin modificaciones
+- Tests cubren inicialización, lógica de juego, movimientos, turnos, estado y reset
+- Cobertura diseñada para alcanzar ~90% cuando se implemente BackgammonGame
+- Archivo: backgammon/test/test__BackgammonGame.py
+
+### Principios SOLID aplicados:
+- Single Responsibility: BackgammonGame orquesta el flujo del juego
+- Open/Closed: Extensible para nuevas funcionalidades
+- Dependency Inversion: Depende de abstracciones (Board, Player, Dice, UI)
