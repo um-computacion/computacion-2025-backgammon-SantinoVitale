@@ -7,6 +7,56 @@ y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Agregado
+
+- Tests completos para la clase principal del juego:
+  - `backgammon/tests/test__BackgammonGame.py` — tests completos para la clase `BackgammonGame` incluyendo inicialización, setup de juego, lógica de turnos, movimientos, condiciones de victoria, manejo de estado, guardado/carga y estadísticas
+
+## [0.1.6] - 2025-09-04
+
+### Agregado
+
+- Tests completos para las clases de interfaz y lógica del juego:
+  - `backgammon/tests/test_Board.py` — tests completos para la clase `Board` incluyendo inicialización del tablero, movimientos de fichas, gestión de la barra, bearing off, validaciones de movimientos y manejo de estado
+  - `backgammon/tests/test__CLI.py` — tests completos para la clase `CLI` incluyendo entrada de usuario, validaciones, visualización del tablero, manejo de mensajes, confirmaciones y navegación del juego
+  - `backgammon/tests/test__PygameUI.py` — tests completos para la clase `PygameUI` incluyendo inicialización de Pygame, renderizado visual, manejo de eventos, detección de colisiones, animaciones y efectos de audio
+
+### Cambiado
+
+- Tests existentes mejorados para seguir principios TDD más estrictos
+- Uso extensivo de mocks para aislar dependencias externas (pygame, input/output)
+- Implementación de indentación de 2 espacios consistente en todos los archivos de test
+
+### Notas
+
+- Los tests de `Board` cubren toda la lógica del tablero incluyendo casos edge como movimientos inválidos y posiciones especiales
+- Los tests de `CLI` incluyen validación robusta de entrada de usuario con reintentos y manejo de errores
+- Los tests de `PygameUI` utilizan mocks extensivos para pygame, permitiendo testing sin dependencias gráficas
+- Cobertura de tests diseñada para alcanzar aproximadamente 90% cuando las clases estén implementadas
+- Todos los tests fallarán inicialmente siguiendo metodología TDD hasta implementar las clases correspondientes
+
+## [0.1.5] - 2025-08-28
+
+### Agregado
+
+- Tests completos para las clases principales del juego:
+  - `backgammon/tests/test_Dice.py` — tests completos para la clase `Dice` incluyendo tiradas, detección de dobles, gestión de movimientos disponibles y casos edge
+  - `backgammon/tests/test_Checker.py` — tests completos para la clase `Checker` incluyendo posicionamiento, validaciones, movimientos especiales (bar/off) y funcionalidades del home board
+  - `backgammon/tests/test_Player.py` — tests completos para la clase `Player` incluyendo gestión de fichas, condiciones de victoria, movimientos y validaciones de estado
+
+### Cambiado
+
+- Estructura de testing: movida la carpeta `tests/` desde la raíz del proyecto a `backgammon/tests/` para respetar el documento del proyecto.
+- Tests existentes actualizados para seguir principios TDD con cobertura del ~90%
+- Implementación de mocks en tests de `Player` para aislar dependencias con `Board`
+
+### Notas
+
+- Los tests implementados siguen principios TDD y fallarán hasta que se implementen las clases correspondientes
+- Se utilizó indentación de 2 espacios en todos los tests para consistencia
+- Los tests incluyen validaciones exhaustivas, casos edge y manejo de errores
+- Cobertura de tests diseñada para alcanzar aproximadamente 90% cuando las clases estén implementadas
+
 ## [0.1.4] - 2025-08-27
 
 ### Agregado
