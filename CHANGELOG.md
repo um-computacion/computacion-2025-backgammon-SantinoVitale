@@ -5,12 +5,40 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.7]
 
 ### Agregado
 
+- Implementación completa de la clase `Board`:
+  - `backgammon/core/Board.py` — clase completamente funcional para manejo del tablero del Backgammon incluyendo 24 puntos, barra, área off, movimientos de fichas, capturas, bearing off, posición inicial estándar y manejo de estado
+- Implementación completa de la clase `Checker`:
+  - `backgammon/core/Checker.py` — clase para representar fichas individuales con color y posición
+- Implementación completa de la clase `Player`:
+  - `backgammon/core/Player.py` — clase completamente funcional para manejo de jugadores del Backgammon incluyendo gestión de fichas, validaciones de color, movimientos entre tablero/barra/off, condiciones de victoria, direcciones de juego y estado persistente
+- Implementación completa de la clase `Dice`:
+  - `backgammon/core/Dice.py` — clase completamente funcional para manejo de dados del Backgammon incluyendo tiradas, detección de dobles, gestión de movimientos disponibles, estado persistente y representaciones string
 - Tests completos para la clase principal del juego:
   - `backgammon/tests/test__BackgammonGame.py` — tests completos para la clase `BackgammonGame` incluyendo inicialización, setup de juego, lógica de turnos, movimientos, condiciones de victoria, manejo de estado, guardado/carga y estadísticas
+- Configuración de módulos Python:
+  - `backgammon/__init__.py` — archivo de inicialización del paquete backgammon
+  - `backgammon/core/__init__.py` — imports de las clases Dice, Player, Board y Checker para el módulo core
+
+### Cambiado
+
+- Estructura de módulos mejorada para permitir imports correctos entre paquetes
+
+### Notas
+
+- La implementación de `Board` pasa todos los tests TDD (14/14 tests OK)
+- La implementación de `Player` pasa todos los tests TDD (30/30 tests OK)
+- La implementación de `Dice` pasa todos los tests TDD (27/27 tests OK)
+- Clases diseñadas siguiendo principios SOLID y buenas prácticas de Python
+- Compatible tanto para CLI como para interfaces Pygame
+- Incluye manejo de estado completo para guardar/cargar partidas
+- Invariante de 15 fichas por jugador mantenido en todas las operaciones
+- Posición inicial estándar del Backgammon implementada (30 fichas totales)
+- Incluye manejo de estado completo para guardar/cargar partidas
+- Invariante de 15 fichas por jugador mantenido en todas las operaciones
 
 ## [0.1.6] - 2025-09-04
 
