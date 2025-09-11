@@ -5,6 +5,25 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.8] - 2025-09-11
+
+### Agregado
+
+- Implementación completa de la clase `CLI`:
+  - `backgammon/core/CLI.py` — clase completamente funcional para interfaz de línea de comandos del Backgammon incluyendo visualización ASCII del tablero, entrada de movimientos del usuario, validaciones, manejo de mensajes/errores, confirmaciones, ayuda, reglas del juego, estadísticas y flujo de juego
+- Configuración de módulos Python actualizada:
+  - `backgammon/core/__init__.py` — agregado import de la clase CLI para el módulo core
+
+### Notas
+
+- La implementación de `CLI` pasa todos los tests TDD (31/31 tests OK)
+- Clase diseñada siguiendo principios SOLID con responsabilidades bien separadas
+- Interfaz robusta con validación de entrada y reintentos automáticos
+- Soporte completo para visualización del tablero en formato ASCII
+- Manejo de casos especiales (bar, off, dobles, bearing off)
+- Sistema de ayuda y reglas integrado
+- Compatible con el resto del sistema del juego
+
 ## [0.1.7]
 
 ### Agregado
