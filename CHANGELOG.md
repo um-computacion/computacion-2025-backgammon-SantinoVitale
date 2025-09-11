@@ -12,7 +12,7 @@ y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Implementación completa de la clase `Board`:
   - `backgammon/core/Board.py` — clase completamente funcional para manejo del tablero del Backgammon incluyendo 24 puntos, barra, área off, movimientos de fichas, capturas, bearing off, posición inicial estándar y manejo de estado
 - Implementación completa de la clase `Checker`:
-  - `backgammon/core/Checker.py` — clase para representar fichas individuales con color y posición
+  - `backgammon/core/Checker.py` — clase completamente funcional para representar fichas individuales del Backgammon incluyendo color, posición, validaciones, movimientos especiales (bar/off), lógica del home board, bearing off, direcciones de juego y operaciones de copia
 - Implementación completa de la clase `Player`:
   - `backgammon/core/Player.py` — clase completamente funcional para manejo de jugadores del Backgammon incluyendo gestión de fichas, validaciones de color, movimientos entre tablero/barra/off, condiciones de victoria, direcciones de juego y estado persistente
 - Implementación completa de la clase `Dice`:
@@ -29,6 +29,7 @@ y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Notas
 
+- La implementación de `Checker` pasa todos los tests TDD (24/24 tests OK)
 - La implementación de `Board` pasa todos los tests TDD (14/14 tests OK)
 - La implementación de `Player` pasa todos los tests TDD (30/30 tests OK)
 - La implementación de `Dice` pasa todos los tests TDD (27/27 tests OK)
