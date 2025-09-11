@@ -1,14 +1,182 @@
-### Acá se verá los prompts con el siguiente formato:
+Todos los tests TDD implementados previamente pasan correctamente.
 
- Por cada prompt debe quedar registrado:
-  Modelo / herramienta usada (nombre y versión si corresponde).
-  El texto exacto del prompt (sin reescrituras subjetivas).
-  Instrucciones del sistema (si las hubo).
-  Respuesta/resultado completo devuelto por la IA. 
- Indicar si la salida fue usada sin cambios, usada con modificaciones (mostrar las modificaciones) o descartada.
- Referencia a los archivos finales que incorporaron contenido generado por IA (ej: core/board.py).
+## Prompt 4
 
-## Prompt 1
+### Modelo: Claude Sonnet 4
+
+### Prompt: 
+Podrias hacer las funciones para la clase checker para el juego de Backgammon?
+
+### Instrucciones del sistema:
+- Seguir principios SOLID
+- Seguir metodología TDD
+- Documentar prompts en archivos específicos
+- Actualizar CHANGELOG.md según normas
+- Incluir 3-5 líneas de contexto al usar replace_string_in_file
+
+### Respuesta:
+
+Implementación completa de la clase Checker en `backgammon/core/Checker.py`:
+
+```python
+class Checker:
+  """
+  Clase que representa una ficha del juego Backgammon.
+  Maneja el color, posición y operaciones relacionadas con las fichas.
+  """
+  
+  VALID_COLORS = ["white", "black"]
+  VALID_POSITIONS = list(range(1, 25)) + ["bar", "off"]
+  
+  def __init__(self, color=None):
+    """Inicializa una ficha con su color con validación"""
+    if color is not None and color not in self.VALID_COLORS:
+      raise ValueError(f"Invalid color: {color}. Must be one of {self.VALID_COLORS}")
+    self.color = color
+    self.position = None
+  
+  def set_position(self, position):
+    """Establece la posición con validaciones robustas"""
+    if not isinstance(position, (int, str)):
+      raise TypeError(f"Position must be int or str, got {type(position)}")
+    
+    if isinstance(position, int):
+      if position < 1 or position > 24:
+        raise ValueError(f"Position {position} out of range (1-24)")
+    
+    if isinstance(position, str):
+      if position not in ["bar", "off"]:
+        raise ValueError(f"Invalid string position: {position}")
+    
+    self.position = position
+  
+  def get_position(self):
+    """Obtiene la posición actual"""
+    return self.position
+  
+  def is_on_board(self):
+    """Verifica si está en tablero (posiciones 1-24)"""
+    return isinstance(self.position, int) and 1 <= self.position <= 24
+  
+  def is_on_bar(self):
+    """Verifica si está en la barra"""
+    return self.position == "bar"
+  
+  def is_off_board(self):
+    """Verifica si está fuera del tablero"""
+    return self.position == "off"
+  
+  def move_to_bar(self):
+    """Mueve la ficha a la barra"""
+    self.position = "bar"
+  
+  def move_off_board(self):
+    """Mueve la ficha fuera del tablero"""
+    self.position = "off"
+  
+  def reset_position(self):
+    """Reinicia la posición"""
+    self.position = None
+  
+  def get_direction(self):
+    """Dirección de movimiento: -1 white, 1 black, 0 sin color"""
+    if self.color == "white":
+      return -1
+    elif self.color == "black":
+      return 1
+    else:
+      return 0
+  
+  def can_bear_off(self):
+    """Verifica si puede hacer bearing off desde posición actual"""
+    if not self.is_on_board():
+      return False
+    
+    if self.color == "white":
+      return 1 <= self.position <= 6
+    elif self.color == "black":
+      return 19 <= self.position <= 24
+    else:
+      return False
+  
+  def is_in_home_board(self):
+    """Verifica si está en home board"""
+    if not self.is_on_board():
+      return False
+    
+    if self.color == "white":
+      return 1 <= self.position <= 6
+    elif self.color == "black":
+      return 19 <= self.position <= 24
+    else:
+      return False
+  
+  def copy(self):
+    """Crea una copia de la ficha"""
+    copied_checker = Checker(self.color)
+    copied_checker.position = self.position
+    return copied_checker
+  
+  @staticmethod
+  def get_home_board_positions(color):
+    """Obtiene posiciones del home board por color"""
+    if color == "white":
+      return list(range(1, 7))
+    elif color == "black":
+      return list(range(19, 25))
+    else:
+      raise ValueError(f"Invalid color: {color}")
+  
+  @staticmethod
+  def get_opposite_color(color):
+    """Obtiene el color opuesto"""
+    if color == "white":
+      return "black"
+    elif color == "black":
+      return "white"
+    else:
+      raise ValueError(f"Invalid color: {color}")
+  
+  def __str__(self):
+    """Representación string con posición si existe"""
+    if self.position is not None:
+      return f"Checker({self.color}) at {self.position}"
+    else:
+      return f"Checker({self.color})"
+  
+  def __repr__(self):
+    """Representación para debugging"""
+    return f"Checker(color='{self.color}', position={self.position})"
+```
+
+### Uso en el proyecto:
+- Implementación completa utilizada sin modificaciones
+- Todos los tests pasan exitosamente (24/24 tests OK)
+- Clase completamente funcional y robusta
+- Archivo: backgammon/core/Checker.py
+
+### Principios SOLID aplicados:
+- **Single Responsibility**: Checker solo maneja estado y operaciones de una ficha individual
+- **Open/Closed**: Extensible para nuevas funcionalidades sin modificar código existente
+- **Liskov Substitution**: Todas las instancias de Checker son intercambiables
+- **Interface Segregation**: Métodos específicos y cohesivos para operaciones de fichas
+- **Dependency Inversion**: No depende de implementaciones concretas
+
+### Funcionalidades implementadas:
+- Validación de colores y posiciones
+- Gestión de posiciones especiales (bar, off)
+- Lógica específica del Backgammon (home board, bearing off)
+- Direcciones de movimiento por color
+- Operaciones de copia y estado
+- Métodos estáticos utilitarios
+- Representaciones string robustas
+
+### Tests ejecutados:
+```
+Ran 24 tests in 0.005s
+OK
+```
+## Prompt 3
 
 ### Modelo: Claude Sonnet 4
 
