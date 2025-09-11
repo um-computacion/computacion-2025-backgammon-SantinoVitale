@@ -5,6 +5,25 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.9] - 2025-09-11
+
+### Agregado
+
+- Implementación completa de la clase `BackgammonGame`:
+  - `backgammon/core/BackgammonGame.py` — clase principal orquestadora del Backgammon incluyendo gestión completa del flujo de juego, coordinación de componentes (Board, Players, Dice, UI), manejo de turnos, validación de movimientos, condiciones de victoria, save/load de estado, estadísticas, sistema undo/redo, pausa/reanudación, soporte multi-UI (CLI/Pygame) y gestión avanzada de estado
+- Configuración de módulos Python actualizada:
+  - `backgammon/core/__init__.py` — agregado import de las clases BackgammonGame y PygameUI para el módulo core
+
+### Notas
+
+- La implementación de `BackgammonGame` pasa todos los tests TDD (36/36 tests OK)
+- Clase diseñada siguiendo principios SOLID como orquestador principal del juego
+- Integración completa con todos los componentes existentes (Board, Player, Dice, CLI)
+- Sistema robusto de gestión de estado con serialización completa
+- Soporte para múltiples interfaces de usuario (CLI/Pygame)
+- Funcionalidades avanzadas: undo/redo, estadísticas, pausa/reanudación
+- Compatible con metodología TDD y arquitectura modular establecida
+
 ## [0.1.8] - 2025-09-11
 
 ### Agregado
