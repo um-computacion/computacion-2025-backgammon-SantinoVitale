@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import Mock, patch
-from backgammon.core import Player, Checker
+from backgammon.core import Player, Checker, Board
 
 class TestPlayer(unittest.TestCase):
 
@@ -100,17 +100,16 @@ class TestPlayer(unittest.TestCase):
     self.player_white.move_checker_to_bar()
     self.assertTrue(self.player_white.has_checkers_on_bar())
 
-  @patch.object(Board, 'all_checkers_in_home_board')
-  def test_can_bear_off_with_different_board_states(self, mock_all_in_home):
+  def test_can_bear_off_with_different_board_states(self):
     mock_board = Mock()
     
     # Test when all checkers are in home board
-    mock_all_in_home.return_value = True
+    mock_board.all_checkers_in_home_board.return_value = True
     self.assertTrue(self.player_white.can_bear_off(mock_board))
-    mock_all_in_home.assert_called_with("white")
+    mock_board.all_checkers_in_home_board.assert_called_with("white")
     
     # Test when not all checkers are in home board
-    mock_all_in_home.return_value = False
+    mock_board.all_checkers_in_home_board.return_value = False
     self.assertFalse(self.player_white.can_bear_off(mock_board))
 
   def test_get_checkers_count(self):
@@ -175,15 +174,14 @@ class TestPlayer(unittest.TestCase):
     moves = self.player_white.get_possible_moves(mock_board, mock_dice)
     self.assertEqual(moves, [(1, 4), (6, 9)])
 
-  @patch.object(Board, 'move_checker')
-  def test_make_move_calls_board_correctly(self, mock_move):
+  def test_make_move_calls_board_correctly(self):
     mock_board = Mock()
-    mock_move.return_value = True
+    mock_board.move_checker.return_value = True
     
     result = self.player_white.make_move(5, 8, mock_board)
     
     self.assertTrue(result)
-    mock_move.assert_called_once_with(5, 8, "white")
+    mock_board.move_checker.assert_called_once_with(5, 8, "white")
 
   def test_str_representation(self):
     player_str = str(self.player_white)
