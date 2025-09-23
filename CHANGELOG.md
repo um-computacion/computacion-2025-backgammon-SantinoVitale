@@ -5,6 +5,26 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.14] - 2025-09-23
+
+### Mejorado
+
+- Implementación de mocks para creación de Checker y testing de setup en tests de `Board`:
+  - `backgammon/test/test_Board.py` — mejoras en testing con mocks para aislamiento de dependencias de Checker incluyendo mocking de backgammon.core.Checker constructor para control de creación de fichas en setup inicial, Mock objects para Checker.color attributes en testing de movimientos con captura, verificación de llamadas correctas para creación de fichas blancas y negras, y testing determinístico de operaciones de movimiento sin dependencias de instancias reales de Checker
+- Estrategias de testing de tablero implementadas:
+  - Aislamiento de lógica de Board sin dependencias de creación real de objetos Checker
+  - Testing determinístico de setup inicial con control total sobre fichas creadas
+  - Verificación precisa de conteos de fichas por color en posición inicial
+  - Simulación controlada de propiedades de Checker para testing de movimientos complejos
+
+### Notas
+
+- Los mocks permiten testear la lógica de Board sin crear instancias reales de Checker
+- Mejora significativa en testing de setup inicial con verificación exacta de creación de fichas
+- Testing más rápido al eliminar overhead de creación de múltiples objetos Checker
+- Validación robusta de operaciones de movimiento con control total sobre propiedades de fichas
+- Preparación para testing de escenarios complejos de captura y bearing off sin dependencias externas
+
 ## [0.1.13] - 2025-09-23
 
 ### Mejorado
