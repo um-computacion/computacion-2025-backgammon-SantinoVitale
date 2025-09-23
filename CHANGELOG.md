@@ -5,6 +5,26 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.11] - 2025-09-23
+
+### Mejorado
+
+- Implementación de mocks para interacciones entre componentes en tests de `BackgammonGame`:
+  - `backgammon/test/test__BackgammonGame.py` — mejoras en testing con mocks para aislamiento de componentes incluyendo mocking de Dice.roll() para tiradas determinísticas, Player.has_won() para testing de condiciones de victoria, Board.move_checker() para validación de lógica de movimiento, y CLI.get_move_input() para simulación de interacciones de usuario
+- Estrategias de testing implementadas:
+  - Aislamiento efectivo de lógica de BackgammonGame sin dependencias externas
+  - Testing determinístico de flujo de juego y transiciones de estado
+  - Verificación de llamadas correctas entre componentes del sistema
+  - Simulación controlada de escenarios de juego específicos
+
+### Notas
+
+- Los mocks permiten testear la lógica orquestadora sin depender del comportamiento de componentes
+- Mejora en la velocidad de ejecución de tests al eliminar operaciones complejas
+- Cobertura más completa de casos edge y condiciones específicas de juego
+- Validación robusta de las interacciones entre BackgammonGame y otros componentes
+- Base sólida para expansión de mocks en Player, Board, CLI y otros componentes
+
 ## [0.1.10] - 2025-09-23
 
 ### Mejorado

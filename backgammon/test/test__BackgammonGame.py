@@ -170,6 +170,22 @@ class TestBackgammonGame(unittest.TestCase):
     
     self.assertFalse(result)
 
+  @patch.object(Dice, 'roll')
+  @patch.object(Dice, 'can_use_move')
+  def test_make_move_with_specific_dice_roll(self, mock_can_use, mock_roll):
+    mock_roll.return_value = [3, 5]
+    mock_can_use.return_value = True
+    
+    self.game.start_game()
+    self.game.roll_dice()
+    
+    # Mock board to return True for move
+    with patch.object(self.game.board, 'move_checker', return_value=True):
+        result = self.game.make_move(1, 4)  # Move 3 spaces
+        
+    self.assertTrue(result)
+    mock_can_use.assert_called_with(3)  # Should check if can use 3
+
   def test_is_valid_move(self):
     """Test checking if a move is valid"""
     self.game.board = MagicMock()
@@ -384,6 +400,18 @@ class TestBackgammonGame(unittest.TestCase):
     self.assertEqual(copied_game.current_player_index, 1)
     self.assertEqual(copied_game.is_started, True)
     self.assertIsNot(copied_game, self.game)
+
+  @patch.object(Player, 'has_won')
+  def test_game_over_when_player_wins(self, mock_has_won):
+    mock_has_won.side_effect = [False, True]  # Player 2 wins
+    
+    self.game.setup_players()
+    
+    self.assertFalse(self.game.is_game_over())  # First call returns False
+    self.assertTrue(self.game.is_game_over())   # Second call returns True
+    
+    winner = self.game.get_winner()
+    self.assertEqual(winner, self.game.players[1])  # Player 2 won
 
 if __name__ == '__main__':
   unittest.main()
