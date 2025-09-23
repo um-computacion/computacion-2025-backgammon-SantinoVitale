@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch, MagicMock, call
+from unittest.mock import patch, MagicMock, Mock, call
 from io import StringIO
 from backgammon.core import CLI
 
@@ -254,10 +254,10 @@ class TestCLI(unittest.TestCase):
   @patch('builtins.input')
   def test_get_move_input_with_multiple_invalid_attempts(self, mock_input):
     mock_input.side_effect = [
-        'invalid input',   # First attempt fails
-        '0 25',           # Second attempt - out of range
-        'bar off',        # Third attempt - invalid combination
-        '5 8'             # Fourth attempt - valid
+        'single',         # First attempt fails - only one word
+        '1',             # Second attempt fails - only one number  
+        '1 2 3',         # Third attempt fails - three values
+        '5 8'            # Fourth attempt - valid
     ]
     
     from_pos, to_pos = self.cli.get_move_input()
