@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 from backgammon.core import Board, Checker
 
 class TestBoard(unittest.TestCase):
@@ -24,6 +24,31 @@ class TestBoard(unittest.TestCase):
     self.board.setup_initial_position()
     total = sum(len(p) for p in self.board.points)
     self.assertEqual(total, 30)
+
+  @patch('backgammon.core.Checker')
+  def test_setup_initial_position_creates_correct_checkers(self, mock_checker_class):
+    mock_white_checker = Mock()
+    mock_black_checker = Mock()
+    
+    def checker_side_effect(color):
+        if color == "white":
+            return mock_white_checker
+        else:
+            return mock_black_checker
+    
+    mock_checker_class.side_effect = checker_side_effect
+    
+    self.board.setup_initial_position()
+    
+    # Verify correct number of checker creations
+    self.assertEqual(mock_checker_class.call_count, 30)  # Total checkers
+    
+    # Verify colors were called correctly
+    white_calls = [call for call in mock_checker_class.call_args_list if call[0][0] == "white"]
+    black_calls = [call for call in mock_checker_class.call_args_list if call[0][0] == "black"]
+    
+    self.assertEqual(len(white_calls), 15)
+    self.assertEqual(len(black_calls), 15)
 
   def test_get_point_count_and_top_color(self):
     self.board.points[0] = [Checker(self.white) for _ in range(3)]
@@ -59,6 +84,24 @@ class TestBoard(unittest.TestCase):
     self.assertEqual(self.board.get_point_top_color(6), self.white)
     self.assertEqual(len(self.board.bar[self.black]), 1)
     self.assertEqual(self.board.bar[self.black][0].color, self.black)
+
+  def test_move_checker_hit_with_mock_checkers(self):
+    # Create mock checkers with specific colors
+    mock_white_checker = Mock()
+    mock_white_checker.color = "white"
+    
+    mock_black_checker = Mock()
+    mock_black_checker.color = "black"
+    
+    # Setup initial positions
+    self.board.points[3] = [mock_white_checker]  # White checker at position 3
+    self.board.points[6] = [mock_black_checker]  # Black checker at position 6 (will be hit)
+    
+    result = self.board.move_checker(3, 6, "white")
+    
+    self.assertTrue(result)
+    self.assertEqual(len(self.board.bar["black"]), 1)  # Black checker moved to bar
+    self.assertEqual(self.board.points[6][0], mock_white_checker)  # White checker at position 6
 
   def test_move_checker_invalid_from_empty(self):
     self.board.points[10] = []
