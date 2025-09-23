@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch, Mock
-from backgammon.core import BackgammonGame, Board, Player, Dice, CLI, PygameUI
+from backgammon.core import BackgammonGame, Board, Player, Dice, CLI
 
 class TestBackgammonGame(unittest.TestCase):
 
@@ -170,21 +170,25 @@ class TestBackgammonGame(unittest.TestCase):
     
     self.assertFalse(result)
 
-  @patch.object(Dice, 'roll')
-  @patch.object(Dice, 'can_use_move')
-  def test_make_move_with_specific_dice_roll(self, mock_can_use, mock_roll):
-    mock_roll.return_value = [3, 5]
-    mock_can_use.return_value = True
-    
+  def test_make_move_with_specific_dice_roll(self):
     self.game.start_game()
+    
+    # Mock the dice instance directly
+    self.game.dice.roll = Mock(return_value=[3, 5])
+    self.game.dice.can_use_move = Mock(return_value=True)
+    
     self.game.roll_dice()
     
     # Mock board to return True for move
-    with patch.object(self.game.board, 'move_checker', return_value=True):
-        result = self.game.make_move(1, 4)  # Move 3 spaces
+    board_mock = Mock()
+    board_mock.move_checker = Mock(return_value=True)
+    self.game.board = board_mock
+    
+    result = self.game.make_move(1, 4)  # Move 3 spaces
         
     self.assertTrue(result)
-    mock_can_use.assert_called_with(3)  # Should check if can use 3
+    # Verify that the board's move_checker was called with correct parameters
+    board_mock.move_checker.assert_called_with(1, 4, self.game.get_current_player().color)
 
   def test_is_valid_move(self):
     """Test checking if a move is valid"""
@@ -401,14 +405,19 @@ class TestBackgammonGame(unittest.TestCase):
     self.assertEqual(copied_game.is_started, True)
     self.assertIsNot(copied_game, self.game)
 
-  @patch.object(Player, 'has_won')
-  def test_game_over_when_player_wins(self, mock_has_won):
-    mock_has_won.side_effect = [False, True]  # Player 2 wins
-    
+  def test_game_over_when_player_wins(self):
     self.game.setup_players()
     
-    self.assertFalse(self.game.is_game_over())  # First call returns False
-    self.assertTrue(self.game.is_game_over())   # Second call returns True
+    # Initially no player has won
+    for player in self.game.players:
+      player.has_won = Mock(return_value=False)
+    
+    self.assertFalse(self.game.is_game_over())
+    
+    # Now player 2 wins
+    self.game.players[1].has_won = Mock(return_value=True)
+    
+    self.assertTrue(self.game.is_game_over())
     
     winner = self.game.get_winner()
     self.assertEqual(winner, self.game.players[1])  # Player 2 won

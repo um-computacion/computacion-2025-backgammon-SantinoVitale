@@ -25,7 +25,7 @@ class TestBoard(unittest.TestCase):
     total = sum(len(p) for p in self.board.points)
     self.assertEqual(total, 30)
 
-  @patch('backgammon.core.Checker')
+  @patch('backgammon.core.Board.Checker')
   def test_setup_initial_position_creates_correct_checkers(self, mock_checker_class):
     mock_white_checker = Mock()
     mock_black_checker = Mock()
