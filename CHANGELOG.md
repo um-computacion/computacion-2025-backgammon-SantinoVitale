@@ -5,6 +5,26 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.13] - 2025-09-23
+
+### Mejorado
+
+- Implementación de mocks para entrada/salida y interacciones de usuario en tests de `CLI`:
+  - `backgammon/test/test__CLI.py` — mejoras en testing con mocks para aislamiento de I/O incluyendo mocking de builtins.input() para simulación de entrada de usuario con validación y reintentos, sys.stdout para captura y verificación de salida de consola, Mock objects para Player attributes en testing de display methods, y StringIO para testing de output sin efectos secundarios en consola
+- Estrategias de testing de interfaz implementadas:
+  - Aislamiento completo de lógica de CLI sin dependencias de entrada/salida real
+  - Testing determinístico de validación de entrada con múltiples intentos fallidos
+  - Verificación de formato y contenido de mensajes de salida
+  - Simulación controlada de objetos Player para testing de métodos de display
+
+### Notas
+
+- Los mocks permiten testear la lógica de CLI sin interacción humana real o efectos en consola
+- Mejora significativa en testing de validación de entrada con secuencias complejas de errores
+- Testing más rápido y limpio al eliminar dependencias de entrada/salida del sistema
+- Validación robusta de formato de mensajes y manejo de objetos de juego
+- Preparación para testing de flujos complejos de interacción usuario-sistema
+
 ## [0.1.12] - 2025-09-23
 
 ### Mejorado

@@ -129,6 +129,20 @@ class TestCLI(unittest.TestCase):
     self.assertIn("Player1", output)
 
   @patch('sys.stdout', new_callable=StringIO)
+  def test_display_current_player_with_mock_player(self, mock_stdout):
+    mock_player = Mock()
+    mock_player.name = "TestPlayer"
+    mock_player.color = "white"
+    
+    with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+        self.cli.display_current_player(mock_player)
+        
+        output = mock_stdout.getvalue()
+        self.assertIn("TestPlayer", output)
+        self.assertIn("white", output)
+        self.assertIn("Your turn", output)
+
+  @patch('sys.stdout', new_callable=StringIO)
   def test_display_dice_roll(self, mock_stdout):
     dice_values = [3, 5]
     self.cli.display_dice_roll(dice_values)
@@ -236,6 +250,21 @@ class TestCLI(unittest.TestCase):
     output = mock_stdout.getvalue()
     self.assertIn("10", output)
     self.assertIn("300", output)
+
+  @patch('builtins.input')
+  def test_get_move_input_with_multiple_invalid_attempts(self, mock_input):
+    mock_input.side_effect = [
+        'invalid input',   # First attempt fails
+        '0 25',           # Second attempt - out of range
+        'bar off',        # Third attempt - invalid combination
+        '5 8'             # Fourth attempt - valid
+    ]
+    
+    from_pos, to_pos = self.cli.get_move_input()
+    
+    self.assertEqual(from_pos, 5)
+    self.assertEqual(to_pos, 8)
+    self.assertEqual(mock_input.call_count, 4)
 
 if __name__ == "__main__":
   unittest.main()
