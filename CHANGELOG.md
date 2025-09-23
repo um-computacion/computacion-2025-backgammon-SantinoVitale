@@ -5,6 +5,26 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.10] - 2025-09-23
+
+### Mejorado
+
+- Implementación de mocks avanzados en tests de `Dice`:
+  - `backgammon/test/test_Dice.py` — mejoras en testing con mocks para casos determinísticos incluyendo testing de todas las combinaciones de dobles, secuencias de tiradas consecutivas, valores límite (boundary values), patrones de uso de movimientos con dobles, y verificación de actualización de estado con entradas conocidas
+- Análisis y recomendaciones de testing implementadas:
+  - Cobertura mejorada de edge cases con resultados predecibles
+  - Testing determinístico para lógica de manejo de dobles
+  - Verificación robusta de gestión de estado interno
+  - Aislamiento de lógica de negocio de la aleatoriedad
+
+### Notas
+
+- Los mocks permiten testing confiable y reproducible de la lógica de dados
+- Mejora significativa en la cobertura de casos edge sin dependencia de randomness
+- Tests más rápidos y determinísticos para validación de lógica de negocio
+- Separación clara entre testing de lógica y testing de comportamiento aleatorio
+- Preparación para expansión de mocks en otros componentes del sistema
+
 ## [0.1.9] - 2025-09-11
 
 ### Agregado
