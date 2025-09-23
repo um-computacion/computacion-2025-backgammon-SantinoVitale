@@ -25,13 +25,6 @@ class TestDice(unittest.TestCase):
     self.assertTrue(all(isinstance(v, int) for v in values))
     self.assertEqual(self.dice.last_roll, values)
 
-  @patch("random.randint")
-  def test_roll_with_mock(self, mock_randint):
-    mock_randint.side_effect = [3, 5]
-    values = self.dice.roll()
-    self.assertEqual(values, [3, 5])
-    self.assertEqual(mock_randint.call_count, 2)
-
   def test_is_double_true(self):
     self.dice.last_roll = [3, 3]
     self.assertTrue(self.dice.is_double())
@@ -125,6 +118,26 @@ class TestDice(unittest.TestCase):
     self.assertEqual(second_roll, [6, 6])
     self.assertEqual(self.dice.values, [6, 6, 6, 6])  # Double gives 4 moves
 
+  @patch("random.randint")
+  def test_consecutive_different_rolls(self, mock_randint):
+    # Test a sequence of different roll types
+    mock_randint.side_effect = [1, 6, 3, 3, 2, 5]
+    
+    # First roll: normal
+    first_roll = self.dice.roll()
+    self.assertEqual(first_roll, [1, 6])
+    self.assertFalse(self.dice.is_double())
+    
+    # Second roll: double
+    second_roll = self.dice.roll()
+    self.assertEqual(second_roll, [3, 3])
+    self.assertTrue(self.dice.is_double())
+    
+    # Third roll: normal again
+    third_roll = self.dice.roll()
+    self.assertEqual(third_roll, [2, 5])
+    self.assertFalse(self.dice.is_double())
+
   def test_str_representation(self):
     self.dice.last_roll = [3, 5]
     dice_str = str(self.dice)
@@ -153,6 +166,42 @@ class TestDice(unittest.TestCase):
     self.assertEqual(self.dice.last_roll, [2, 3])
     self.assertEqual(self.dice.values, [2, 3])
 
+  @patch("random.randint")
+  def test_roll_all_possible_doubles(self, mock_randint):
+    # Test all possible double combinations
+    for value in range(1, 7):
+        mock_randint.side_effect = [value, value]
+        result = self.dice.roll()
+        self.assertEqual(result, [value, value])
+        self.assertTrue(self.dice.is_double())
+        self.assertEqual(self.dice.values, [value] * 4)
+
+  @patch("random.randint")
+  def test_roll_boundary_values(self, mock_randint):
+    # Test minimum values
+    mock_randint.side_effect = [1, 1]
+    result = self.dice.roll()
+    self.assertEqual(result, [1, 1])
+    
+    # Test maximum values
+    mock_randint.side_effect = [6, 6]
+    result = self.dice.roll()
+    self.assertEqual(result, [6, 6])
+
+  @patch("random.randint")
+  def test_move_usage_with_double(self, mock_randint):
+    mock_randint.side_effect = [4, 4]
+    self.dice.roll()
+    
+    # Should have 4 moves of value 4
+    self.assertEqual(self.dice.values, [4, 4, 4, 4])
+    
+    # Use moves one by one
+    self.assertTrue(self.dice.use_move(4))
+    self.assertEqual(len(self.dice.values), 3)
+    
+    self.assertTrue(self.dice.use_move(4))
+    self.assertEqual(len(self.dice.values), 2)
 
 if __name__ == "__main__":
   unittest.main()
