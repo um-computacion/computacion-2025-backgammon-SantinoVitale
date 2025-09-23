@@ -5,6 +5,26 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.12] - 2025-09-23
+
+### Mejorado
+
+- Implementación de mocks para interacciones con Board en tests de `Player`:
+  - `backgammon/test/test__Player.py` — mejoras en testing con mocks para aislamiento de dependencias del tablero incluyendo mocking de Board.all_checkers_in_home_board() para testing de bearing off, Board.move_checker() para validación de movimientos de jugador, Board.get_possible_moves() para obtención de movimientos disponibles, y Board.is_valid_move() para verificación de validez de movimientos
+- Estrategias de testing de componentes implementadas:
+  - Aislamiento completo de lógica de Player sin dependencias del estado del Board
+  - Testing determinístico de métodos de Player que requieren interacción con tablero
+  - Verificación de parámetros correctos en llamadas a métodos del Board
+  - Simulación de diferentes estados del tablero para testing exhaustivo
+
+### Notas
+
+- Los mocks permiten testear la lógica de Player independientemente del comportamiento del Board
+- Mejora significativa en la cobertura de casos donde Player interactúa con Board
+- Testing más rápido al eliminar la necesidad de configurar estados complejos del tablero
+- Validación robusta de que Player llama correctamente a los métodos del Board
+- Preparación para testing de escenarios complejos de bearing off y movimientos válidos
+
 ## [0.1.11] - 2025-09-23
 
 ### Mejorado
