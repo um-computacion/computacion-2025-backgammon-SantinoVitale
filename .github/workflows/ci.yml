@@ -6,7 +6,7 @@ on:
 jobs:
   build-and-analyze:
     runs-on: ubuntu-latest
-    #Evitar bucle infinito
+    # Evitar bucle infinito
     if: github.actor != 'github-actions[bot]'
     permissions:
       contents: write
@@ -27,11 +27,12 @@ jobs:
           pip install -r requirements.txt
       - name: Run tests and generate coverage report
         run: |
-          coverage run -m unittest discover -s backgammon -p "test_*.py"
+          # Ejecutar coverage con el source correcto
+          coverage run --source=backgammon/core -m unittest discover -s backgammon -p "test_*.py"
           coverage xml -o cobertura.xml
           coverage report -m > coverage_report.txt
           echo "Coverage debug info:"
-          ls -la core/
+          ls -la backgammon/core/ || echo "No backgammon/core/ directory found"
           coverage report --show-missing
       - name: Run Pylint and generate report
         run: |
@@ -68,9 +69,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "docs: Update automated reports [skip ci]"
-          title: ":gráfico_de_barras: Update Automated Reports"
+          title: "📊 Update Automated Reports"
           body: |
-            :cara_de_robot: **Automated report update**
+            🤖 **Automated report update**
             This PR updates the REPORTS.md file with the latest:
             - Coverage report
             - Pylint analysis
