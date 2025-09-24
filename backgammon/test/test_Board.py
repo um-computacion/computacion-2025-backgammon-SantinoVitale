@@ -26,21 +26,25 @@ class TestBoard(unittest.TestCase):
     self.assertEqual(total, 30)
 
   def test_setup_initial_position_creates_correct_checkers(self):
-    # Use direct mocking instead of patch decorator to avoid path issues
-    mock_checker = Mock()
+    # Create a simple board fresh and count the checkers directly
+    test_board = Board()
+    test_board.setup_initial_position()
     
-    with patch('backgammon.core.Board.Checker', return_value=mock_checker) as mock_checker_class:
-      self.board.setup_initial_position()
-      
-      # Verify correct number of checker creations
-      self.assertEqual(mock_checker_class.call_count, 30)  # Total checkers
-      
-      # Verify colors were called correctly
-      white_calls = [call for call in mock_checker_class.call_args_list if call[0][0] == "white"]
-      black_calls = [call for call in mock_checker_class.call_args_list if call[0][0] == "black"]
-      
-      self.assertEqual(len(white_calls), 15)  # 15 white checkers
-      self.assertEqual(len(black_calls), 15)  # 15 black checkers
+    # Count white and black checkers by examining all points
+    white_count = 0
+    black_count = 0
+    
+    for point in test_board.points:
+      for checker in point:
+        if checker.color == "white":
+          white_count += 1
+        elif checker.color == "black":
+          black_count += 1
+    
+    # Verify correct number of checkers
+    self.assertEqual(white_count + black_count, 30)  # Total checkers
+    self.assertEqual(white_count, 15)  # 15 white checkers
+    self.assertEqual(black_count, 15)  # 15 black checkers
 
   def test_get_point_count_and_top_color(self):
     self.board.points[0] = [Checker(self.white) for _ in range(3)]
