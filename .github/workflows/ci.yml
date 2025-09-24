@@ -6,7 +6,7 @@ on:
 jobs:
   build-and-analyze:
     runs-on: ubuntu-latest
-    # Evitar bucle infinito
+    #Evitar bucle infinito
     if: github.actor != 'github-actions[bot]'
     permissions:
       contents: write
@@ -24,21 +24,20 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          cd backgammon
           pip install -r requirements.txt
       - name: Run tests and generate coverage report
         run: |
-          cd backgammon
-          python -m coverage run --source=core -m unittest discover -s test -p "test_*.py" -v
-          python -m coverage xml -o cobertura.xml
-          python -m coverage report -m > coverage_report.txt
+          coverage run -m unittest discover -s backgammon -p "test_*.py"
+          coverage xml -o cobertura.xml
+          coverage report -m > coverage_report.txt
+          echo "Coverage debug info:"
+          ls -la core/
+          coverage report --show-missing
       - name: Run Pylint and generate report
         run: |
-          cd backgammon
-          python -m pylint --rcfile=.pylintrc core/ test/ > pylint_report.txt || true
+          pylint --rcfile=.pylintrc backgammon/ > pylint_report.txt || true
       - name: Generate reports file
         run: |
-          cd backgammon
           cat << 'EOF' > generate_reports.py
           import os
           def read_file(filepath):
@@ -58,7 +57,7 @@ jobs:
           {pylint_report}
           ```
           """
-          with open("../REPORTS.md", "w") as f:
+          with open("REPORTS.md", "w") as f:
               f.write(reports_content)
           EOF
           python generate_reports.py
@@ -69,9 +68,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "docs: Update automated reports [skip ci]"
-          title: "📊 Update Automated Reports"
+          title: ":gráfico_de_barras: Update Automated Reports"
           body: |
-            🤖 **Automated report update**
+            :cara_de_robot: **Automated report update**
             This PR updates the REPORTS.md file with the latest:
             - Coverage report
             - Pylint analysis
