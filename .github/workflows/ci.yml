@@ -24,19 +24,21 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          cd backgammon
           pip install -r requirements.txt
       - name: Run tests and generate coverage report
         run: |
-          # Ejecutar tests desde la carpeta test, pero analizar cobertura de core/
-          coverage run --source=core -m unittest discover -s test -p "test_*.py"
-          coverage xml -o cobertura.xml
-          coverage report -m > coverage_report.txt
+          cd backgammon
+          python -m coverage run --source=core -m unittest discover -s test -p "test_*.py" -v
+          python -m coverage xml -o cobertura.xml
+          python -m coverage report -m > coverage_report.txt
       - name: Run Pylint and generate report
         run: |
-          # Analizar tanto core/ como test/ según tu estructura
-          pylint --rcfile=.pylintrc core/ test/ > pylint_report.txt || true
+          cd backgammon
+          python -m pylint --rcfile=.pylintrc core/ test/ > pylint_report.txt || true
       - name: Generate reports file
         run: |
+          cd backgammon
           cat << 'EOF' > generate_reports.py
           import os
           def read_file(filepath):
@@ -56,7 +58,7 @@ jobs:
           {pylint_report}
           ```
           """
-          with open("REPORTS.md", "w") as f:
+          with open("../REPORTS.md", "w") as f:
               f.write(reports_content)
           EOF
           python generate_reports.py
