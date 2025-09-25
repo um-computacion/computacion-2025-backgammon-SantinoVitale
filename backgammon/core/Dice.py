@@ -1,3 +1,10 @@
+"""
+Dice module for Backgammon game.
+
+This module contains the Dice class which handles dice rolling,
+double detection, and move management for the game.
+"""
+# pylint: disable=invalid-name  # Dice follows PascalCase class naming convention
 import random
 
 
@@ -64,9 +71,8 @@ class Dice:
         if len(roll_values) == 2 and roll_values[0] == roll_values[1]:
             # Doble: 4 movimientos del mismo valor
             return [roll_values[0]] * 4
-        else:
-            # Tirada normal: 2 movimientos
-            return list(roll_values)
+        # Tirada normal: 2 movimientos
+        return list(roll_values)
 
     def use_move(self, move_value):
         """

@@ -3,9 +3,10 @@ CLI interface for the Backgammon game.
 Provides command-line interaction methods for displaying the board,
 getting user input, and managing game flow.
 """
+# pylint: disable=invalid-name  # CLI follows PascalCase class naming convention
+# pylint: disable=too-many-branches  # Complex user input handling requires branching
 
 import os
-import sys
 from typing import Tuple, List, Union, Dict, Any
 
 
@@ -22,9 +23,8 @@ class CLI:
 
     def __init__(self) -> None:
         """Initialize the CLI interface."""
-        pass
 
-    def display_board(self, board) -> None:
+    def display_board(self, board) -> None:  # pylint: disable=too-many-branches
         """
         Display the current board state in ASCII format.
 
@@ -210,7 +210,7 @@ class CLI:
             player: Player object who won
         """
         name = getattr(player, "name", "Unknown")
-        print(f"\n🎉 CONGRATULATIONS! 🎉")
+        print("\n🎉 CONGRATULATIONS! 🎉")
         print(f"{name} wins the game!")
         print("=" * 30)
 
@@ -264,10 +264,9 @@ class CLI:
             choice = input("Enter choice (1-2): ").strip()
             if choice == "1":
                 return "vs_human"
-            elif choice == "2":
+            if choice == "2":
                 return "vs_computer"
-            else:
-                print("Invalid choice. Please enter 1 or 2.")
+            print("Invalid choice. Please enter 1 or 2.")
 
     def get_difficulty(self) -> str:
         """
@@ -285,12 +284,11 @@ class CLI:
             choice = input("Enter choice (1-3): ").strip()
             if choice == "1":
                 return "easy"
-            elif choice == "2":
+            if choice == "2":
                 return "medium"
-            elif choice == "3":
+            if choice == "3":
                 return "hard"
-            else:
-                print("Invalid choice. Please enter 1-3.")
+            print("Invalid choice. Please enter 1-3.")
 
     def display_help(self) -> None:
         """Display help information."""
@@ -362,10 +360,9 @@ Winning: First player to bear off all checkers wins!
         """
         if position == "bar":
             return "BAR"
-        elif position == "off":
+        if position == "off":
             return "OFF"
-        else:
-            return str(position)
+        return str(position)
 
     def get_valid_position(self) -> int:
         """
@@ -379,8 +376,7 @@ Winning: First player to bear off all checkers wins!
                 position = int(input("Enter position (1-24): ").strip())
                 if 1 <= position <= 24:
                     return position
-                else:
-                    print("Position must be between 1 and 24.")
+                print("Position must be between 1 and 24.")
             except ValueError:
                 print("Please enter a valid number.")
 
