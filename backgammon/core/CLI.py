@@ -12,7 +12,7 @@ from typing import Tuple, List, Union, Dict, Any
 class CLI:
     """
     Command Line Interface for Backgammon game.
-    
+
     Handles all console-based interactions including:
     - Board display and formatting
     - User input collection and validation
@@ -27,108 +27,128 @@ class CLI:
     def display_board(self, board) -> None:
         """
         Display the current board state in ASCII format.
-        
+
         Args:
             board: Board object containing game state
         """
         print("\n" + "=" * 50)
         print("BACKGAMMON BOARD")
         print("=" * 50)
-        
+
         # Top half of board (points 13-24)
         top_line = "13 14 15 16 17 18   BAR   19 20 21 22 23 24"
         print(f"   {top_line}")
-        
+
         # Display top checkers
         for row in range(5):
             line = " "
             for point in range(13, 19):
-                checkers = board.points[point - 1] if hasattr(board, 'points') else []
+                checkers = board.points[point - 1] if hasattr(board, "points") else []
                 if len(checkers) > row:
-                    color = checkers[row].color[0].upper() if hasattr(checkers[row], 'color') else 'X'
+                    color = (
+                        checkers[row].color[0].upper()
+                        if hasattr(checkers[row], "color")
+                        else "X"
+                    )
                     line += f" {color} "
                 else:
                     line += "   "
-            
+
             # Bar display
-            bar_white = len(board.bar.get('white', [])) if hasattr(board, 'bar') else 0
-            bar_black = len(board.bar.get('black', [])) if hasattr(board, 'bar') else 0
+            bar_white = len(board.bar.get("white", [])) if hasattr(board, "bar") else 0
+            bar_black = len(board.bar.get("black", [])) if hasattr(board, "bar") else 0
             if row == 0 and bar_white > 0:
                 line += f"  W{bar_white} "
             elif row == 1 and bar_black > 0:
                 line += f"  B{bar_black} "
             else:
                 line += "     "
-            
+
             for point in range(19, 25):
-                checkers = board.points[point - 1] if hasattr(board, 'points') else []
+                checkers = board.points[point - 1] if hasattr(board, "points") else []
                 if len(checkers) > row:
-                    color = checkers[row].color[0].upper() if hasattr(checkers[row], 'color') else 'X'
+                    color = (
+                        checkers[row].color[0].upper()
+                        if hasattr(checkers[row], "color")
+                        else "X"
+                    )
                     line += f" {color} "
                 else:
                     line += "   "
             print(line)
-        
+
         print("   " + "-" * 45)
-        
+
         # Bottom half of board (points 12-1)
         for row in range(4, -1, -1):
             line = " "
             for point in range(12, 6, -1):
-                checkers = board.points[point - 1] if hasattr(board, 'points') else []
+                checkers = board.points[point - 1] if hasattr(board, "points") else []
                 if len(checkers) > row:
-                    color = checkers[row].color[0].upper() if hasattr(checkers[row], 'color') else 'X'
+                    color = (
+                        checkers[row].color[0].upper()
+                        if hasattr(checkers[row], "color")
+                        else "X"
+                    )
                     line += f" {color} "
                 else:
                     line += "   "
-            
+
             line += "     "  # Bar space
-            
+
             for point in range(6, 0, -1):
-                checkers = board.points[point - 1] if hasattr(board, 'points') else []
+                checkers = board.points[point - 1] if hasattr(board, "points") else []
                 if len(checkers) > row:
-                    color = checkers[row].color[0].upper() if hasattr(checkers[row], 'color') else 'X'
+                    color = (
+                        checkers[row].color[0].upper()
+                        if hasattr(checkers[row], "color")
+                        else "X"
+                    )
                     line += f" {color} "
                 else:
                     line += "   "
             print(line)
-        
+
         bottom_line = "12 11 10  9  8  7         6  5  4  3  2  1"
         print(f"   {bottom_line}")
-        
+
         # Display off checkers
-        off_white = len(board.off.get('white', [])) if hasattr(board, 'off') else 0
-        off_black = len(board.off.get('black', [])) if hasattr(board, 'off') else 0
+        off_white = len(board.off.get("white", [])) if hasattr(board, "off") else 0
+        off_black = len(board.off.get("black", [])) if hasattr(board, "off") else 0
         print(f"\nOFF: White: {off_white}, Black: {off_black}")
         print("=" * 50)
 
     def get_move_input(self) -> Tuple[Union[int, str], Union[int, str]]:
         """
         Get move input from user.
-        
+
         Returns:
             Tuple of (from_position, to_position)
             Positions can be integers (1-24), 'bar', or 'off'
         """
         while True:
             try:
-                move_input = input("Enter move (e.g., '1 4', 'bar 20', '1 off'): ").strip()
+                move_input = input(
+                    "Enter move (e.g., '1 4', 'bar 20', '1 off'): "
+                ).strip()
                 parts = move_input.split()
-                
+
                 if len(parts) != 2:
-                    print("Invalid format. Please enter two positions separated by space.")
+                    print(
+                        "Invalid format. Please enter two positions separated by space."
+                    )
                     continue
-                
+
                 from_pos, to_pos = parts
-                
+
                 # Convert numeric positions
                 if from_pos.isdigit():
                     from_pos = int(from_pos)
                 if to_pos.isdigit():
                     to_pos = int(to_pos)
-                
+
                 return from_pos, to_pos
-                
+
             except (ValueError, KeyboardInterrupt):
                 print("Invalid input. Please try again.")
                 continue
@@ -136,7 +156,7 @@ class CLI:
     def display_message(self, message: str) -> None:
         """
         Display a general message to the user.
-        
+
         Args:
             message: Message text to display
         """
@@ -145,7 +165,7 @@ class CLI:
     def display_error(self, error: str) -> None:
         """
         Display an error message to the user.
-        
+
         Args:
             error: Error message to display
         """
@@ -154,10 +174,10 @@ class CLI:
     def get_player_name(self, color: str) -> str:
         """
         Get player name from user input.
-        
+
         Args:
             color: Player color ('white' or 'black')
-            
+
         Returns:
             Player name string
         """
@@ -169,25 +189,27 @@ class CLI:
     def confirm_move(self, from_pos: Union[int, str], to_pos: Union[int, str]) -> bool:
         """
         Ask user to confirm a move.
-        
+
         Args:
             from_pos: Starting position
             to_pos: Ending position
-            
+
         Returns:
             True if confirmed, False otherwise
         """
-        response = input(f"Confirm move from {from_pos} to {to_pos}? (y/n): ").strip().lower()
-        return response in ['y', 'yes']
+        response = (
+            input(f"Confirm move from {from_pos} to {to_pos}? (y/n): ").strip().lower()
+        )
+        return response in ["y", "yes"]
 
     def display_winner(self, player) -> None:
         """
         Display the winner of the game.
-        
+
         Args:
             player: Player object who won
         """
-        name = getattr(player, 'name', 'Unknown')
+        name = getattr(player, "name", "Unknown")
         print(f"\n🎉 CONGRATULATIONS! 🎉")
         print(f"{name} wins the game!")
         print("=" * 30)
@@ -195,18 +217,18 @@ class CLI:
     def display_current_player(self, player) -> None:
         """
         Display whose turn it is.
-        
+
         Args:
             player: Current player object
         """
-        name = getattr(player, 'name', 'Unknown')
-        color = getattr(player, 'color', 'unknown')
+        name = getattr(player, "name", "Unknown")
+        color = getattr(player, "color", "unknown")
         print(f"\n{name} ({color}) - Your turn!")
 
     def display_dice_roll(self, dice_values: List[int]) -> None:
         """
         Display the result of a dice roll.
-        
+
         Args:
             dice_values: List of dice values [die1, die2]
         """
@@ -218,7 +240,7 @@ class CLI:
     def display_available_moves(self, moves: List[int]) -> None:
         """
         Display available moves to the player.
-        
+
         Args:
             moves: List of available move distances
         """
@@ -230,43 +252,43 @@ class CLI:
     def get_game_mode(self) -> str:
         """
         Get game mode selection from user.
-        
+
         Returns:
             Game mode string ('vs_human' or 'vs_computer')
         """
         print("\nSelect game mode:")
         print("1. Human vs Human")
         print("2. Human vs Computer")
-        
+
         while True:
             choice = input("Enter choice (1-2): ").strip()
-            if choice == '1':
-                return 'vs_human'
-            elif choice == '2':
-                return 'vs_computer'
+            if choice == "1":
+                return "vs_human"
+            elif choice == "2":
+                return "vs_computer"
             else:
                 print("Invalid choice. Please enter 1 or 2.")
 
     def get_difficulty(self) -> str:
         """
         Get difficulty level selection from user.
-        
+
         Returns:
             Difficulty string ('easy', 'medium', 'hard')
         """
         print("\nSelect difficulty:")
         print("1. Easy")
-        print("2. Medium") 
+        print("2. Medium")
         print("3. Hard")
-        
+
         while True:
             choice = input("Enter choice (1-3): ").strip()
-            if choice == '1':
-                return 'easy'
-            elif choice == '2':
-                return 'medium'
-            elif choice == '3':
-                return 'hard'
+            if choice == "1":
+                return "easy"
+            elif choice == "2":
+                return "medium"
+            elif choice == "3":
+                return "hard"
             else:
                 print("Invalid choice. Please enter 1-3.")
 
@@ -326,29 +348,29 @@ Winning: First player to bear off all checkers wins!
 
     def clear_screen(self) -> None:
         """Clear the console screen."""
-        os.system('cls' if os.name == 'nt' else 'clear')
+        os.system("cls" if os.name == "nt" else "clear")
 
     def format_position(self, position: Union[int, str]) -> str:
         """
         Format a position for display.
-        
+
         Args:
             position: Position to format
-            
+
         Returns:
             Formatted position string
         """
-        if position == 'bar':
-            return 'BAR'
-        elif position == 'off':
-            return 'OFF'
+        if position == "bar":
+            return "BAR"
+        elif position == "off":
+            return "OFF"
         else:
             return str(position)
 
     def get_valid_position(self) -> int:
         """
         Get a valid position (1-24) from user input.
-        
+
         Returns:
             Valid position number
         """
@@ -365,17 +387,17 @@ Winning: First player to bear off all checkers wins!
     def confirm_quit(self) -> bool:
         """
         Confirm if user wants to quit the game.
-        
+
         Returns:
             True if confirmed, False otherwise
         """
         response = input("Are you sure you want to quit? (y/n): ").strip().lower()
-        return response in ['y', 'yes']
+        return response in ["y", "yes"]
 
     def display_statistics(self, stats: Dict[str, Any]) -> None:
         """
         Display game statistics.
-        
+
         Args:
             stats: Dictionary containing game statistics
         """
