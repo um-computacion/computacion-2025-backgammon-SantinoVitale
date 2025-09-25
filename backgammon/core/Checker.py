@@ -1,3 +1,12 @@
+"""
+Checker module for Backgammon game.
+
+This module contains the Checker class which represents individual
+game pieces with their color, position, and movement capabilities.
+"""
+# pylint: disable=invalid-name  # Checker follows PascalCase class naming convention
+
+
 class Checker:
     """
     Clase que representa una ficha del juego Backgammon.
@@ -111,10 +120,9 @@ class Checker:
         """
         if self.color == "white":
             return -1
-        elif self.color == "black":
+        if self.color == "black":
             return 1
-        else:
-            return 0
+        return 0
 
     def can_bear_off(self):
         """
@@ -128,10 +136,9 @@ class Checker:
 
         if self.color == "white":
             return 1 <= self.position <= 6
-        elif self.color == "black":
+        if self.color == "black":
             return 19 <= self.position <= 24
-        else:
-            return False
+        return False
 
     def is_in_home_board(self):
         """
@@ -145,10 +152,9 @@ class Checker:
 
         if self.color == "white":
             return 1 <= self.position <= 6
-        elif self.color == "black":
+        if self.color == "black":
             return 19 <= self.position <= 24
-        else:
-            return False
+        return False
 
     def copy(self):
         """
@@ -177,10 +183,9 @@ class Checker:
         """
         if color == "white":
             return list(range(1, 7))
-        elif color == "black":
+        if color == "black":
             return list(range(19, 25))
-        else:
-            raise ValueError(f"Invalid color: {color}")
+        raise ValueError(f"Invalid color: {color}")
 
     @staticmethod
     def get_opposite_color(color):
@@ -198,17 +203,15 @@ class Checker:
         """
         if color == "white":
             return "black"
-        elif color == "black":
+        if color == "black":
             return "white"
-        else:
-            raise ValueError(f"Invalid color: {color}")
+        raise ValueError(f"Invalid color: {color}")
 
     def __str__(self):
         """Representación en string de la ficha"""
         if self.position is not None:
             return f"Checker({self.color}) at {self.position}"
-        else:
-            return f"Checker({self.color})"
+        return f"Checker({self.color})"
 
     def __repr__(self):
         """Representación para debugging"""

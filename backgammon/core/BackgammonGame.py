@@ -2,8 +2,8 @@
 BackgammonGame class - Main game orchestrator for Backgammon.
 Manages the complete game flow, players, board, dice, and UI interactions.
 """
+# pylint: disable=invalid-name  # BackgammonGame follows PascalCase class naming convention
 
-import copy
 import time
 from typing import List, Tuple, Union, Dict, Any, Optional
 from .Board import Board
@@ -12,7 +12,7 @@ from .Dice import Dice
 from .CLI import CLI
 
 
-class BackgammonGame:
+class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-public-methods
     """
     Main game class that orchestrates the entire Backgammon game.
 
@@ -189,7 +189,7 @@ class BackgammonGame:
         """
         current_player = self.get_current_player()
         return self.board.get_possible_moves(
-            current_player.color, self.dice.get_moves()
+            current_player.color, self.dice.get_available_moves()
         )
 
     def has_valid_moves(self) -> bool:
@@ -316,7 +316,7 @@ class BackgammonGame:
         self.start_time = state.get("start_time")
         self.end_time = state.get("end_time")
 
-    def validate_move_coordinates(
+    def validate_move_coordinates(  # pylint: disable=too-many-return-statements
         self, from_pos: Union[int, str], to_pos: Union[int, str]
     ) -> bool:
         """

@@ -1,4 +1,13 @@
-class Player:
+"""
+Player module for Backgammon game.
+
+This module contains the Player class which represents a game player,
+manages their checkers, and tracks their state throughout the game.
+"""
+# pylint: disable=invalid-name  # Player follows PascalCase class naming convention
+
+
+class Player:  # pylint: disable=too-many-public-methods
     """
     Clase que representa un jugador del juego Backgammon.
     Maneja el estado del jugador, sus fichas y las operaciones relacionadas.
@@ -168,10 +177,9 @@ class Player:
         """
         if self.color == "white":
             return -1
-        elif self.color == "black":
+        if self.color == "black":
             return 1
-        else:
-            return 0
+        return 0
 
     def get_home_board_range(self):
         """
@@ -182,10 +190,9 @@ class Player:
         """
         if self.color == "white":
             return range(1, 7)  # Posiciones 1-6
-        elif self.color == "black":
+        if self.color == "black":
             return range(19, 25)  # Posiciones 19-24
-        else:
-            return range(0, 0)  # Rango vacío si no hay color
+        return range(0, 0)  # Rango vacío si no hay color
 
     def get_starting_position(self):
         """
@@ -196,10 +203,9 @@ class Player:
         """
         if self.color == "white":
             return 25
-        elif self.color == "black":
+        if self.color == "black":
             return 0
-        else:
-            return None
+        return None
 
     def is_valid_move(self, from_pos, to_pos, board):
         """
@@ -251,10 +257,9 @@ class Player:
         """
         if self.color == "white":
             return "black"
-        elif self.color == "black":
+        if self.color == "black":
             return "white"
-        else:
-            return None
+        return None
 
     def copy(self):
         """
@@ -313,4 +318,8 @@ class Player:
         Returns:
           str: Representación detallada del jugador
         """
-        return f"Player(name='{self.name}', color='{self.color}', on_board={self.checkers_on_board}, off_board={self.checkers_off_board}, on_bar={self.checkers_on_bar})"
+        return (
+            f"Player(name='{self.name}', color='{self.color}', "
+            f"on_board={self.checkers_on_board}, off_board={self.checkers_off_board}, "
+            f"on_bar={self.checkers_on_bar})"
+        )
