@@ -1,10 +1,19 @@
+"""
+Test module for BackgammonGame class.
+
+This module contains unit tests for the BackgammonGame class which manages
+the main game logic and state for the backgammon game.
+"""
 import unittest
-from unittest.mock import MagicMock, patch, Mock
-from backgammon.core import BackgammonGame, Board, Player, Dice, CLI
+from unittest.mock import MagicMock, Mock
+from backgammon.core import BackgammonGame, Player
 # pylint: disable=C0116  # many simple test methods without individual docstrings
+# pylint: disable=C0103  # module name follows test naming convention
+# pylint: disable=R0904  # many public methods needed for comprehensive testing
 
 
 class TestBackgammonGame(unittest.TestCase):
+    """Test cases for the BackgammonGame class."""
 
     def setUp(self):
         self.game = BackgammonGame()

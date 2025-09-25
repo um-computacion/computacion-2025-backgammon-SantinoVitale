@@ -1,9 +1,18 @@
+"""
+Test module for Dice class.
+
+This module contains unit tests for the Dice class which handles
+dice rolling and move management in the backgammon game.
+"""
 import unittest
 from unittest.mock import patch
 from backgammon.core import Dice
 # pylint: disable=C0116  # many simple test methods without individual docstrings
+# pylint: disable=C0103  # module name follows test naming convention
+# pylint: disable=R0904  # many public methods needed for comprehensive testing
 
 class TestDice(unittest.TestCase):
+    """Test cases for the Dice class."""
 
     def setUp(self):
         self.dice = Dice()

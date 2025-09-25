@@ -1,8 +1,17 @@
+"""
+Test module for Checker class.
+
+This module contains unit tests for the Checker class which represents
+individual checker pieces in the backgammon game.
+"""
 import unittest
 from backgammon.core import Checker
 # pylint: disable=C0116  # many simple test methods without individual docstrings
+# pylint: disable=C0103  # module name follows test naming convention
+# pylint: disable=R0904  # many public methods needed for comprehensive testing
 
 class TestChecker(unittest.TestCase):
+    """Test cases for the Checker class."""
 
     def setUp(self):
         self.white_checker = Checker("white")

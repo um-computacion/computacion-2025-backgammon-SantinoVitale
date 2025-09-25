@@ -1,9 +1,18 @@
+"""
+Test module for Player class.
+
+This module contains unit tests for the Player class which represents
+a player in the backgammon game with their checkers and game state.
+"""
 import unittest
-from unittest.mock import Mock, patch
-from backgammon.core import Player, Checker, Board
+from unittest.mock import Mock
+from backgammon.core import Player
 # pylint: disable=C0116  # many simple test methods without individual docstrings
+# pylint: disable=C0103  # module name follows test naming convention
+# pylint: disable=R0904  # many public methods needed for comprehensive testing
 
 class TestPlayer(unittest.TestCase):
+    """Test cases for the Player class."""
 
     def setUp(self):
         self.player_white = Player("Player1", "white")
