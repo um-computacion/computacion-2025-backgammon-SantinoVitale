@@ -5,6 +5,21 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.16] - September 25, 2025
+
+### Fixed
+
+- Fixed major pylint issues in test files:
+  - Added comprehensive module and class docstrings to all test files
+  - Removed unused imports across all test modules
+  - Fixed incomplete test function in `test__CLI.py`
+  - Applied automatic unused import removal using Pylance refactoring
+  - Added appropriate pylint disable comments for test naming conventions
+- Improved code quality significantly:
+  - Overall project rating improved from ~0/10 to 9.73/10
+  - Test files rating improved to 9.94/10
+  - All test files now have proper documentation and clean imports
+
 ## [0.1.15] - 2025-01-20
 
 ### Completado
