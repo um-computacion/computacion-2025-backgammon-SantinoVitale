@@ -5,6 +5,22 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.18] - 2025-09-30
+
+### Added
+
+- **Main Entry Point**: Created main.py as the primary entry point for the Backgammon game
+  - Interactive menu system for choosing between CLI and Pygame interfaces
+  - User-friendly welcome message and interface selection
+  - Player name input functionality with default fallbacks
+  - Comprehensive error handling for user interruptions and exceptions
+  - Graceful handling of Pygame interface (shows "coming soon" message)
+  - Clean exit functionality with appropriate goodbye messages
+  - Integration with existing BackgammonGame class for CLI gameplay
+- **Package Execution**: Added __main__.py to allow running game via `python -m backgammon`
+- **Documentation**: Updated README.md with game execution instructions for both methods
+- **Code Quality**: Achieved 10.00/10 pylint rating for main.py with proper code style
+
 ## [0.1.17] - 2025-09-25
 
 ### Fixed
