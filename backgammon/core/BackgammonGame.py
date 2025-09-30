@@ -2,6 +2,7 @@
 BackgammonGame class - Main game orchestrator for Backgammon.
 Manages the complete game flow, players, board, dice, and UI interactions.
 """
+
 # pylint: disable=invalid-name  # BackgammonGame follows PascalCase class naming convention
 
 import time
@@ -84,6 +85,11 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
         self.is_started = True
         self.start_time = time.time()
 
+        # Display initial board state
+        if self.ui:
+            self.ui.display_message("Game started! Here's the initial board:")
+            self.ui.display_board(self.board)
+
     def switch_turns(self) -> None:
         """Switch to the next player's turn."""
         self.current_player_index = (self.current_player_index + 1) % 2
@@ -141,14 +147,44 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
         Make a move for the current player.
 
         Args:
-            from_pos: Starting position
-            to_pos: Ending position
+            from_pos: Starting position (int 0-23, "bar")
+            to_pos: Ending position (int 0-23, "off")
 
         Returns:
             True if move was successful, False otherwise
         """
         current_player = self.get_current_player()
-        success = self.board.move_checker(from_pos, to_pos, current_player.color)
+
+        # Handle different types of moves
+        success = False
+
+        if from_pos == "bar":
+            # Move from bar to board
+            if isinstance(to_pos, int):
+                # Convert from human notation (1-24) to board indexing (0-23)
+                if to_pos < 1 or to_pos > 24:
+                    return False
+                board_pos = to_pos - 1
+                success = self.board.move_from_bar(current_player.color, board_pos)
+        elif to_pos == "off":
+            # Bear off move
+            if isinstance(from_pos, int):
+                # Convert from human notation (1-24) to board indexing (0-23)
+                if from_pos < 1 or from_pos > 24:
+                    return False
+                board_pos = from_pos - 1
+                success = self.board.bear_off(board_pos, current_player.color)
+        else:
+            # Normal point-to-point move
+            if isinstance(from_pos, int) and isinstance(to_pos, int):
+                # Convert from human notation (1-24) to board indexing (0-23)
+                if from_pos < 1 or from_pos > 24 or to_pos < 1 or to_pos > 24:
+                    return False
+                from_board = from_pos - 1
+                to_board = to_pos - 1
+                success = self.board.move_checker(
+                    from_board, to_board, current_player.color
+                )
 
         if success:
             self.move_history.append((from_pos, to_pos, current_player.color))
@@ -156,29 +192,97 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
 
         return success
 
-    def is_valid_move(self, from_pos: Union[int, str], to_pos: Union[int, str]) -> bool:
+    def _calculate_move_distance(
+        self, from_pos: Union[int, str], to_pos: Union[int, str]
+    ) -> int:
         """
-        Check if a move is valid.
+        Calculate the distance of a move for dice consumption.
 
         Args:
             from_pos: Starting position
             to_pos: Ending position
 
         Returns:
+            int: Distance of the move
+        """
+        if isinstance(from_pos, int) and isinstance(to_pos, int):
+            return abs(to_pos - from_pos)
+        elif from_pos == "bar" and isinstance(to_pos, int):
+            # For bar moves, distance is based on entry point
+            current_player = self.get_current_player()
+            if current_player.color == "white":
+                # White enters from point 25 (conceptually) to to_pos
+                return 25 - to_pos
+            else:
+                # Black enters from point 0 (conceptually) to to_pos
+                return to_pos
+        elif isinstance(from_pos, int) and to_pos == "off":
+            # For bearing off, distance is from point to off
+            current_player = self.get_current_player()
+            if current_player.color == "white":
+                # White bears off from from_pos to 0
+                return from_pos
+            else:
+                # Black bears off from from_pos to 25
+                return 25 - from_pos
+        return 0
+
+    def is_valid_move(self, from_pos: Union[int, str], to_pos: Union[int, str]) -> bool:
+        """
+        Check if a move is valid.
+
+        Args:
+            from_pos: Starting position (1-24 or "bar")
+            to_pos: Ending position (1-24 or "off")
+
+        Returns:
             True if move is valid, False otherwise
         """
         current_player = self.get_current_player()
 
-        # Calculate move distance
-        if isinstance(from_pos, int) and isinstance(to_pos, int):
-            distance = abs(to_pos - from_pos)
-        else:
-            # Handle special cases like bar/off
-            distance = 1  # Simplified for now
+        # Calculate move distance using the proper method
+        distance = self._calculate_move_distance(from_pos, to_pos)
 
-        return self.board.is_valid_move(
-            from_pos, to_pos, current_player.color
-        ) and self.dice.can_use_move(distance)
+        # First check if dice allows this move
+        if not self.dice.can_use_move(distance):
+            return False
+
+        # Convert coordinates for board validation
+        # For board methods, we need to check the actual move mechanics
+        if from_pos == "bar":
+            if isinstance(to_pos, int):
+                if to_pos < 1 or to_pos > 24:
+                    return False
+                board_pos = to_pos - 1
+                return len(
+                    self.board.bar[current_player.color]
+                ) > 0 and self.board.is_point_available(board_pos, current_player.color)
+        elif to_pos == "off":
+            if isinstance(from_pos, int):
+                if from_pos < 1 or from_pos > 24:
+                    return False
+                board_pos = from_pos - 1
+                return (
+                    self.board.can_bear_off(current_player.color)
+                    and len(self.board.points[board_pos]) > 0
+                    and self.board.get_point_top_color(board_pos)
+                    == current_player.color
+                )
+        else:
+            # Normal point-to-point move
+            if isinstance(from_pos, int) and isinstance(to_pos, int):
+                if from_pos < 1 or from_pos > 24 or to_pos < 1 or to_pos > 24:
+                    return False
+                from_board = from_pos - 1
+                to_board = to_pos - 1
+                return (
+                    len(self.board.points[from_board]) > 0
+                    and self.board.get_point_top_color(from_board)
+                    == current_player.color
+                    and self.board.is_point_available(to_board, current_player.color)
+                )
+
+        return False
 
     def get_possible_moves(self) -> List[Tuple[Union[int, str], Union[int, str]]]:
         """
@@ -209,11 +313,16 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
 
         current_player = self.get_current_player()
 
-        # Roll dice
-        dice_values = self.roll_dice()
+        # Display the current board state
         if self.ui:
-            self.ui.display_current_player(current_player)
-            self.ui.display_dice_roll(dice_values)
+            self.ui.display_board(self.board)
+
+        # Roll dice only if no moves are available (start of turn)
+        if not self.dice.get_available_moves():
+            dice_values = self.roll_dice()
+            if self.ui:
+                self.ui.display_current_player(current_player)
+                self.ui.display_dice_roll(dice_values)
 
         # Check if player has valid moves
         if not self.has_valid_moves():
@@ -226,20 +335,42 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
         if self.ui:
             from_pos, to_pos = self.ui.get_move_input()
 
+            # Validate the move first
+            if not self.is_valid_move(from_pos, to_pos):
+                if self.ui:
+                    self.ui.display_error(
+                        "Invalid move. Check dice values and board rules."
+                    )
+                return  # Don't switch turns on invalid move
+
             # Attempt to make the move
             if self.make_move(from_pos, to_pos):
                 if self.ui:
                     self.ui.display_message(f"Move successful: {from_pos} to {to_pos}")
-                # Use dice move
-                if isinstance(from_pos, int) and isinstance(to_pos, int):
-                    distance = abs(to_pos - from_pos)
+                    # Display updated board after successful move
+                    self.ui.display_board(self.board)
+
+                # Calculate and consume the dice move
+                distance = self._calculate_move_distance(from_pos, to_pos)
+                if distance > 0:
                     self.dice.use_move(distance)
+
+                # Check if player has more moves available
+                if not self.dice.get_available_moves() or not self.has_valid_moves():
+                    if self.ui and not self.dice.get_available_moves():
+                        self.ui.display_message("All dice moves used. Turn complete.")
+                    self.switch_turns()
+                    return
+                else:
+                    # Player has more moves, continue turn
+                    if self.ui:
+                        remaining_moves = self.dice.get_available_moves()
+                        self.ui.display_message(f"Remaining dice: {remaining_moves}")
+                    return  # Don't switch turns, continue with same player
             else:
                 if self.ui:
                     self.ui.display_error("Invalid move. Try again.")
                 return  # Don't switch turns on invalid move
-
-        self.switch_turns()
 
     def play_game(self) -> None:
         """Play the complete game until someone wins."""
