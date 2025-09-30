@@ -1,3 +1,85 @@
+## Prompt 9
+
+### Modelo: GitHub Copilot (Claude 4 Sonnet)
+
+### Prompt: 
+Podrias crear un main.py para ejecutar el juego del backgammon y que te pregunte que ekegir si ejecutarlo desde el CLI o del Pygame (por ahora solo deberia funcionar el CLI)
+
+### Instrucciones del sistema:
+- Always follow the SOLID principles
+- Always follow the TDD method  
+- Give detailed explanation and document in prompts-desarrollo.md
+- Place changes in CHANGELOG.md with English dates
+- Answer in English
+- Use consistent type hints and docstrings
+- Follow PEP 8 style guidelines
+
+### Respuesta:
+
+Successfully created `main.py` as the primary entry point for the Backgammon game with a comprehensive menu system that allows users to choose between CLI and Pygame interfaces.
+
+#### **Implementation Details:**
+
+**1. Main Menu System:**
+- Interactive welcome message with ASCII art formatting
+- Clear interface selection menu with availability indicators
+- Input validation with error handling for invalid choices
+- Support for keyboard interrupts (Ctrl+C) with graceful exit
+
+**2. CLI Integration:**
+- Full integration with existing `BackgammonGame` class
+- Player name input functionality with default fallbacks
+- Proper game initialization and startup sequence
+- Error handling for game interruptions and exceptions
+
+**3. Pygame Placeholder:**
+- User-friendly "coming soon" message for Pygame interface
+- Information about planned features (visual board, animations, etc.)
+- Option to fallback to CLI interface
+- Maintains user engagement while being transparent about availability
+
+**4. Code Structure and Quality:**
+```python
+def main() -> None:
+    """
+    Main function to handle interface selection and game initialization.
+    
+    This function provides a menu-driven interface allowing users to choose
+    between CLI and Pygame interfaces for the Backgammon game.
+    """
+```
+
+**5. Key Functions Implemented:**
+- `display_welcome_message()`: Shows formatted welcome screen
+- `display_interface_menu()`: Shows interface selection options
+- `get_user_choice()`: Validates user input with error handling
+- `get_player_names()`: Collects player names with defaults
+- `start_cli_game()`: Initializes and starts CLI game
+- `start_pygame_game()`: Shows placeholder message for Pygame
+- `main()`: Orchestrates the entire menu flow
+
+**6. User Experience Features:**
+- Emoji indicators for visual clarity (✓ Available, ⚠️ Coming Soon)
+- Graceful error handling with informative messages
+- Clean exit functionality with goodbye messages
+- Retry logic for Pygame users to try CLI instead
+
+**7. Technical Implementation:**
+- Proper type hints throughout (following PEP 484)
+- Comprehensive docstrings (following PEP 257)
+- Exception handling for `EOFError`, `KeyboardInterrupt`, and general exceptions
+- Integration with existing game architecture without modifications
+
+**8. Game Flow:**
+1. Display welcome message
+2. Show interface menu
+3. Get user choice (1=CLI, 2=Pygame, 3=Exit)
+4. For CLI: Get player names → Initialize game → Start gameplay
+5. For Pygame: Show coming soon message → Offer CLI alternative
+6. For Exit: Show goodbye message and terminate
+
+This implementation provides a professional, user-friendly entry point that seamlessly integrates with the existing game architecture while preparing for future Pygame implementation.
+
 ## Prompt 8
 
 ### Modelo: GitHub Copilot (Claude 4 Sonnet)
