@@ -4,6 +4,7 @@ Board module for Backgammon game.
 This module contains the Board class which represents the game board,
 manages checker positions, and handles move validation and execution.
 """
+
 # pylint: disable=invalid-name  # Board follows PascalCase class naming convention
 from .Checker import Checker
 
@@ -310,19 +311,120 @@ class Board:
         self.bar = {"white": [], "black": []}
         self.off = {"white": [], "black": []}
 
-    def get_possible_moves(self, color, dice):  # pylint: disable=unused-argument
+    def get_possible_moves(self, color, dice):
         """
         Obtiene los movimientos posibles para un color dado.
 
         Args:
-          color (str): Color del jugador
-          dice: Instancia de dados con movimientos disponibles
+          color (str): Color del jugador ("white" o "black")
+          dice: Lista de valores de dados disponibles
 
         Returns:
           list: Lista de tuplas (from_point, to_point) con movimientos posibles
         """
-        # Implementación básica - puede expandirse
-        return []
+        possible_moves = []
+
+        # Verificar si hay fichas en la barra que deben entrar primero
+        if self.bar[color]:
+            # Si hay fichas en la barra, solo se pueden hacer movimientos desde la barra
+            for die_value in dice:
+                if color == "white":
+                    # Las blancas entran desde el punto 24 hacia el 1
+                    to_point = 24 - die_value
+                else:
+                    # Las negras entran desde el punto 1 hacia el 24
+                    to_point = die_value - 1
+
+                # Verificar si el punto de destino es válido
+                if 0 <= to_point <= 23:
+                    # Verificar si el punto está disponible
+                    if (
+                        len(self.points[to_point]) == 0
+                        or self.get_point_top_color(to_point) == color
+                        or len(self.points[to_point]) == 1
+                    ):
+                        possible_moves.append(("bar", to_point))
+        else:
+            # No hay fichas en la barra, buscar movimientos normales
+            for point_index in range(24):
+                if (
+                    len(self.points[point_index]) > 0
+                    and self.get_point_top_color(point_index) == color
+                ):
+
+                    # Intentar cada valor de dado disponible
+                    for die_value in dice:
+                        if color == "white":
+                            # Las blancas se mueven de puntos altos a bajos
+                            to_point = point_index - die_value
+                        else:
+                            # Las negras se mueven de puntos bajos a altos
+                            to_point = point_index + die_value
+
+                        # Verificar movimiento normal
+                        if 0 <= to_point <= 23:
+                            # Verificar si el punto de destino está disponible
+                            if (
+                                len(self.points[to_point]) == 0
+                                or self.get_point_top_color(to_point) == color
+                                or len(self.points[to_point]) == 1
+                            ):
+                                possible_moves.append((point_index, to_point))
+
+                        # Verificar movimiento de salida (bearing off)
+                        elif self._can_bear_off(color):
+                            if color == "white" and to_point < 0:
+                                possible_moves.append((point_index, "off"))
+                            elif color == "black" and to_point > 23:
+                                possible_moves.append((point_index, "off"))
+
+        return possible_moves
+
+    def _can_bear_off(self, color):
+        """
+        Verifica si un jugador puede sacar fichas del tablero.
+
+        Args:
+            color (str): Color del jugador
+
+        Returns:
+            bool: True si puede sacar fichas
+        """
+        # Verificar que no hay fichas en la barra
+        if self.bar[color]:
+            return False
+
+        # Verificar que todas las fichas están en el cuarto de casa
+        if color == "white":
+            # Las blancas deben tener todas sus fichas en los puntos 0-5
+            for point_index in range(6, 24):
+                if (
+                    len(self.points[point_index]) > 0
+                    and self.get_point_top_color(point_index) == color
+                ):
+                    return False
+        else:
+            # Las negras deben tener todas sus fichas en los puntos 18-23
+            for point_index in range(0, 18):
+                if (
+                    len(self.points[point_index]) > 0
+                    and self.get_point_top_color(point_index) == color
+                ):
+                    return False
+
+        return True
+
+    def can_bear_off(self, color):
+        """
+        Public method to check if a player can bear off pieces.
+        
+        Args:
+            color (str): Color of the player
+            
+        Returns:
+            bool: True if player can bear off pieces
+        """
+        return self._can_bear_off(color)
 
     def is_valid_move(self, from_point, to_point, color):
         """

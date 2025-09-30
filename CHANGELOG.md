@@ -5,6 +5,68 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.21] - 2025-09-30
+
+### Fixed
+
+- **Move Validation and Board State Updates**: Fixed critical issues preventing proper gameplay
+  - **Move Validation**: Added proper move validation before execution to check dice availability and board rules
+  - **Board State Updates**: Fixed board state changes - pieces now actually move and positions update visually  
+  - **Dice Consumption**: Implemented proper dice consumption system where moves consume corresponding dice values
+  - **Turn Management**: Fixed turn system to allow multiple moves per turn until all dice are used
+  - **Input Validation**: Added comprehensive validation for user input (1-24 range, dice matching, board rules)
+  - **Coordinate Conversion**: Fixed conversion between user notation (1-24) and internal board indexing (0-23)
+
+### Added
+
+- **Enhanced Move System**: Complete move handling for all types (normal, bar entry, bearing off)
+- **Multi-move Turns**: Players can now make multiple moves in one turn using all available dice
+- **Real-time Feedback**: Shows remaining dice after each move and completion status
+- **Board.can_bear_off()**: Added public method for bearing off validation
+
+### Technical Improvements
+
+- **Proper Game Flow**: Turn progression now works correctly with visual board updates
+- **Move Distance Calculation**: Accurate distance calculation for all move types including special cases
+- **Error Handling**: Clear error messages for invalid moves with specific reasons
+- **Code Quality**: Fixed protected member access and improved method organization
+
+## [0.1.20] - 2025-09-30
+
+### Added
+
+- **Board Display Integration**: Added proper board visualization to CLI gameplay
+  - **Initial Board Display**: Shows board state when game starts with welcome message
+  - **Turn-based Board Display**: Shows current board state at the beginning of each player's turn
+  - **Post-move Board Display**: Shows updated board state after successful moves
+  - **Visual Feedback**: Players can now see the actual game state and piece positions
+  - **Complete Game Flow**: Board display integrated throughout the entire game lifecycle
+
+### Fixed
+
+- **Missing Board Visualization**: CLI was not showing the board during gameplay
+  - Game flow now includes `display_board()` calls at appropriate times
+  - Players can see initial setup and track game progress visually
+  - Improved user experience with clear visual feedback
+
+## [0.1.19] - 2025-09-30
+
+### Fixed
+
+- **Critical Game Loop Bug**: Fixed infinite loop issue where game continuously showed "No valid moves available"
+  - **Root Cause**: Board.get_possible_moves() method was returning empty list regardless of actual board state
+  - **Solution**: Implemented comprehensive move detection algorithm that:
+    - Checks for pieces on the bar that must enter first
+    - Validates normal moves based on player color and dice values
+    - Handles bearing off moves when all pieces are in home board
+    - Properly validates destination points (empty, same color, or single opponent piece)
+  - **Impact**: Game now properly detects valid moves and allows normal gameplay
+- **Move Detection Logic**: Added proper backgammon movement rules
+  - White pieces move from high to low points (24→1)
+  - Black pieces move from low to high points (1→24)
+  - Correct bar entry logic for both colors
+  - Bearing off validation when pieces are in home board
+
 ## [0.1.18] - 2025-09-30
 
 ### Added
