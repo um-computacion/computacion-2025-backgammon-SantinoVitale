@@ -7,7 +7,7 @@ that handles user interaction in the backgammon game.
 import unittest
 from unittest.mock import patch, MagicMock, Mock
 from io import StringIO
-from backgammon.core import CLI
+from backgammon.cli import CLI
 # pylint: disable=C0116  # many simple test methods without individual docstrings
 # pylint: disable=C0103  # module name follows test naming convention
 # pylint: disable=R0904  # many public methods needed for comprehensive testing
@@ -173,18 +173,6 @@ class TestCLI(unittest.TestCase):
         self.assertIn("3", output)
         self.assertIn("5", output)
         self.assertIn("6", output)
-
-    @patch("builtins.input")
-    def test_get_game_mode_selection(self, mock_input):
-        mock_input.return_value = "1"
-        mode = self.cli.get_game_mode()
-        self.assertIn(mode, ["vs_human", "vs_computer"])
-
-    @patch("builtins.input")
-    def test_get_difficulty_selection(self, mock_input):
-        mock_input.return_value = "2"
-        difficulty = self.cli.get_difficulty()
-        self.assertIn(difficulty, ["easy", "medium", "hard"])
 
     @patch("sys.stdout", new_callable=StringIO)
     def test_display_help(self, mock_stdout):

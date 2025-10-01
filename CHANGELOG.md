@@ -5,6 +5,50 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2025-10-01
+
+### Fixed
+
+- **CLI Game Logic Simplification**: Removed unnecessary game mode and difficulty selection logic
+  - **Local Game Only**: Simplified to support only local two-player games (no AI/computer opponent)
+  - **Removed Methods**: Deleted `get_game_mode()` and `get_difficulty()` methods from CLI
+  - **Streamlined Flow**: Direct player setup without mode selection complexity
+  - **Test Updates**: Removed tests for deleted functionality, fixed coordinate system expectations
+  - **Better Game Loop**: Improved game flow to handle multiple moves per turn correctly
+
+### Updated
+
+- **Test Fixes**: Fixed all failing tests related to coordinate system and method expectations
+  - **Coordinate System**: Fixed tests to expect 0-based coordinates for Board methods
+  - **Mock Improvements**: Updated test mocks to match actual method signatures and behavior
+  - **Removed Deprecated Tests**: Cleaned up tests for removed game mode functionality
+
+## [0.2.0] - 2025-10-01
+
+### Changed
+
+- **Major CLI Architecture Restructuring**: Restructured CLI implementation to follow proper dependency inversion
+  - **CLI Package**: Moved CLI class from `backgammon.core.CLI` to `backgammon.cli.CLI` package
+  - **Dependency Inversion**: CLI now uses BackgammonGame instead of BackgammonGame using CLI
+  - **Separation of Concerns**: Clear separation between game logic (core) and user interface (cli)
+  - **Interface Pattern**: BackgammonGame now accepts UI interface as constructor parameter
+  - **Game Control**: CLI now controls game flow through `run_game()` method instead of vice versa
+  - **Improved Modularity**: Better modularity allows for easier UI interface switching (CLI, Pygame, etc.)
+
+### Added
+
+- **Enhanced CLI Features**: Added new methods to CLI for better game interaction
+  - **Game Integration**: `set_game()` and game reference for accessing game state
+  - **Automatic State Display**: CLI automatically displays board, current player, and dice rolls
+  - **Command Handling**: Built-in handling for 'help', 'rules', and 'quit' commands
+  - **Game Loop**: Complete game loop implementation within CLI interface
+
+### Updated
+
+- **Main Application**: Updated main.py to use new CLI architecture
+- **Tests**: Updated test imports to reflect new CLI package location
+- **Package Structure**: Updated __init__.py files to reflect new imports and exports
+
 ## [0.1.21] - 2025-09-30
 
 ### Fixed

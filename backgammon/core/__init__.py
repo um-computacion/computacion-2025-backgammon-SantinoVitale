@@ -8,5 +8,6 @@ from .Dice import Dice
 from .Player import Player
 from .Board import Board
 from .Checker import Checker
-from .CLI import CLI
 from .BackgammonGame import BackgammonGame
+
+__all__ = ['Dice', 'Player', 'Board', 'Checker', 'BackgammonGame']

@@ -1,36 +1,60 @@
 """
 CLI interface for the Backgammon game.
 Provides command-line interaction methods for displaying the board,
-getting user input, and managing game flow.
+getting user input, and managing game flow using BackgammonGame.
 """
+
 # pylint: disable=invalid-name  # CLI follows PascalCase class naming convention
 # pylint: disable=too-many-branches  # Complex user input handling requires branching
 
 import os
-from typing import Tuple, List, Union, Dict, Any
+from typing import Tuple, List, Union, Dict, Any, Optional
 
 
 class CLI:
     """
     Command Line Interface for Backgammon game.
 
-    Handles all console-based interactions including:
+    This class uses BackgammonGame to handle game logic and provides
+    a console-based interface for:
     - Board display and formatting
     - User input collection and validation
     - Game state communication
     - Help and rules display
     """
 
-    def __init__(self) -> None:
-        """Initialize the CLI interface."""
+    def __init__(self, game=None) -> None:
+        """
+        Initialize the CLI interface.
 
-    def display_board(self, board) -> None:  # pylint: disable=too-many-branches
+        Args:
+            game: BackgammonGame instance to interact with
+        """
+        self.game = game
+
+    def set_game(self, game) -> None:
+        """
+        Set the BackgammonGame instance for the CLI.
+
+        Args:
+            game: BackgammonGame instance
+        """
+        self.game = game
+
+    def display_board(self, board=None) -> None:  # pylint: disable=too-many-branches
         """
         Display the current board state in ASCII format.
 
         Args:
-            board: Board object containing game state
+            board: Board object containing game state (optional, uses game.board if not provided)
         """
+        if board is None and self.game:
+            board = self.game.board
+
+        if not board:
+            print("No board available to display")
+            return
+
         print("\n" + "=" * 50)
         print("BACKGAMMON BOARD")
         print("=" * 50)
@@ -131,6 +155,11 @@ class CLI:
                 move_input = input(
                     "Enter move (e.g., '1 4', 'bar 20', '1 off'): "
                 ).strip()
+
+                # Handle special commands
+                if move_input.lower() in ["help", "rules", "quit"]:
+                    return move_input.lower(), None
+
                 parts = move_input.split()
 
                 if len(parts) != 2:
@@ -202,93 +231,74 @@ class CLI:
         )
         return response in ["y", "yes"]
 
-    def display_winner(self, player) -> None:
+    def display_winner(self, player=None) -> None:
         """
         Display the winner of the game.
 
         Args:
-            player: Player object who won
+            player: Player object who won (optional, uses game winner if not provided)
         """
-        name = getattr(player, "name", "Unknown")
-        print("\n🎉 CONGRATULATIONS! 🎉")
-        print(f"{name} wins the game!")
-        print("=" * 30)
+        if player is None and self.game:
+            # Try to get winner from game
+            if hasattr(self.game, "get_winner"):
+                player = self.game.get_winner()
 
-    def display_current_player(self, player) -> None:
+        if player:
+            name = getattr(player, "name", "Unknown")
+            print("\n🎉 CONGRATULATIONS! 🎉")
+            print(f"{name} wins the game!")
+            print("=" * 30)
+        else:
+            print("\nGame over!")
+
+    def display_current_player(self, player=None) -> None:
         """
         Display whose turn it is.
 
         Args:
-            player: Current player object
+            player: Current player object (optional, uses game current player if not provided)
         """
-        name = getattr(player, "name", "Unknown")
-        color = getattr(player, "color", "unknown")
-        print(f"\n{name} ({color}) - Your turn!")
+        if player is None and self.game:
+            if hasattr(self.game, "get_current_player"):
+                player = self.game.get_current_player()
 
-    def display_dice_roll(self, dice_values: List[int]) -> None:
+        if player:
+            name = getattr(player, "name", "Unknown")
+            color = getattr(player, "color", "unknown")
+            print(f"\n{name} ({color}) - Your turn!")
+
+    def display_dice_roll(self, dice_values: Optional[List[int]] = None) -> None:
         """
         Display the result of a dice roll.
 
         Args:
-            dice_values: List of dice values [die1, die2]
+            dice_values: List of dice values [die1, die2] (optional, uses game dice if not provided)
         """
-        if len(dice_values) == 2 and dice_values[0] == dice_values[1]:
-            print(f"\n🎲 Dice roll: {dice_values[0]}, {dice_values[1]} - DOUBLE!")
-        else:
-            print(f"\n🎲 Dice roll: {dice_values[0]}, {dice_values[1]}")
+        if dice_values is None and self.game:
+            if hasattr(self.game, "dice") and hasattr(self.game.dice, "values"):
+                dice_values = self.game.dice.values
 
-    def display_available_moves(self, moves: List[int]) -> None:
+        if dice_values and len(dice_values) >= 2:
+            if len(dice_values) == 2 and dice_values[0] == dice_values[1]:
+                print(f"\n🎲 Dice roll: {dice_values[0]}, {dice_values[1]} - DOUBLE!")
+            else:
+                print(f"\n🎲 Dice roll: {dice_values[0]}, {dice_values[1]}")
+
+    def display_available_moves(self, moves: Optional[List[int]] = None) -> None:
         """
         Display available moves to the player.
 
         Args:
-            moves: List of available move distances
+            moves: List of available move distances (optional, gets from game if not provided)
         """
+        if moves is None and self.game:
+            if hasattr(self.game, "get_available_moves"):
+                moves = self.game.get_available_moves()
+
         if moves:
             print(f"Available moves: {', '.join(map(str, moves))}")
         else:
             print("No moves available")
-
-    def get_game_mode(self) -> str:
-        """
-        Get game mode selection from user.
-
-        Returns:
-            Game mode string ('vs_human' or 'vs_computer')
-        """
-        print("\nSelect game mode:")
-        print("1. Human vs Human")
-        print("2. Human vs Computer")
-
-        while True:
-            choice = input("Enter choice (1-2): ").strip()
-            if choice == "1":
-                return "vs_human"
-            if choice == "2":
-                return "vs_computer"
-            print("Invalid choice. Please enter 1 or 2.")
-
-    def get_difficulty(self) -> str:
-        """
-        Get difficulty level selection from user.
-
-        Returns:
-            Difficulty string ('easy', 'medium', 'hard')
-        """
-        print("\nSelect difficulty:")
-        print("1. Easy")
-        print("2. Medium")
-        print("3. Hard")
-
-        while True:
-            choice = input("Enter choice (1-3): ").strip()
-            if choice == "1":
-                return "easy"
-            if choice == "2":
-                return "medium"
-            if choice == "3":
-                return "hard"
-            print("Invalid choice. Please enter 1-3.")
 
     def display_help(self) -> None:
         """Display help information."""
@@ -390,15 +400,118 @@ Winning: First player to bear off all checkers wins!
         response = input("Are you sure you want to quit? (y/n): ").strip().lower()
         return response in ["y", "yes"]
 
-    def display_statistics(self, stats: Dict[str, Any]) -> None:
+    def display_statistics(self, stats: Optional[Dict[str, Any]] = None) -> None:
         """
         Display game statistics.
 
         Args:
-            stats: Dictionary containing game statistics
+            stats: Dictionary containing game statistics (optional, gets from game if not provided)
         """
-        print("\nGame Statistics:")
-        print("=" * 20)
-        for key, value in stats.items():
-            print(f"{key.title()}: {value}")
-        print("=" * 20)
+        if stats is None and self.game:
+            if hasattr(self.game, "get_statistics"):
+                stats = self.game.get_statistics()
+
+        if stats:
+            print("\nGame Statistics:")
+            print("=" * 20)
+            for key, value in stats.items():
+                print(f"{key.title()}: {value}")
+            print("=" * 20)
+
+    def run_game(self) -> None:
+        """
+        Main game loop for CLI interface.
+        
+        Simple local two-player Backgammon game.
+        """
+        if not self.game:
+            print("Error: No game instance available")
+            return
+        
+        self.display_message("Welcome to Backgammon!")
+        self.display_message("Local two-player game")
+        
+        # Get player names
+        player1_name = self.get_player_name("white")
+        player2_name = self.get_player_name("black")
+        
+        # Setup and start game
+        if hasattr(self.game, 'setup_players'):
+            self.game.setup_players(player1_name, player2_name)
+        
+        if hasattr(self.game, 'start_game'):
+            self.game.start_game()
+        
+        # Main game loop
+        while True:
+            try:
+                # Check if game is over
+                if hasattr(self.game, 'is_game_over') and self.game.is_game_over():
+                    self.display_winner()
+                    break
+                
+                # Display current state
+                self.clear_screen()
+                self.display_board()
+                self.display_current_player()
+                
+                # Roll dice
+                if hasattr(self.game, 'roll_dice'):
+                    dice_values = self.game.roll_dice()
+                    self.display_dice_roll(dice_values)
+                
+                # Display available moves
+                if hasattr(self.game, 'dice') and hasattr(self.game.dice, 'get_available_moves'):
+                    moves = self.game.dice.get_available_moves()
+                    self.display_available_moves(moves)
+                
+                # Human player turn - get moves until all dice used
+                while (hasattr(self.game, 'dice') and 
+                       hasattr(self.game.dice, 'has_moves_available') and
+                       self.game.dice.has_moves_available()):
+                    
+                    from_pos, to_pos = self.get_move_input()
+                    
+                    # Handle special commands
+                    if from_pos == 'help':
+                        self.display_help()
+                        continue
+                    elif from_pos == 'rules':
+                        self.display_game_rules()
+                        continue
+                    elif from_pos == 'quit':
+                        if self.confirm_quit():
+                            return
+                        continue
+                    
+                    # Try to make the move
+                    if hasattr(self.game, 'make_move'):
+                        try:
+                            if self.game.make_move(from_pos, to_pos):
+                                self.display_message(f"Move made: {from_pos} to {to_pos}")
+                                # Update display after successful move
+                                self.display_board()
+                                if hasattr(self.game, 'dice'):
+                                    remaining_moves = self.game.dice.get_available_moves()
+                                    if remaining_moves:
+                                        self.display_available_moves(remaining_moves)
+                                    else:
+                                        self.display_message("All dice used!")
+                                        break
+                            else:
+                                self.display_error("Invalid move. Try again.")
+                        except (ValueError, TypeError, AttributeError) as e:
+                            self.display_error(f"Move failed: {str(e)}")
+                
+                # Switch players
+                if hasattr(self.game, 'switch_turns'):
+                    self.game.switch_turns()
+            
+            except KeyboardInterrupt:
+                if self.confirm_quit():
+                    break
+            except (ValueError, TypeError, AttributeError) as e:
+                self.display_error(f"Game error: {str(e)}")
+                break
+        
+        self.display_message("Thanks for playing!")
