@@ -1,8 +1,41 @@
-************* Module backgammon.__main__
-backgammon/__main__.py:15:0: C0304: Final newline missing (missing-final-newline)
-backgammon/__main__.py:12:0: C0413: Import "from main import main" should be placed at the top of the module (wrong-import-position)
+************* Module backgammon.cli.CLI
+backgammon/cli/CLI.py:430:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:433:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:437:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:441:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:444:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:452:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:457:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:462:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:467:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:469:53: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:472:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:474:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:486:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:505:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:509:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:516:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:44:4: R0915: Too many statements (54/50) (too-many-statements)
+backgammon/cli/CLI.py:476:20: R1724: Unnecessary "elif" after "continue", remove the leading "el" from "elif" (no-else-continue)
+backgammon/cli/CLI.py:446:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:421:4: R0915: Too many statements (60/50) (too-many-statements)
+************* Module backgammon.cli.__init__
+backgammon/cli/__init__.py:9:0: C0304: Final newline missing (missing-final-newline)
+************* Module backgammon.core.BackgammonGame
+backgammon/core/BackgammonGame.py:205:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+backgammon/core/BackgammonGame.py:210:12: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+backgammon/core/BackgammonGame.py:219:12: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+backgammon/core/BackgammonGame.py:227:4: R0911: Too many return statements (8/6) (too-many-return-statements)
+backgammon/core/BackgammonGame.py:356:16: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+backgammon/core/BackgammonGame.py:305:4: R0912: Too many branches (18/12) (too-many-branches)
+************* Module backgammon.core.Board
+backgammon/core/Board.py:328:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+backgammon/core/Board.py:314:4: R0912: Too many branches (17/12) (too-many-branches)
+backgammon/core/Board.py:328:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
 ************* Module backgammon.test.test__BackgammonGame
 backgammon/test/test__BackgammonGame.py:1:0: C0103: Module name "test__BackgammonGame" doesn't conform to snake_case naming style (invalid-name)
+backgammon/test/test__BackgammonGame.py:31:8: C0415: Import outside toplevel (backgammon.cli.CLI) (import-outside-toplevel)
+backgammon/test/test__BackgammonGame.py:256:8: W0212: Access to a protected member _calculate_move_distance of a client class (protected-access)
 ************* Module backgammon.test.test__Player
 backgammon/test/test__Player.py:1:0: C0103: Module name "test__Player" doesn't conform to snake_case naming style (invalid-name)
 ************* Module backgammon.test.test__CLI
@@ -32,5 +65,5 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
         """ (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 9.95/10
+Your code has been rated at 9.80/10
 
