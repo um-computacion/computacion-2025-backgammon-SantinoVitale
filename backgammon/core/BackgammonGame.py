@@ -224,6 +224,19 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
                 return 25 - from_pos
         return 0
 
+    def calculate_move_distance(self, from_pos: Union[int, str], to_pos: Union[int, str]) -> int:
+        """
+        Public method to calculate move distance.
+        
+        Args:
+            from_pos: Starting position
+            to_pos: Ending position
+            
+        Returns:
+            Distance of the move
+        """
+        return self._calculate_move_distance(from_pos, to_pos)
+
     def is_valid_move(self, from_pos: Union[int, str], to_pos: Union[int, str]) -> bool:
         """
         Check if a move is valid.
@@ -303,81 +316,55 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
         return len(self.get_possible_moves()) > 0
 
     def play_turn(self) -> None:
-        """Play a complete turn for the current player."""
+        """
+        Initialize a turn for the current player by rolling dice.
+        
+        This is a pure game logic method that only handles:
+        - Rolling dice if no moves are available
+        - Setting up the turn state
+        
+        UI interactions should be handled by the CLI.
+        """
         # Setup players if they don't exist (for testing purposes)
         if not self.players:
             self.setup_players()
 
-        current_player = self.get_current_player()
-
-        # Display the current board state
-        if self.ui:
-            self.ui.display_board(self.board)
-
         # Roll dice only if no moves are available (start of turn)
         if not self.dice.get_available_moves():
-            dice_values = self.roll_dice()
-            if self.ui:
-                self.ui.display_current_player(current_player)
-                self.ui.display_dice_roll(dice_values)
+            self.roll_dice()
 
-        # Check if player has valid moves
-        if not self.has_valid_moves():
-            if self.ui:
-                self.ui.display_message("No valid moves available. Turn skipped.")
-            self.switch_turns()
-            return
+    def can_continue_turn(self) -> bool:
+        """
+        Check if the current player can continue their turn.
+        
+        Returns:
+            True if player has available dice and valid moves, False otherwise
+        """
+        return (self.dice.get_available_moves() and 
+                self.has_valid_moves())
 
-        # Get move from player
-        if self.ui:
-            from_pos, to_pos = self.ui.get_move_input()
-
-            # Validate the move first
-            if not self.is_valid_move(from_pos, to_pos):
-                if self.ui:
-                    self.ui.display_error(
-                        "Invalid move. Check dice values and board rules."
-                    )
-                return  # Don't switch turns on invalid move
-
-            # Attempt to make the move
-            if self.make_move(from_pos, to_pos):
-                if self.ui:
-                    self.ui.display_message(f"Move successful: {from_pos} to {to_pos}")
-                    # Display updated board after successful move
-                    self.ui.display_board(self.board)
-
-                # Calculate and consume the dice move
-                distance = self._calculate_move_distance(from_pos, to_pos)
-                if distance > 0:
-                    self.dice.use_move(distance)
-
-                # Check if player has more moves available
-                if not self.dice.get_available_moves() or not self.has_valid_moves():
-                    if self.ui and not self.dice.get_available_moves():
-                        self.ui.display_message("All dice moves used. Turn complete.")
-                    self.switch_turns()
-                    return
-                else:
-                    # Player has more moves, continue turn
-                    if self.ui:
-                        remaining_moves = self.dice.get_available_moves()
-                        self.ui.display_message(f"Remaining dice: {remaining_moves}")
-                    return  # Don't switch turns, continue with same player
-            else:
-                if self.ui:
-                    self.ui.display_error("Invalid move. Try again.")
-                return  # Don't switch turns on invalid move
+    def complete_turn(self) -> None:
+        """
+        Complete the current turn and switch to next player.
+        
+        Should be called when all dice are used or no more valid moves available.
+        """
+        self.switch_turns()
 
     def play_game(self) -> None:
-        """Play the complete game until someone wins."""
+        """
+        Play the complete game until someone wins.
+        
+        This method is now deprecated in favor of CLI.run_game().
+        Kept for backward compatibility with existing tests.
+        """
         while not self.is_game_over():
             if not self.is_paused:
                 self.play_turn()
-
-        winner = self.get_winner()
-        if winner and self.ui:
-            self.ui.display_winner(winner)
+                # In the new architecture, this would be handled by CLI
+                # This is a simplified version for testing compatibility
+                if not self.can_continue_turn():
+                    self.complete_turn()
             self.end_time = time.time()
 
     def reset_game(self) -> None:

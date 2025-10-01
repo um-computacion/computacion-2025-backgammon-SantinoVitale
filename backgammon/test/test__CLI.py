@@ -38,8 +38,9 @@ class TestCLI(unittest.TestCase):
         self.assertEqual(from_pos, 5)
         self.assertEqual(to_pos, 10)
 
+    @patch("sys.stdout", new_callable=StringIO)
     @patch("builtins.input")
-    def test_get_move_input_invalid_format_retry(self, mock_input):
+    def test_get_move_input_invalid_format_retry(self, mock_input, _mock_stdout):
         mock_input.side_effect = ["invalid", "1-4", "1 4"]
         from_pos, to_pos = self.cli.get_move_input()
         self.assertEqual(from_pos, 1)
@@ -208,8 +209,9 @@ class TestCLI(unittest.TestCase):
         self.assertIsInstance(bar_formatted, str)
         self.assertIsInstance(off_formatted, str)
 
+    @patch("sys.stdout", new_callable=StringIO)
     @patch("builtins.input")
-    def test_input_validation_retry(self, mock_input):
+    def test_input_validation_retry(self, mock_input, _mock_stdout):
         mock_input.side_effect = ["invalid", "0", "25", "15"]
         position = self.cli.get_valid_position()
         self.assertEqual(position, 15)
@@ -245,8 +247,9 @@ class TestCLI(unittest.TestCase):
         self.assertIn("10", output)
         self.assertIn("300", output)
 
+    @patch("sys.stdout", new_callable=StringIO)
     @patch("builtins.input")
-    def test_get_move_input_with_multiple_invalid_attempts(self, mock_input):
+    def test_get_move_input_with_multiple_invalid_attempts(self, mock_input, _mock_stdout):
         mock_input.side_effect = [
             "single",  # First attempt fails - only one word
             "1",  # Second attempt fails - only one number
