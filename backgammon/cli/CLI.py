@@ -421,78 +421,105 @@ Winning: First player to bear off all checkers wins!
     def run_game(self) -> None:
         """
         Main game loop for CLI interface.
-        
+
         Simple local two-player Backgammon game.
         """
         if not self.game:
             print("Error: No game instance available")
             return
-        
+
         self.display_message("Welcome to Backgammon!")
         self.display_message("Local two-player game")
-        
+
         # Get player names
         player1_name = self.get_player_name("white")
         player2_name = self.get_player_name("black")
-        
+
         # Setup and start game
-        if hasattr(self.game, 'setup_players'):
+        if hasattr(self.game, "setup_players"):
             self.game.setup_players(player1_name, player2_name)
-        
-        if hasattr(self.game, 'start_game'):
+
+        if hasattr(self.game, "start_game"):
             self.game.start_game()
-        
+
         # Main game loop
         while True:
             try:
                 # Check if game is over
-                if hasattr(self.game, 'is_game_over') and self.game.is_game_over():
+                if hasattr(self.game, "is_game_over") and self.game.is_game_over():
                     self.display_winner()
                     break
-                
+
                 # Display current state
                 self.clear_screen()
                 self.display_board()
                 self.display_current_player()
-                
-                # Roll dice
-                if hasattr(self.game, 'roll_dice'):
-                    dice_values = self.game.roll_dice()
-                    self.display_dice_roll(dice_values)
-                
+
+                # Roll dice if no moves available (start of turn)
+                if (hasattr(self.game, "dice") and 
+                    hasattr(self.game.dice, "get_available_moves") and
+                    not self.game.dice.get_available_moves()):
+                    if hasattr(self.game, "roll_dice"):
+                        dice_values = self.game.roll_dice()
+                        self.display_dice_roll(dice_values)
+
                 # Display available moves
-                if hasattr(self.game, 'dice') and hasattr(self.game.dice, 'get_available_moves'):
+                if hasattr(self.game, "dice") and hasattr(
+                    self.game.dice, "get_available_moves"
+                ):
                     moves = self.game.dice.get_available_moves()
                     self.display_available_moves(moves)
-                
+
+                # Check if player has valid moves
+                if hasattr(self.game, "has_valid_moves") and not self.game.has_valid_moves():
+                    self.display_message("No valid moves available. Turn skipped.")
+                    if hasattr(self.game, "switch_turns"):
+                        self.game.switch_turns()
+                    continue
+
                 # Human player turn - get moves until all dice used
-                while (hasattr(self.game, 'dice') and 
-                       hasattr(self.game.dice, 'has_moves_available') and
-                       self.game.dice.has_moves_available()):
-                    
+                while (
+                    hasattr(self.game, "dice")
+                    and hasattr(self.game.dice, "has_moves_available")
+                    and self.game.dice.has_moves_available()
+                    and hasattr(self.game, "has_valid_moves") 
+                    and self.game.has_valid_moves()
+                ):
+
                     from_pos, to_pos = self.get_move_input()
-                    
+
                     # Handle special commands
-                    if from_pos == 'help':
+                    if from_pos == "help":
                         self.display_help()
                         continue
-                    elif from_pos == 'rules':
+                    elif from_pos == "rules":
                         self.display_game_rules()
                         continue
-                    elif from_pos == 'quit':
+                    elif from_pos == "quit":
                         if self.confirm_quit():
                             return
                         continue
-                    
+
                     # Try to make the move
-                    if hasattr(self.game, 'make_move'):
+                    if hasattr(self.game, "make_move"):
                         try:
                             if self.game.make_move(from_pos, to_pos):
-                                self.display_message(f"Move made: {from_pos} to {to_pos}")
+                                self.display_message(
+                                    f"Move made: {from_pos} to {to_pos}"
+                                )
+                                
+                                # Consume the dice move
+                                if hasattr(self.game, "calculate_move_distance"):
+                                    distance = self.game.calculate_move_distance(from_pos, to_pos)
+                                    if distance > 0 and hasattr(self.game.dice, "use_move"):
+                                        self.game.dice.use_move(distance)
+                                
                                 # Update display after successful move
                                 self.display_board()
-                                if hasattr(self.game, 'dice'):
-                                    remaining_moves = self.game.dice.get_available_moves()
+                                if hasattr(self.game, "dice"):
+                                    remaining_moves = (
+                                        self.game.dice.get_available_moves()
+                                    )
                                     if remaining_moves:
                                         self.display_available_moves(remaining_moves)
                                     else:
@@ -502,16 +529,16 @@ Winning: First player to bear off all checkers wins!
                                 self.display_error("Invalid move. Try again.")
                         except (ValueError, TypeError, AttributeError) as e:
                             self.display_error(f"Move failed: {str(e)}")
-                
+
                 # Switch players
-                if hasattr(self.game, 'switch_turns'):
+                if hasattr(self.game, "switch_turns"):
                     self.game.switch_turns()
-            
+
             except KeyboardInterrupt:
                 if self.confirm_quit():
                     break
             except (ValueError, TypeError, AttributeError) as e:
                 self.display_error(f"Game error: {str(e)}")
                 break
-        
+
         self.display_message("Thanks for playing!")

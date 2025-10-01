@@ -5,6 +5,55 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.3] - 2025-10-01
+
+### Fixed
+
+- **Clean Test Output**: Eliminated all unwanted error messages during test execution
+  - **Test Pollution Cleanup**: Suppressed stdout output for CLI input validation tests
+  - **Professional Output**: Tests now run with clean, professional output
+  - **Maintained Functionality**: All CLI error handling functionality preserved during actual usage
+  - **Test Coverage**: All 173 tests pass with clean output
+
+### Changed
+
+- **Test Improvements**: Enhanced CLI tests to suppress output during validation testing
+  - **Stdout Suppression**: Added `@patch("sys.stdout")` to CLI input validation tests
+  - **Silent Testing**: Input retry tests no longer pollute console output
+  - **Better Test Practice**: Tests validate functionality without printing error messages
+
+## [0.2.2] - 2025-10-01
+
+### Fixed
+
+- **Complete Architecture Separation**: Fully separated CLI and BackgammonGame responsibilities
+  - **Removed UI Calls**: Eliminated all UI method calls from BackgammonGame.play_turn()
+  - **Clean Game Logic**: BackgammonGame now handles only pure game logic, no UI interactions
+  - **CLI Controls Flow**: CLI.run_game() now completely controls the game flow and user interaction
+  - **No Test Pollution**: Eliminated unwanted UI messages during test execution
+
+### Changed
+
+- **BackgammonGame.play_turn()**: Simplified to only handle dice rolling logic
+  - **Before**: Complex method with UI calls, move input, and turn management
+  - **After**: Simple method that only rolls dice when needed
+  - **New Methods**: Added `can_continue_turn()` and `complete_turn()` for better separation
+
+### Added
+
+- **New Game Logic Methods**: 
+  - `calculate_move_distance()`: Public method for move distance calculation
+  - `can_continue_turn()`: Check if player can continue their turn
+  - `complete_turn()`: Complete turn and switch players
+
+### Updated
+
+- **CLI Enhancement**: Improved CLI.run_game() to handle all game flow logic
+  - **Dice Management**: Proper dice rolling only when needed
+  - **Move Validation**: Complete move validation before dice consumption
+  - **Turn Management**: Proper turn switching and game state management
+  - **Error Handling**: Better error messages and input validation
+
 ## [0.2.1] - 2025-10-01
 
 ### Fixed

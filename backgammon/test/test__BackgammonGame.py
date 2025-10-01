@@ -7,6 +7,7 @@ the main game logic and state for the backgammon game.
 import unittest
 from unittest.mock import MagicMock, Mock
 from backgammon.core import BackgammonGame, Player
+from backgammon.cli import CLI
 # pylint: disable=C0116  # many simple test methods without individual docstrings
 # pylint: disable=C0103  # module name follows test naming convention
 # pylint: disable=R0904  # many public methods needed for comprehensive testing
@@ -28,7 +29,6 @@ class TestBackgammonGame(unittest.TestCase):
 
     def test_game_initialization_with_ui(self):
         """Test game initialization with UI interface"""
-        from backgammon.cli import CLI
         cli = CLI()
         cli_game = BackgammonGame(cli)
 
@@ -245,51 +245,74 @@ class TestBackgammonGame(unittest.TestCase):
         self.assertFalse(self.game.has_valid_moves())
 
     def test_play_turn_with_valid_move(self):
-        """Test playing a turn with valid move"""
+        """Test play_turn only handles dice rolling in new architecture"""
         self.game.roll_dice = MagicMock(return_value=[3, 5])
-        self.game.ui = MagicMock()
-        self.game.ui.get_move_input = MagicMock(return_value=(1, 4))
-        self.game.make_move = MagicMock(return_value=True)
-        self.game.is_valid_move = MagicMock(return_value=True)
-        self.game.has_valid_moves = MagicMock(return_value=True)
-        self.game.switch_turns = MagicMock()
-        self.game._calculate_move_distance = MagicMock(return_value=3)
         self.game.dice = MagicMock()
-        self.game.dice.get_available_moves.return_value = []  # No moves available after move
-        self.game.dice.use_move = MagicMock()
+        self.game.dice.get_available_moves.return_value = []  # No moves available, should roll
 
         self.game.play_turn()
 
+        # In new architecture, play_turn only rolls dice
         self.game.roll_dice.assert_called_once()
-        self.game.ui.get_move_input.assert_called_once()
-        self.game.make_move.assert_called_once_with(1, 4)
-        self.game.switch_turns.assert_called_once()
+        
+    def test_play_turn_with_available_moves(self):
+        """Test play_turn doesn't roll when moves are available"""
+        self.game.roll_dice = MagicMock()
+        self.game.dice = MagicMock()
+        self.game.dice.get_available_moves.return_value = [3, 5]  # Moves available, shouldn't roll
+
+        self.game.play_turn()
+
+        # Should not roll dice when moves are already available
+        self.game.roll_dice.assert_not_called()
 
     def test_play_turn_no_valid_moves(self):
-        """Test playing a turn when no valid moves available"""
+        """Test play_turn still rolls dice even when no valid moves (dice rolling is separate from move validation)"""
         self.game.roll_dice = MagicMock(return_value=[6, 6])
-        self.game.ui = MagicMock()
-        self.game.has_valid_moves = MagicMock(return_value=False)
-        self.game.switch_turns = MagicMock()
+        self.game.dice = MagicMock()
+        self.game.dice.get_available_moves.return_value = []  # No moves available, should roll
 
         self.game.play_turn()
 
+        # play_turn only handles dice rolling, not turn switching
+        self.game.roll_dice.assert_called_once()
+        
+    def test_can_continue_turn_true(self):
+        """Test can_continue_turn returns True when moves and dice available"""
+        self.game.dice = MagicMock()
+        self.game.dice.get_available_moves.return_value = [3, 5]
+        self.game.has_valid_moves = MagicMock(return_value=True)
+        
+        self.assertTrue(self.game.can_continue_turn())
+        
+    def test_can_continue_turn_false(self):
+        """Test can_continue_turn returns False when no moves or dice available"""
+        self.game.dice = MagicMock()
+        self.game.dice.get_available_moves.return_value = []
+        self.game.has_valid_moves = MagicMock(return_value=False)
+        
+        self.assertFalse(self.game.can_continue_turn())
+        
+    def test_complete_turn(self):
+        """Test complete_turn switches players"""
+        self.game.switch_turns = MagicMock()
+        
+        self.game.complete_turn()
+        
         self.game.switch_turns.assert_called_once()
-        self.game.ui.display_message.assert_called()
 
     def test_play_game_until_win(self):
-        """Test playing the game until a player wins"""
+        """Test play_game basic loop (deprecated method, CLI.run_game is preferred)"""
         self.game.is_game_over = MagicMock(side_effect=[False, False, True])
         self.game.play_turn = MagicMock()
-        winner = MagicMock()
-        winner.name = "Player1"
-        self.game.get_winner = MagicMock(return_value=winner)
-        self.game.ui = MagicMock()
+        self.game.can_continue_turn = MagicMock(return_value=False)
+        self.game.complete_turn = MagicMock()
 
         self.game.play_game()
 
+        # Verify the basic game loop worked
         self.assertEqual(self.game.play_turn.call_count, 2)
-        self.game.ui.display_winner.assert_called_once_with(winner)
+        self.assertEqual(self.game.complete_turn.call_count, 2)
 
     def test_reset_game(self):
         """Test resetting the game calls reset on components"""

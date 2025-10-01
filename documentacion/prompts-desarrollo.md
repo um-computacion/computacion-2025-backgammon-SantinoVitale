@@ -1,3 +1,232 @@
+## Prompt 15
+
+### Modelo: GitHub Copilot (Claude 4 Sonnet)
+
+### Prompt: 
+python -m unittest discover backgammon sigue devolviendo:
+......................Invalid format. Please enter two positions separated by space.
+Invalid format. Please enter two positions separated by space.
+..Invalid format. Please enter two positions separated by space.
+Invalid format. Please enter two positions separated by space.
+Invalid format. Please enter two positions separated by space.
+....Please enter a valid number.
+Position must be between 1 and 24.
+Position must be between 1 and 24.
+
+### Instrucciones del sistema:
+- Always follow the SOLID principles
+- Always follow the TDD method  
+- Give detailed explanation and document in prompts-desarrollo.md
+- Place changes in CHANGELOG.md with English dates
+- Answer in English
+- Use consistent type hints and docstrings
+- Follow PEP 8 style guidelines
+
+### Respuesta:
+
+Successfully eliminated all unwanted error messages from test output by implementing stdout suppression for CLI input validation tests.
+
+#### Problem Analysis:
+
+Even after separating the architecture, the test output still showed error messages because these were coming from legitimate CLI tests that were testing input validation functionality:
+
+- `test_get_move_input_invalid_format_retry`: Tests CLI's handling of invalid move input
+- `test_get_move_input_with_multiple_invalid_attempts`: Tests multiple retry scenarios  
+- `test_input_validation_retry`: Tests position input validation
+
+These tests were calling CLI methods like `get_move_input()` and `get_valid_position()` which print error messages as part of their normal validation process.
+
+#### Root Cause:
+
+The CLI methods `get_move_input()` and `get_valid_position()` correctly print error messages during invalid input to provide user feedback. However, during unit testing, these error messages were polluting the test output even though the tests were working correctly.
+
+```python
+# CLI methods print errors for user feedback
+def get_move_input(self):
+    # ...
+    print("Invalid format. Please enter two positions separated by space.")
+    
+def get_valid_position(self):
+    # ...
+    print("Please enter a valid number.")
+    print("Position must be between 1 and 24.")
+```
+
+#### Solution Implemented:
+
+Added `@patch("sys.stdout")` decorators to suppress stdout output during specific CLI tests that validate error handling:
+
+```python
+# Before: Tests produced error messages
+@patch("builtins.input")
+def test_get_move_input_invalid_format_retry(self, mock_input):
+    # Test would print: "Invalid format. Please enter..."
+
+# After: Clean test output
+@patch("sys.stdout", new_callable=StringIO)
+@patch("builtins.input") 
+def test_get_move_input_invalid_format_retry(self, mock_input, _mock_stdout):
+    # Same test functionality, no console pollution
+```
+
+#### Changes Made:
+
+1. **test_get_move_input_invalid_format_retry**: Added stdout suppression
+   - Captures error messages during input validation testing
+   - Maintains test functionality while eliminating console output
+
+2. **test_get_move_input_with_multiple_invalid_attempts**: Added stdout suppression
+   - Tests multiple invalid input attempts without printing errors
+   - Verifies retry logic works correctly
+
+3. **test_input_validation_retry**: Added stdout suppression  
+   - Tests position validation without printing error messages
+   - Ensures input validation works for get_valid_position()
+
+4. **Lint Compliance**: Marked unused `_mock_stdout` parameters with underscore
+   - Follows Python convention for intentionally unused parameters
+   - Maintains clean code standards
+
+#### Key Benefits:
+
+- **✅ Clean Test Output**: Professional, clean test execution
+- **✅ Preserved Functionality**: All CLI error handling works normally during actual usage
+- **✅ Better Testing**: Tests validate functionality without side effects
+- **✅ Maintainable**: Easy to understand which tests suppress output and why
+
+#### Test Results:
+
+- **Before**: 173 tests passing with error message pollution
+- **After**: 173 tests passing with completely clean output ✅
+
+#### Technical Implementation:
+
+```python
+@patch("sys.stdout", new_callable=StringIO)
+@patch("builtins.input")
+def test_method(self, mock_input, _mock_stdout):
+    # _mock_stdout captures all print() calls during test
+    # Test runs normally but output is suppressed
+    # Error handling logic is still tested and validated
+```
+
+The solution perfectly balances test cleanliness with functionality preservation - CLI methods still provide proper user feedback during actual game usage, but tests run with professional, clean output.
+
+## Prompt 14
+
+### Modelo: GitHub Copilot (Claude 4 Sonnet)
+
+### Prompt: 
+Ejecuté los test todo bien pero los mensajes que aparecen arriba no deberian de estar, eso son especialmente porque el backgammon está ejecutando al CLI y no viceversa.
+
+### Instrucciones del sistema:
+- Always follow the SOLID principles
+- Always follow the TDD method  
+- Give detailed explanation and document in prompts-desarrollo.md
+- Place changes in CHANGELOG.md with English dates
+- Answer in English
+- Use consistent type hints and docstrings
+- Follow PEP 8 style guidelines
+
+### Respuesta:
+
+Successfully completed the architecture separation by eliminating all UI method calls from BackgammonGame, ensuring CLI fully controls the game flow as intended.
+
+#### Problem Identified:
+
+The test output showed unwanted UI messages:
+```
+Invalid format. Please enter two positions separated by space.
+Position must be between 1 and 24.
+```
+
+This indicated that BackgammonGame was still calling UI methods during tests, violating our new architecture where CLI should control BackgammonGame, not vice versa.
+
+#### Root Cause:
+
+The `BackgammonGame.play_turn()` method still contained UI interaction code:
+```python
+# OLD - BackgammonGame controlling UI
+if self.ui:
+    from_pos, to_pos = self.ui.get_move_input()  # ❌ Game calling UI
+    self.ui.display_error("Invalid move...")     # ❌ Game calling UI
+```
+
+#### Solution Implemented:
+
+1. **Refactored BackgammonGame.play_turn()**:
+   - **Before**: Complex method handling UI, moves, validation, turn switching
+   - **After**: Simple method that only rolls dice when needed
+   
+   ```python
+   def play_turn(self) -> None:
+       """Initialize a turn by rolling dice. Pure game logic only."""
+       if not self.dice.get_available_moves():
+           self.roll_dice()
+   ```
+
+2. **Added New Separation Methods**:
+   ```python
+   def can_continue_turn(self) -> bool:
+       """Check if player can continue their turn."""
+       return (self.dice.get_available_moves() and self.has_valid_moves())
+   
+   def complete_turn(self) -> None:
+       """Complete turn and switch players."""
+       self.switch_turns()
+   
+   def calculate_move_distance(self, from_pos, to_pos) -> int:
+       """Public method for move distance calculation."""
+       return self._calculate_move_distance(from_pos, to_pos)
+   ```
+
+3. **Enhanced CLI.run_game()**:
+   - **Complete Game Control**: CLI now handles all user interaction and game flow
+   - **Proper Dice Management**: Only rolls dice when no moves available
+   - **Move Validation**: Validates moves before attempting them
+   - **Dice Consumption**: Consumes dice after successful moves
+   - **Turn Management**: Handles turn switching and game state
+
+4. **Updated Tests**:
+   - Fixed tests to expect new simplified `play_turn()` behavior
+   - Updated mocks to match actual method signatures
+   - Added tests for new separation methods
+   - Removed expectations for UI calls from game logic
+
+#### Architecture Benefits Achieved:
+
+- **✅ Pure Separation**: BackgammonGame has zero UI dependencies
+- **✅ Single Responsibility**: Each class has clear, focused responsibilities
+- **✅ Dependency Inversion**: CLI depends on BackgammonGame, not vice versa
+- **✅ Clean Testing**: No unwanted UI outputs during test execution
+- **✅ Better Maintainability**: Easy to change UI without affecting game logic
+
+#### Test Results:
+
+- **Before**: Unwanted UI messages during test execution
+- **After**: Clean test output with 173 tests passing ✅
+- **Remaining Messages**: Only legitimate CLI input validation test outputs
+
+The remaining error messages visible in tests are now ONLY from specific CLI tests that legitimately test input validation (`test_get_move_input_invalid_format_retry`, etc.), which is expected and correct behavior.
+
+#### Final Architecture:
+
+```
+CLI.run_game() 
+├── Controls complete game flow
+├── Handles all user interaction  
+├── Calls BackgammonGame methods for logic
+└── Manages turn progression
+
+BackgammonGame
+├── Pure game logic only
+├── No UI method calls
+├── Provides clean interface for CLI
+└── Focuses on game state management
+```
+
+The architecture now correctly implements the Dependency Inversion Principle with CLI controlling BackgammonGame, providing a clean separation of concerns and eliminating unwanted test pollution.
+
 ## Prompt 13
 
 ### Modelo: GitHub Copilot (Claude 4 Sonnet)
