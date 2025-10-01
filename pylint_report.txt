@@ -56,12 +56,12 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
             return 1
         return 0
 
-    def can_bear_off(self):
+    def get_home_board_range(self):
         """
-        Verifica si la ficha puede hacer bearing off desde su posición actual.
+        Obtiene el rango del home board para este jugador.
 
         Returns:
-          bool: True si puede hacer bearing off, False en caso contrario
+          range: Rango de posiciones del home board
         """ (duplicate-code)
 
 -----------------------------------
