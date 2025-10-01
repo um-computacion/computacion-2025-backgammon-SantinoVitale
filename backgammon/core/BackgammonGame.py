@@ -10,7 +10,6 @@ from typing import List, Tuple, Union, Dict, Any, Optional
 from .Board import Board
 from .Player import Player
 from .Dice import Dice
-from .CLI import CLI
 
 
 class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-public-methods
@@ -26,19 +25,18 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
     - Save/load functionality
     """
 
-    def __init__(self, ui_mode: str = "cli") -> None:
+    def __init__(self, ui=None) -> None:
         """
         Initialize the BackgammonGame.
 
         Args:
-            ui_mode: Interface mode ("cli" or "pygame")
+            ui: User interface instance (CLI, PygameUI, etc.)
         """
         self.board = Board()
         self.dice = Dice()
         self.players: List[Player] = []
         self.current_player_index = 0
-        self.ui_mode = ui_mode
-        self.ui = None
+        self.ui = ui
         self.is_started = False
         self.is_paused = False
         self.move_history: List[Tuple[Union[int, str], Union[int, str], str]] = []
@@ -46,18 +44,17 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
         self.start_time = None
         self.end_time = None
 
-        self.initialize_ui()
-
-    def initialize_ui(self) -> None:
-        """Initialize the user interface based on ui_mode."""
-        if self.ui_mode == "cli":
-            self.ui = CLI()
-        elif self.ui_mode == "pygame":
-            # For now, we'll use CLI as a placeholder for PygameUI
-            # This will be replaced when PygameUI is implemented
-            self.ui = CLI()  # Temporary placeholder
-        else:
-            self.ui = CLI()  # Default to CLI
+    def set_ui(self, ui) -> None:
+        """
+        Set the user interface for the game.
+        
+        Args:
+            ui: User interface instance (CLI, PygameUI, etc.)
+        """
+        self.ui = ui
+        # If UI has a set_game method, connect it to this game
+        if hasattr(ui, 'set_game'):
+            ui.set_game(self)
 
     def setup_board(self) -> None:
         """Setup the board with initial Backgammon position."""
@@ -530,7 +527,7 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
         Returns:
             New BackgammonGame instance with copied state
         """
-        new_game = BackgammonGame(self.ui_mode)
+        new_game = BackgammonGame(self.ui)
         new_game.set_game_state(self.get_game_state())
         return new_game
 
@@ -550,8 +547,9 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
 
     def __repr__(self) -> str:
         """Repr representation of the game."""
+        ui_type = type(self.ui).__name__ if self.ui else "None"
         return (
-            f"BackgammonGame(ui_mode='{self.ui_mode}', "
+            f"BackgammonGame(ui={ui_type}, "
             f"is_started={self.is_started}, "
             f"current_player_index={self.current_player_index})"
         )

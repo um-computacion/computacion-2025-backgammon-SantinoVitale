@@ -5,6 +5,7 @@ Provides user interface selection and game initialization.
 
 import sys
 from backgammon.core.BackgammonGame import BackgammonGame
+from backgammon.cli.CLI import CLI
 
 
 def display_welcome_message() -> None:
@@ -44,51 +45,24 @@ def get_user_choice() -> str:
             sys.exit(0)
 
 
-def get_player_names() -> tuple[str, str]:
-    """
-    Get player names from user input.
-
-    Returns:
-        Tuple containing (player1_name, player2_name)
-    """
-    print("\n" + "=" * 40)
-    print("           PLAYER SETUP")
-    print("=" * 40)
-
-    try:
-        player1_name = input("Enter name for Player 1 (White): ").strip()
-        if not player1_name:
-            player1_name = "White Player"
-
-        player2_name = input("Enter name for Player 2 (Black): ").strip()
-        if not player2_name:
-            player2_name = "Black Player"
-
-        return player1_name, player2_name
-    except (EOFError, KeyboardInterrupt):
-        print("\n👋 Goodbye!")
-        sys.exit(0)
-
-
 def start_cli_game() -> None:
     """Initialize and start the CLI version of the game."""
     try:
         print("\n🎮 Starting CLI Backgammon Game...")
 
-        # Get player names
-        player1_name, player2_name = get_player_names()
+        # Create CLI interface and game
+        cli = CLI()
+        game = BackgammonGame()
+        cli.set_game(game)
+        game.set_ui(cli)
 
-        # Create and configure game
-        game = BackgammonGame(ui_mode="cli")
-        game.setup_players(player1_name, player2_name)
-        game.start_game()
-
-        print(f"\n🎲 Game started! {player1_name} vs {player2_name}")
+        # Start the game using CLI
+        print("\n🎲 Starting Backgammon Game!")
         print("Good luck and have fun!")
         print("=" * 50)
 
-        # Start the game loop
-        game.play_game()
+        # Start the game loop through CLI
+        cli.run_game()
 
     except (EOFError, KeyboardInterrupt):
         print("\n\n🛑 Game interrupted by user")

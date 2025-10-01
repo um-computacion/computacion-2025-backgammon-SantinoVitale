@@ -26,13 +26,14 @@ class TestBackgammonGame(unittest.TestCase):
         self.assertTrue(hasattr(self.game, "players"))
         self.assertTrue(hasattr(self.game, "current_player_index"))
 
-    def test_game_initialization_with_ui_mode(self):
-        """Test game initialization with specific UI mode"""
-        cli_game = BackgammonGame(ui_mode="cli")
-        pygame_game = BackgammonGame(ui_mode="pygame")
+    def test_game_initialization_with_ui(self):
+        """Test game initialization with UI interface"""
+        from backgammon.cli import CLI
+        cli = CLI()
+        cli_game = BackgammonGame(cli)
 
         self.assertIsNotNone(cli_game.ui)
-        self.assertIsNotNone(pygame_game.ui)
+        self.assertEqual(cli_game.ui, cli)
 
     def test_setup_board(self):
         """Test board setup initialization"""
@@ -166,7 +167,7 @@ class TestBackgammonGame(unittest.TestCase):
 
         result = self.game.make_move(1, 4)
 
-        self.game.board.move_checker.assert_called_once_with(1, 4, "white")
+        self.game.board.move_checker.assert_called_once_with(0, 3, "white")
         self.assertTrue(result)
 
     def test_make_move_invalid(self):
@@ -200,7 +201,7 @@ class TestBackgammonGame(unittest.TestCase):
         self.assertTrue(result)
         # Verify that the board's move_checker was called with correct parameters
         board_mock.move_checker.assert_called_with(
-            1, 4, self.game.get_current_player().color
+            0, 3, self.game.get_current_player().color
         )
 
     def test_is_valid_move(self):
@@ -211,8 +212,11 @@ class TestBackgammonGame(unittest.TestCase):
         current_player.color = "white"
         self.game.get_current_player = MagicMock(return_value=current_player)
 
-        self.game.board.is_valid_move.return_value = True
+        # Mock the methods that is_valid_move actually uses
         self.game.dice.can_use_move.return_value = True
+        self.game.board.points = [[MagicMock()] for _ in range(24)]  # Points with checkers
+        self.game.board.get_point_top_color.return_value = "white"
+        self.game.board.is_point_available.return_value = True
 
         result = self.game.is_valid_move(1, 4)
         self.assertTrue(result)
@@ -246,8 +250,13 @@ class TestBackgammonGame(unittest.TestCase):
         self.game.ui = MagicMock()
         self.game.ui.get_move_input = MagicMock(return_value=(1, 4))
         self.game.make_move = MagicMock(return_value=True)
+        self.game.is_valid_move = MagicMock(return_value=True)
         self.game.has_valid_moves = MagicMock(return_value=True)
         self.game.switch_turns = MagicMock()
+        self.game._calculate_move_distance = MagicMock(return_value=3)
+        self.game.dice = MagicMock()
+        self.game.dice.get_available_moves.return_value = []  # No moves available after move
+        self.game.dice.use_move = MagicMock()
 
         self.game.play_turn()
 

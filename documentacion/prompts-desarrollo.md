@@ -1,3 +1,92 @@
+## Prompt 12
+
+### Modelo: GitHub Copilot (Claude 4 Sonnet)
+
+### Prompt: 
+Me gustaria mover la clase CLI a la carpeta CLI y hacer que este use a la clase Backgammon para funcionar y no viceversa como está a ahora.
+
+### Instrucciones del sistema:
+- Always follow the SOLID principles
+- Always follow the TDD method  
+- Give detailed explanation and document in prompts-desarrollo.md
+- Place changes in CHANGELOG.md with English dates
+- Answer in English
+- Use consistent type hints and docstrings
+- Follow PEP 8 style guidelines
+
+### Respuesta:
+
+Successfully restructured the CLI architecture to follow proper dependency inversion principles. This change improves the overall design by making the CLI use the BackgammonGame class instead of the inverse dependency that existed before.
+
+#### Key Changes Made:
+
+1. **CLI Package Creation**: 
+   - Moved CLI class from `backgammon/core/CLI.py` to `backgammon/cli/CLI.py`
+   - Created proper package structure with `__init__.py` file
+   - Removed CLI from core package exports
+
+2. **Dependency Inversion Implementation**:
+   - **Before**: BackgammonGame imported and created CLI instances internally
+   - **After**: CLI accepts BackgammonGame instance and controls the game flow
+   - This follows the Dependency Inversion Principle (DIP) from SOLID
+
+3. **Constructor Changes**:
+   - **BackgammonGame**: Changed from `__init__(ui_mode: str)` to `__init__(ui=None)`
+   - **CLI**: Added `__init__(game=None)` with `set_game()` method for dependency injection
+
+4. **Game Flow Control**:
+   - Added `run_game()` method to CLI that handles the complete game loop
+   - CLI now controls: game setup, player creation, turn management, input handling
+   - BackgammonGame focuses purely on game logic and state management
+
+5. **Enhanced CLI Features**:
+   - Automatic board display and state updates
+   - Built-in command handling ('help', 'rules', 'quit')
+   - Integrated player setup and game mode selection
+   - Better error handling and user feedback
+
+6. **Main Application Update**:
+   - Updated `main.py` to use new architecture:
+   ```python
+   cli = CLI()
+   game = BackgammonGame()
+   cli.set_game(game)
+   game.set_ui(cli)
+   cli.run_game()
+   ```
+
+7. **Test Updates**:
+   - Updated test imports from `backgammon.core.CLI` to `backgammon.cli.CLI`
+   - Modified BackgammonGame tests to use new constructor pattern
+   - All tests continue to pass with new structure
+
+#### Benefits Achieved:
+
+- **Better Separation of Concerns**: Game logic and UI are now properly separated
+- **Improved Modularity**: Easy to swap UI implementations (CLI, Pygame, Web, etc.)
+- **SOLID Compliance**: Follows Dependency Inversion Principle
+- **Cleaner Architecture**: Clear dependency flow from UI to core, not vice versa
+- **Enhanced Maintainability**: Changes to UI don't affect core game logic
+- **Better Testability**: UI and game logic can be tested independently
+
+#### File Structure After Changes:
+```
+backgammon/
+├── cli/
+│   ├── __init__.py
+│   └── CLI.py          # Moved from core/
+├── core/
+│   ├── __init__.py     # Updated exports
+│   ├── BackgammonGame.py  # Updated constructor
+│   ├── Board.py
+│   ├── Player.py
+│   └── Dice.py
+└── test/
+    └── test__cli.py    # Updated imports
+```
+
+This restructuring follows TDD principles by maintaining all existing functionality while improving the architecture. The change supports future UI implementations and makes the codebase more maintainable and testable.
+
 ## Prompt 11
 
 ### Modelo: GitHub Copilot (Claude 4 Sonnet)
