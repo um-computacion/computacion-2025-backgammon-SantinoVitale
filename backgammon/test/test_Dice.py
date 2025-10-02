@@ -4,12 +4,15 @@ Test module for Dice class.
 This module contains unit tests for the Dice class which handles
 dice rolling and move management in the backgammon game.
 """
+
 import unittest
 from unittest.mock import patch
 from backgammon.core import Dice
+
 # pylint: disable=C0116  # many simple test methods without individual docstrings
 # pylint: disable=C0103  # module name follows test naming convention
 # pylint: disable=R0904  # many public methods needed for comprehensive testing
+
 
 class TestDice(unittest.TestCase):
     """Test cases for the Dice class."""
@@ -211,6 +214,82 @@ class TestDice(unittest.TestCase):
 
         self.assertTrue(self.dice.use_move(4))
         self.assertEqual(len(self.dice.values), 2)
+
+    def test_get_moves_none_input(self):
+        """Test get_moves with None input"""
+        moves = self.dice.get_moves(None)
+        self.assertEqual(moves, [])
+
+    def test_get_moves_empty_input(self):
+        """Test get_moves with empty input"""
+        moves = self.dice.get_moves([])
+        self.assertEqual(moves, [])
+
+    def test_get_moves_with_falsy_values(self):
+        """Test get_moves with various falsy values"""
+        # Test with empty list
+        moves = self.dice.get_moves([])
+        self.assertEqual(moves, [])
+
+        # Test with None
+        moves = self.dice.get_moves(None)
+        self.assertEqual(moves, [])
+
+        # Test with False
+        moves = self.dice.get_moves(False)
+        self.assertEqual(moves, [])
+
+    def test_dice_state_management(self):
+        """Test dice state management methods"""
+        # Set up initial state
+        self.dice.last_roll = [3, 5]
+        self.dice.values = [3, 5]
+
+        # Test get_state
+        state = self.dice.get_state()
+        expected_state = {"last_roll": [3, 5], "values": [3, 5]}
+        self.assertEqual(state, expected_state)
+
+        # Test set_state
+        new_state = {"last_roll": [2, 4], "values": [2, 4]}
+        self.dice.set_state(new_state)
+        self.assertEqual(self.dice.last_roll, [2, 4])
+        self.assertEqual(self.dice.values, [2, 4])
+
+    def test_dice_comprehensive_scenarios(self):
+        """Test comprehensive dice scenarios"""
+        # Test multiple use_move calls
+        self.dice.values = [1, 2, 3, 4]
+
+        # Use existing moves
+        self.assertTrue(self.dice.use_move(2))
+        self.assertTrue(self.dice.use_move(4))
+        self.assertEqual(self.dice.values, [1, 3])
+
+        # Try to use non-existent move
+        self.assertFalse(self.dice.use_move(5))
+        self.assertEqual(self.dice.values, [1, 3])
+
+        # Use remaining moves
+        self.assertTrue(self.dice.use_move(1))
+        self.assertTrue(self.dice.use_move(3))
+        self.assertEqual(self.dice.values, [])
+
+        # No more moves available
+        self.assertFalse(self.dice.has_moves())
+        self.assertFalse(self.dice.use_move(1))
+
+    @patch("random.randint")
+    def test_edge_case_rolls(self, mock_randint):
+        """Test edge case dice rolls"""
+        # Test all possible doubles
+        for value in range(1, 7):
+            mock_randint.side_effect = [value, value]
+            result = self.dice.roll()
+            self.assertEqual(result, [value, value])
+            self.assertTrue(self.dice.is_double())
+            self.assertEqual(len(self.dice.values), 4)
+            self.assertTrue(all(v == value for v in self.dice.values))
 
 
 if __name__ == "__main__":

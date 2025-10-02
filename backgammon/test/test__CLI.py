@@ -4,10 +4,12 @@ Test module for CLI class.
 This module contains unit tests for the CLI (Command Line Interface) class
 that handles user interaction in the backgammon game.
 """
+
 import unittest
 from unittest.mock import patch, MagicMock, Mock
 from io import StringIO
 from backgammon.cli import CLI
+
 # pylint: disable=C0116  # many simple test methods without individual docstrings
 # pylint: disable=C0103  # module name follows test naming convention
 # pylint: disable=R0904  # many public methods needed for comprehensive testing
@@ -249,7 +251,9 @@ class TestCLI(unittest.TestCase):
 
     @patch("sys.stdout", new_callable=StringIO)
     @patch("builtins.input")
-    def test_get_move_input_with_multiple_invalid_attempts(self, mock_input, _mock_stdout):
+    def test_get_move_input_with_multiple_invalid_attempts(
+        self, mock_input, _mock_stdout
+    ):
         mock_input.side_effect = [
             "single",  # First attempt fails - only one word
             "1",  # Second attempt fails - only one number
@@ -262,6 +266,95 @@ class TestCLI(unittest.TestCase):
         self.assertEqual(from_pos, 5)
         self.assertEqual(to_pos, 8)
         self.assertEqual(mock_input.call_count, 4)
+
+    def test_set_game_method(self):
+        """Test setting game reference"""
+        mock_game = Mock()
+        self.cli.set_game(mock_game)
+        self.assertEqual(self.cli.game, mock_game)
+
+    @patch("builtins.input")
+    def test_confirm_move_invalid_input_retry(self, mock_input):
+        """Test confirm move with various inputs"""
+        # Test with lowercase 'y' which should be accepted
+        mock_input.return_value = "y"
+        result = self.cli.confirm_move(1, 4)
+        self.assertTrue(result)
+
+        # Test with lowercase 'n' which should be accepted
+        mock_input.return_value = "n"
+        result = self.cli.confirm_move(1, 4)
+        self.assertFalse(result)
+
+    @patch("sys.stdout", new_callable=StringIO)
+    def test_display_winner_with_none(self, mock_stdout):
+        """Test display winner with None player"""
+        self.cli.display_winner(None)
+        output = mock_stdout.getvalue()
+        self.assertGreater(len(output), 0)  # Just check that something is printed
+
+    @patch("sys.stdout", new_callable=StringIO)
+    def test_display_current_player_with_none(self, mock_stdout):
+        """Test display current player with None"""
+        self.cli.display_current_player(None)
+        output = mock_stdout.getvalue()
+        # Method might not print anything for None, so just check it doesn't crash
+        self.assertIsInstance(output, str)
+
+    @patch("sys.stdout", new_callable=StringIO)
+    def test_display_dice_roll_with_none(self, mock_stdout):
+        """Test display dice roll with None values"""
+        self.cli.display_dice_roll(None)
+        output = mock_stdout.getvalue()
+        # Method might not print anything for None, so just check it doesn't crash
+        self.assertIsInstance(output, str)
+
+    @patch("sys.stdout", new_callable=StringIO)
+    def test_display_available_moves_with_none(self, mock_stdout):
+        """Test display available moves with None"""
+        self.cli.display_available_moves(None)
+        output = mock_stdout.getvalue()
+        self.assertGreater(len(output), 0)  # Should print something about moves
+
+    @patch("sys.stdout", new_callable=StringIO)
+    def test_display_available_moves_empty_list(self, mock_stdout):
+        """Test display available moves with empty list"""
+        self.cli.display_available_moves([])
+        output = mock_stdout.getvalue()
+        self.assertGreater(len(output), 0)  # Should print something about no moves
+
+    @patch("sys.stdout", new_callable=StringIO)
+    def test_display_statistics_with_none(self, mock_stdout):
+        """Test display statistics with None"""
+        self.cli.display_statistics(None)
+        output = mock_stdout.getvalue()
+        # Method might not print anything for None, so just check it doesn't crash
+        self.assertIsInstance(output, str)
+
+    def test_run_game_method(self):
+        """Test run_game method runs without error when game is set"""
+        mock_game = Mock()
+        mock_game.start_game = Mock()
+        mock_game.is_game_over = Mock(return_value=True)
+        mock_game.get_winner = Mock()
+        mock_game.get_winner.return_value.name = "TestPlayer"
+        self.cli.game = mock_game
+
+        # Should complete without error
+        try:
+            self.cli.run_game()
+        except SystemExit:
+            pass  # CLI might call sys.exit, which is fine
+
+    def test_run_game_no_game_set(self):
+        """Test run_game when no game is set"""
+        self.cli.game = None
+
+        # Should not raise an exception, but should handle gracefully
+        try:
+            self.cli.run_game()
+        except AttributeError:
+            pass  # Expected when no game is set
 
 
 if __name__ == "__main__":

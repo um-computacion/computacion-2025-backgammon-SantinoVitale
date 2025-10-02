@@ -4,11 +4,14 @@ Test module for Checker class.
 This module contains unit tests for the Checker class which represents
 individual checker pieces in the backgammon game.
 """
+
 import unittest
 from backgammon.core import Checker
+
 # pylint: disable=C0116  # many simple test methods without individual docstrings
 # pylint: disable=C0103  # module name follows test naming convention
 # pylint: disable=R0904  # many public methods needed for comprehensive testing
+
 
 class TestChecker(unittest.TestCase):
     """Test cases for the Checker class."""
@@ -189,6 +192,95 @@ class TestChecker(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             self.white_checker.set_position([1])
+
+    def test_set_position_invalid_string(self):
+        """Test setting invalid string position"""
+        with self.assertRaises(ValueError):
+            self.white_checker.set_position("invalid")
+
+        with self.assertRaises(ValueError):
+            self.white_checker.set_position("middle")
+
+    def test_static_methods_comprehensive(self):
+        """Test static methods with comprehensive scenarios"""
+        # Test get_home_board_positions with both colors
+        white_positions = Checker.get_home_board_positions("white")
+        black_positions = Checker.get_home_board_positions("black")
+
+        self.assertEqual(white_positions, [1, 2, 3, 4, 5, 6])
+        self.assertEqual(black_positions, [19, 20, 21, 22, 23, 24])
+
+        # Test get_opposite_color
+        self.assertEqual(Checker.get_opposite_color("white"), "black")
+        self.assertEqual(Checker.get_opposite_color("black"), "white")
+
+        # Test invalid color for get_opposite_color
+        with self.assertRaises(ValueError):
+            Checker.get_opposite_color("invalid")
+
+    def test_checker_state_transitions(self):
+        """Test checker state transitions"""
+        # Test initial state
+        self.assertIsNone(self.white_checker.position)
+        self.assertFalse(self.white_checker.is_on_board())
+        self.assertFalse(self.white_checker.is_on_bar())
+        self.assertFalse(self.white_checker.is_off_board())
+
+        # Test move to board
+        self.white_checker.set_position(10)
+        self.assertTrue(self.white_checker.is_on_board())
+        self.assertFalse(self.white_checker.is_on_bar())
+        self.assertFalse(self.white_checker.is_off_board())
+
+        # Test move to bar
+        self.white_checker.move_to_bar()
+        self.assertFalse(self.white_checker.is_on_board())
+        self.assertTrue(self.white_checker.is_on_bar())
+        self.assertFalse(self.white_checker.is_off_board())
+
+        # Test move off board
+        self.white_checker.move_off_board()
+        self.assertFalse(self.white_checker.is_on_board())
+        self.assertFalse(self.white_checker.is_on_bar())
+        self.assertTrue(self.white_checker.is_off_board())
+
+    def test_home_board_validation_comprehensive(self):
+        """Test comprehensive home board validation"""
+        # Test all white home board positions
+        for pos in range(1, 7):
+            self.white_checker.set_position(pos)
+            self.assertTrue(self.white_checker.is_in_home_board())
+            self.assertTrue(self.white_checker.can_bear_off())
+
+        # Test all black home board positions
+        for pos in range(19, 25):
+            self.black_checker.set_position(pos)
+            self.assertTrue(self.black_checker.is_in_home_board())
+            self.assertTrue(self.black_checker.can_bear_off())
+
+        # Test positions outside home board
+        for pos in [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]:
+            self.white_checker.set_position(pos)
+            self.assertFalse(self.white_checker.is_in_home_board())
+            self.assertFalse(self.white_checker.can_bear_off())
+
+            self.black_checker.set_position(pos)
+            self.assertFalse(self.black_checker.is_in_home_board())
+            self.assertFalse(self.black_checker.can_bear_off())
+
+    def test_type_validation_comprehensive(self):
+        """Test type validation for various inputs"""
+        # Test valid types
+        valid_positions = [1, 24, "bar", "off"]
+        for pos in valid_positions:
+            self.white_checker.set_position(pos)
+            self.assertEqual(self.white_checker.position, pos)
+
+        # Test invalid types
+        invalid_positions = [1.5, [1], {"pos": 1}, None]
+        for pos in invalid_positions:
+            with self.assertRaises(TypeError):
+                self.white_checker.set_position(pos)
 
 
 if __name__ == "__main__":
