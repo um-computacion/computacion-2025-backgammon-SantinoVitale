@@ -456,9 +456,11 @@ Winning: First player to bear off all checkers wins!
                 self.display_current_player()
 
                 # Roll dice if no moves available (start of turn)
-                if (hasattr(self.game, "dice") and 
-                    hasattr(self.game.dice, "get_available_moves") and
-                    not self.game.dice.get_available_moves()):
+                if (
+                    hasattr(self.game, "dice")
+                    and hasattr(self.game.dice, "get_available_moves")
+                    and not self.game.dice.get_available_moves()
+                ):
                     if hasattr(self.game, "roll_dice"):
                         dice_values = self.game.roll_dice()
                         self.display_dice_roll(dice_values)
@@ -471,7 +473,10 @@ Winning: First player to bear off all checkers wins!
                     self.display_available_moves(moves)
 
                 # Check if player has valid moves
-                if hasattr(self.game, "has_valid_moves") and not self.game.has_valid_moves():
+                if (
+                    hasattr(self.game, "has_valid_moves")
+                    and not self.game.has_valid_moves()
+                ):
                     self.display_message("No valid moves available. Turn skipped.")
                     if hasattr(self.game, "switch_turns"):
                         self.game.switch_turns()
@@ -482,7 +487,7 @@ Winning: First player to bear off all checkers wins!
                     hasattr(self.game, "dice")
                     and hasattr(self.game.dice, "has_moves_available")
                     and self.game.dice.has_moves_available()
-                    and hasattr(self.game, "has_valid_moves") 
+                    and hasattr(self.game, "has_valid_moves")
                     and self.game.has_valid_moves()
                 ):
 
@@ -507,13 +512,17 @@ Winning: First player to bear off all checkers wins!
                                 self.display_message(
                                     f"Move made: {from_pos} to {to_pos}"
                                 )
-                                
+
                                 # Consume the dice move
                                 if hasattr(self.game, "calculate_move_distance"):
-                                    distance = self.game.calculate_move_distance(from_pos, to_pos)
-                                    if distance > 0 and hasattr(self.game.dice, "use_move"):
+                                    distance = self.game.calculate_move_distance(
+                                        from_pos, to_pos
+                                    )
+                                    if distance > 0 and hasattr(
+                                        self.game.dice, "use_move"
+                                    ):
                                         self.game.dice.use_move(distance)
-                                
+
                                 # Update display after successful move
                                 self.display_board()
                                 if hasattr(self.game, "dice"):

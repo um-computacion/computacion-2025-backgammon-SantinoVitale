@@ -47,13 +47,13 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
     def set_ui(self, ui) -> None:
         """
         Set the user interface for the game.
-        
+
         Args:
             ui: User interface instance (CLI, PygameUI, etc.)
         """
         self.ui = ui
         # If UI has a set_game method, connect it to this game
-        if hasattr(ui, 'set_game'):
+        if hasattr(ui, "set_game"):
             ui.set_game(self)
 
     def setup_board(self) -> None:
@@ -224,14 +224,16 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
                 return 25 - from_pos
         return 0
 
-    def calculate_move_distance(self, from_pos: Union[int, str], to_pos: Union[int, str]) -> int:
+    def calculate_move_distance(
+        self, from_pos: Union[int, str], to_pos: Union[int, str]
+    ) -> int:
         """
         Public method to calculate move distance.
-        
+
         Args:
             from_pos: Starting position
             to_pos: Ending position
-            
+
         Returns:
             Distance of the move
         """
@@ -318,11 +320,11 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
     def play_turn(self) -> None:
         """
         Initialize a turn for the current player by rolling dice.
-        
+
         This is a pure game logic method that only handles:
         - Rolling dice if no moves are available
         - Setting up the turn state
-        
+
         UI interactions should be handled by the CLI.
         """
         # Setup players if they don't exist (for testing purposes)
@@ -336,17 +338,16 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
     def can_continue_turn(self) -> bool:
         """
         Check if the current player can continue their turn.
-        
+
         Returns:
             True if player has available dice and valid moves, False otherwise
         """
-        return (self.dice.get_available_moves() and 
-                self.has_valid_moves())
+        return self.dice.get_available_moves() and self.has_valid_moves()
 
     def complete_turn(self) -> None:
         """
         Complete the current turn and switch to next player.
-        
+
         Should be called when all dice are used or no more valid moves available.
         """
         self.switch_turns()
@@ -354,7 +355,7 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
     def play_game(self) -> None:
         """
         Play the complete game until someone wins.
-        
+
         This method is now deprecated in favor of CLI.run_game().
         Kept for backward compatibility with existing tests.
         """

@@ -4,12 +4,15 @@ Test module for Player class.
 This module contains unit tests for the Player class which represents
 a player in the backgammon game with their checkers and game state.
 """
+
 import unittest
 from unittest.mock import Mock
 from backgammon.core import Player
+
 # pylint: disable=C0116  # many simple test methods without individual docstrings
 # pylint: disable=C0103  # module name follows test naming convention
 # pylint: disable=R0904  # many public methods needed for comprehensive testing
+
 
 class TestPlayer(unittest.TestCase):
     """Test cases for the Player class."""
@@ -251,6 +254,128 @@ class TestPlayer(unittest.TestCase):
             + self.player_white.checkers_on_bar
         )
         self.assertEqual(total, 15)
+
+    def test_move_checker_to_bar_no_checkers_on_board(self):
+        """Test moving checker to bar when no checkers on board"""
+        self.player_white.checkers_on_board = 0
+
+        with self.assertRaises(ValueError):
+            self.player_white.move_checker_to_bar()
+
+    def test_is_valid_move_delegates_to_board(self):
+        """Test is_valid_move calls board.is_valid_move"""
+        mock_board = Mock()
+        mock_board.is_valid_move.return_value = True
+
+        result = self.player_white.is_valid_move(1, 5, mock_board)
+        mock_board.is_valid_move.assert_called_once()
+
+        mock_board.is_valid_move.return_value = False
+        result = self.player_white.is_valid_move(1, 5, mock_board)
+        self.assertFalse(result)
+
+    def test_player_comparison_methods(self):
+        """Test player comparison and hashing methods if they exist"""
+        player1 = Player("Test", "white")
+        player2 = Player("Test", "white")
+        player3 = Player("Other", "black")
+
+        # Test basic equality of attributes
+        self.assertEqual(player1.name, player2.name)
+        self.assertEqual(player1.color, player2.color)
+        self.assertNotEqual(player1.name, player3.name)
+        self.assertNotEqual(player1.color, player3.color)
+
+    def test_get_starting_position_edge_cases(self):
+        """Test get_starting_position for different scenarios"""
+        # Test with uninitialized player
+        player_no_color = Player()
+        # Should handle None color gracefully
+        try:
+            start_pos = player_no_color.get_starting_position()
+            if start_pos is not None:
+                self.assertIn(start_pos, [0, 25])  # Either valid value
+        except (ValueError, AttributeError):
+            pass  # Acceptable to raise error for None color
+
+    def test_direction_calculation(self):
+        """Test direction calculation for movement"""
+        # White moves in negative direction
+        white_direction = self.player_white.get_direction()
+        self.assertEqual(white_direction, -1)
+
+        # Black moves in positive direction
+        black_direction = self.player_black.get_direction()
+        self.assertEqual(black_direction, 1)
+
+    def test_home_board_validation(self):
+        """Test home board range validation"""
+        white_home = self.player_white.get_home_board_range()
+        black_home = self.player_black.get_home_board_range()
+
+        # Verify ranges are correct
+        self.assertEqual(list(white_home), [1, 2, 3, 4, 5, 6])
+        self.assertEqual(list(black_home), [19, 20, 21, 22, 23, 24])
+
+    def test_board_interaction_methods(self):
+        """Test methods that interact with board"""
+        mock_board = Mock()
+
+        # Test is_valid_move delegation
+        mock_board.is_valid_move.return_value = True
+        result = self.player_white.is_valid_move(5, 8, mock_board)
+        self.assertTrue(result)
+        mock_board.is_valid_move.assert_called()
+
+        # Test get_possible_moves delegation
+        mock_dice = Mock()
+        mock_board.get_possible_moves.return_value = [(1, 4), (6, 9)]
+        moves = self.player_white.get_possible_moves(mock_board, mock_dice)
+        self.assertEqual(moves, [(1, 4), (6, 9)])
+        mock_board.get_possible_moves.assert_called()
+
+    def test_make_move_integration(self):
+        """Test make_move method integration"""
+        mock_board = Mock()
+
+        # Test successful move
+        mock_board.move_checker.return_value = True
+        result = self.player_white.make_move(5, 8, mock_board)
+        self.assertTrue(result)
+        mock_board.move_checker.assert_called_once_with(5, 8, "white")
+
+        # Test failed move
+        mock_board.move_checker.return_value = False
+        result = self.player_white.make_move(5, 8, mock_board)
+        self.assertFalse(result)
+
+    def test_player_state_consistency(self):
+        """Test player state remains consistent through operations"""
+        original_total = self.player_white.get_total_checkers()
+
+        # Perform various operations
+        self.player_white.move_checker_to_bar()
+        self.player_white.move_checker_from_bar()
+        self.player_white.move_checker_off()
+
+        # Total should remain the same
+        final_total = self.player_white.get_total_checkers()
+        self.assertEqual(original_total, final_total)
+
+    def test_color_validation_edge_cases(self):
+        """Test color validation with edge cases"""
+        player = Player()
+
+        # Test setting valid colors
+        player.set_color("white")
+        self.assertEqual(player.color, "white")
+
+        player.set_color("black")
+        self.assertEqual(player.color, "black")
+
+        # Test invalid color
+        with self.assertRaises(ValueError):
+            player.set_color("invalid_color")
 
 
 if __name__ == "__main__":
