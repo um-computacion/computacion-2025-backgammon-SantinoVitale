@@ -5,6 +5,15 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.6] - 2025-10-02
+
+### Fixed
+
+- **GitHub Actions CI**: Fixed test failure in `test_run_game_method` 
+  - Added missing `@patch("builtins.input")` decorator to mock user input
+  - Resolved `EOFError: EOF when reading a line` in automated testing
+  - Ensures all 204 tests pass successfully in CI environment
+
 ## [0.2.5] - 2025-10-02
 
 ### Added
