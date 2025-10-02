@@ -331,10 +331,14 @@ class TestCLI(unittest.TestCase):
         # Method might not print anything for None, so just check it doesn't crash
         self.assertIsInstance(output, str)
 
-    def test_run_game_method(self):
+    @patch("builtins.input")
+    def test_run_game_method(self, mock_input):
         """Test run_game method runs without error when game is set"""
+        mock_input.side_effect = ["Player1", "Player2"]
+        
         mock_game = Mock()
         mock_game.start_game = Mock()
+        mock_game.setup_players = Mock()
         mock_game.is_game_over = Mock(return_value=True)
         mock_game.get_winner = Mock()
         mock_game.get_winner.return_value.name = "TestPlayer"
