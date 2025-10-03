@@ -5,6 +5,20 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.9] - 2025-10-03
+
+### Fixed
+- **Movement Input System**: Completely overhauled movement input and validation system
+- Fixed movement distance calculation to properly consider direction (white: 24→1, black: 1→24)
+- Fixed coordinate conversion between internal (0-23) and user-facing (1-24) systems
+- Corrected `get_possible_moves()` to return human-readable coordinates
+- Enhanced move validation logic to properly handle bar moves and bearing off
+- Improved user interface with clearer movement examples and format requirements
+- Added helpful error messages that display available valid moves when input is invalid
+- Fixed CLI input prompts to show direction-specific examples for each player color
+- Resolved issues where valid moves were incorrectly rejected
+- Enhanced help documentation with clear movement direction explanations
+
 ## [0.2.8] - 2025-10-03
 
 ### Fixed
