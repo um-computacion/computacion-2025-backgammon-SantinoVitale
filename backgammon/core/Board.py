@@ -11,7 +11,10 @@ from .Checker import Checker
 
 class Board:
     """
-    Clase que representa el tablero del juego Backgammon.
+    Clase q                             possible_moves.append((\"bar\", to_point + 1))                  if len(self.points[to_point]) == 1
+                    ):
+                        # Convert to human-readable coordinates (1-24)
+                        possible_moves.append(("bar", to_point + 1))representa el tablero del juego Backgammon.
     Maneja las posiciones de las fichas y las reglas de movimiento.
     """
 
@@ -369,14 +372,17 @@ class Board:
                                 or self.get_point_top_color(to_point) == color
                                 or len(self.points[to_point]) == 1
                             ):
-                                possible_moves.append((point_index, to_point))
+                                # Convert to human-readable coordinates (1-24)
+                                possible_moves.append((point_index + 1, to_point + 1))
 
                         # Verificar movimiento de salida (bearing off)
                         elif self._can_bear_off(color):
                             if color == "white" and to_point < 0:
-                                possible_moves.append((point_index, "off"))
+                                # Convert to human-readable coordinates (1-24)
+                                possible_moves.append((point_index + 1, "off"))
                             elif color == "black" and to_point > 23:
-                                possible_moves.append((point_index, "off"))
+                                # Convert to human-readable coordinates (1-24)
+                                possible_moves.append((point_index + 1, "off"))
 
         return possible_moves
 

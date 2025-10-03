@@ -152,8 +152,18 @@ class CLI:
         """
         while True:
             try:
+                # Show some example moves based on current player
+                if self.game and hasattr(self.game, 'get_current_player'):
+                    current_player = self.game.get_current_player()
+                    if current_player.color == "white":
+                        examples = "'12 8' (mover del 12 al 8), '1 fuera' (sacar del 1)"
+                    else:
+                        examples = "'8 12' (mover del 8 al 12), '24 fuera' (sacar del 24)"
+                else:
+                    examples = "'12 8', 'barra 20', '1 fuera'"
+                
                 move_input = input(
-                    "Ingrese movimiento (ej: '1 4', 'barra 20', '1 fuera'): "
+                    f"Ingrese movimiento DESDE-HASTA (ej: {examples}): "
                 ).strip()
 
                 # Handle special commands
@@ -164,8 +174,10 @@ class CLI:
 
                 if len(parts) != 2:
                     print(
-                        "Formato inválido. Por favor ingrese dos posiciones separadas por espacio."
+                        "\nFormato inválido. Necesita especificar posición DESDE y posición HASTA."
                     )
+                    print("Ejemplo: '12 8' significa mover una ficha del punto 12 al punto 8.")
+                    print("Use 'barra' para fichas en la barra y 'fuera' para sacar fichas.\n")
                     continue
 
                 from_pos, to_pos = parts
@@ -543,7 +555,20 @@ Reglas Especiales:
                                         self.display_message("¡Todos los dados usados!")
                                         break
                             else:
-                                self.display_error("Movimiento inválido. Intente nuevamente.")
+                                # Show more helpful error message
+                                if hasattr(self.game, 'get_possible_moves'):
+                                    possible_moves = self.game.get_possible_moves()
+                                    if possible_moves:
+                                        self.display_error(f"Movimiento inválido: {from_pos} a {to_pos}.")
+                                        print("Movimientos válidos disponibles:")
+                                        for fp, tp in possible_moves[:5]:
+                                            print(f"  {fp} {tp}")
+                                        if len(possible_moves) > 5:
+                                            print(f"  ... y {len(possible_moves) - 5} más")
+                                    else:
+                                        self.display_error("No hay movimientos válidos disponibles.")
+                                else:
+                                    self.display_error("Movimiento inválido. Intente nuevamente.")
                         except (ValueError, TypeError, AttributeError) as e:
                             self.display_error(f"Movimiento falló: {str(e)}")
 
