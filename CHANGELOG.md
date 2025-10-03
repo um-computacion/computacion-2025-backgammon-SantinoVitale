@@ -5,6 +5,29 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.7] - 2025-10-03
+
+### Changed
+
+- **CLI Interface Spanish Translation**: Complete localization of CLI interface to Spanish
+  - All user-facing messages, prompts, and menus translated to Spanish
+  - Game board display labels updated ("TABLERO DE BACKGAMMON", "FUERA", "BARRA")
+  - Input prompts and command instructions in Spanish
+  - Error messages and validation feedback translated
+  - Help text and game rules fully localized
+  - Bilingual command support: accepts both Spanish ("ayuda", "reglas", "salir", "barra", "fuera") and English commands for backward compatibility
+  - Player color descriptions translated ("blanco", "negro")
+  - Game state messages and turn indicators in Spanish
+  - Maintains code documentation in English per development standards
+
+### Fixed
+
+- **Test Compatibility**: Updated CLI test assertions to work with Spanish translation
+  - Modified `test_display_dice_double` to check for "doble" instead of "double"
+  - Updated `test_display_help` to check for "ayuda" instead of "help" 
+  - Changed `test_display_winner` to check for "gana" instead of "win"
+  - All 41 CLI tests now pass successfully with Spanish interface
+
 ## [0.2.6] - 2025-10-02
 
 ### Fixed
