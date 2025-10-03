@@ -5,7 +5,8 @@ backgammon/cli/CLI.py:381:11: R1714: Consider merging these comparisons with 'in
 backgammon/cli/CLI.py:505:20: R1724: Unnecessary "elif" after "continue", remove the leading "el" from "elif" (no-else-continue)
 backgammon/cli/CLI.py:454:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
 backgammon/cli/CLI.py:454:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:429:4: R0915: Too many statements (70/50) (too-many-statements)
+backgammon/cli/CLI.py:454:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:429:4: R0915: Too many statements (76/50) (too-many-statements)
 ************* Module backgammon.core.BackgammonGame
 backgammon/core/BackgammonGame.py:205:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
 backgammon/core/BackgammonGame.py:210:12: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
@@ -47,5 +48,5 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
         """ (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 9.90/10
+Your code has been rated at 9.89/10
 
