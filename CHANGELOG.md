@@ -5,6 +5,17 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.8] - 2025-10-03
+
+### Fixed
+
+- **CLI Infinite Loop Bug**: Resolved critical infinite loop issue in game flow
+  - Fixed incorrect method name from `has_moves_available()` to `has_moves()` in CLI game loop
+  - Added proper dice reset functionality in `complete_turn()` method
+  - Improved turn completion logic to properly end turns when no moves are available
+  - Enhanced game state management to prevent turn execution issues
+  - Game now properly alternates between players without getting stuck in infinite loops
+
 ## [0.2.7] - 2025-10-03
 
 ### Changed
