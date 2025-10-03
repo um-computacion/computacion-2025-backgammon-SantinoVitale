@@ -1,21 +1,30 @@
 ************* Module backgammon.cli.CLI
+backgammon/cli/CLI.py:164:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:562:0: C0301: Line too long (106/100) (line-too-long)
+backgammon/cli/CLI.py:569:0: C0301: Line too long (101/100) (line-too-long)
 backgammon/cli/CLI.py:44:4: R0915: Too many statements (54/50) (too-many-statements)
-backgammon/cli/CLI.py:379:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('bar', 'barra')'. Use a set instead if elements are hashable. (consider-using-in)
-backgammon/cli/CLI.py:381:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('off', 'fuera')'. Use a set instead if elements are hashable. (consider-using-in)
-backgammon/cli/CLI.py:505:20: R1724: Unnecessary "elif" after "continue", remove the leading "el" from "elif" (no-else-continue)
-backgammon/cli/CLI.py:454:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:454:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:454:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:429:4: R0915: Too many statements (76/50) (too-many-statements)
+backgammon/cli/CLI.py:391:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('bar', 'barra')'. Use a set instead if elements are hashable. (consider-using-in)
+backgammon/cli/CLI.py:393:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('off', 'fuera')'. Use a set instead if elements are hashable. (consider-using-in)
+backgammon/cli/CLI.py:517:20: R1724: Unnecessary "elif" after "continue", remove the leading "el" from "elif" (no-else-continue)
+backgammon/cli/CLI.py:466:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:466:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:466:8: R1702: Too many nested blocks (9/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:466:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:441:4: R0915: Too many statements (86/50) (too-many-statements)
 ************* Module backgammon.core.BackgammonGame
-backgammon/core/BackgammonGame.py:205:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
-backgammon/core/BackgammonGame.py:210:12: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
-backgammon/core/BackgammonGame.py:219:12: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
-backgammon/core/BackgammonGame.py:242:4: R0911: Too many return statements (8/6) (too-many-return-statements)
+backgammon/core/BackgammonGame.py:206:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/core/BackgammonGame.py:211:16: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+backgammon/core/BackgammonGame.py:217:16: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+backgammon/core/BackgammonGame.py:223:12: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+backgammon/core/BackgammonGame.py:231:12: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+backgammon/core/BackgammonGame.py:192:4: R0911: Too many return statements (9/6) (too-many-return-statements)
+backgammon/core/BackgammonGame.py:254:4: R0911: Too many return statements (8/6) (too-many-return-statements)
 ************* Module backgammon.core.Board
-backgammon/core/Board.py:328:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
-backgammon/core/Board.py:314:4: R0912: Too many branches (17/12) (too-many-branches)
-backgammon/core/Board.py:328:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+backgammon/core/Board.py:14:0: C0301: Line too long (138/100) (line-too-long)
+backgammon/core/Board.py:17:0: C0301: Line too long (111/100) (line-too-long)
+backgammon/core/Board.py:331:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+backgammon/core/Board.py:317:4: R0912: Too many branches (17/12) (too-many-branches)
+backgammon/core/Board.py:331:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
 ************* Module backgammon.test.test__BackgammonGame
 backgammon/test/test__BackgammonGame.py:1:0: C0103: Module name "test__BackgammonGame" doesn't conform to snake_case naming style (invalid-name)
 ************* Module backgammon.test.test__Player
@@ -48,5 +57,5 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
         """ (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 9.89/10
+Your code has been rated at 9.85/10
 
