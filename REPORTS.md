@@ -3,14 +3,14 @@
 ```text
 Name                                Stmts   Miss  Cover   Missing
 -----------------------------------------------------------------
-backgammon/core/BackgammonGame.py     213     48    77%   54-57, 87-88, 160-165, 168-173, 179, 207-225, 240, 260, 265-269, 273-277, 287, 297, 454-456, 464-466, 480-481, 526
+backgammon/core/BackgammonGame.py     214     48    78%   54-57, 87-88, 160-165, 168-173, 179, 207-225, 240, 260, 265-269, 273-277, 287, 297, 456-458, 466-468, 482-483, 528
 backgammon/core/Board.py              150     59    61%   110, 120, 143, 150, 182, 186, 193-194, 214, 217, 220, 242-258, 306, 325-381, 394-415, 427, 441
 backgammon/core/Checker.py             78      6    92%   125, 135, 141, 151, 157, 188
 backgammon/core/Dice.py                50      2    96%   69, 164
 backgammon/core/Player.py              97      9    91%   182, 195, 262, 284, 299-303
 backgammon/core/__init__.py             6      0   100%
 -----------------------------------------------------------------
-TOTAL                                 594    124    79%
+TOTAL                                 595    124    79%
 
 ```
 ## Pylint Report
@@ -22,7 +22,8 @@ backgammon/cli/CLI.py:381:11: R1714: Consider merging these comparisons with 'in
 backgammon/cli/CLI.py:505:20: R1724: Unnecessary "elif" after "continue", remove the leading "el" from "elif" (no-else-continue)
 backgammon/cli/CLI.py:454:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
 backgammon/cli/CLI.py:454:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:429:4: R0915: Too many statements (70/50) (too-many-statements)
+backgammon/cli/CLI.py:454:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:429:4: R0915: Too many statements (76/50) (too-many-statements)
 ************* Module backgammon.core.BackgammonGame
 backgammon/core/BackgammonGame.py:205:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
 backgammon/core/BackgammonGame.py:210:12: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
@@ -64,7 +65,7 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
         """ (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 9.90/10
+Your code has been rated at 9.89/10
 
 
 ```
