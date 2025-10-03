@@ -1,3 +1,134 @@
+## Prompt 17
+
+### Modelo: GitHub Copilot (Claude 4 Sonnet)
+
+### Prompt: 
+Buenas, quiero pasar todo el CLI a español, con esto me refiero a que los print que muestra al jugador sean en español (menus, juego, ayuda, etc.),
+
+### Instrucciones del sistema:
+- Always follow the SOLID principles
+- Always follow the TDD method  
+- Give detailed explanation and document in prompts-desarrollo.md
+- Place changes in CHANGELOG.md with English dates
+- Answer always in English
+- Use consistent type hints and docstrings
+- Follow PEP 8 guidelines
+
+### Respuesta:
+
+#### Análisis del Requerimiento
+
+The user requested a complete localization of the CLI interface to Spanish. This involves translating all user-facing text while maintaining:
+
+1. **Code Quality**: Preserve existing functionality and structure
+2. **Backward Compatibility**: Support both Spanish and English commands
+3. **Documentation Standards**: Keep code documentation in English
+4. **User Experience**: Provide natural Spanish language interface
+
+#### Implementación de la Traducción
+
+**Comprehensive Spanish Localization Applied:**
+
+1. **Board Display Elements**:
+   - "BACKGAMMON BOARD" → "TABLERO DE BACKGAMMON"
+   - "OFF: White: X, Black: Y" → "FUERA: Blancas: X, Negras: Y"
+   - "BAR" → "BARRA"
+
+2. **User Input Prompts**:
+   - "Enter move (e.g., '1 4', 'bar 20', '1 off')" → "Ingrese movimiento (ej: '1 4', 'barra 20', '1 fuera')"
+   - "Enter name for {color} player" → "Ingrese nombre para el jugador {color_spanish}"
+   - "Confirm move from X to Y? (y/n)" → "¿Confirmar movimiento de X a Y? (s/n)"
+
+3. **Game State Messages**:
+   - "Your turn!" → "¡Es tu turno!"
+   - "Dice roll: X, Y - DOUBLE!" → "Lanzamiento de dados: X, Y - ¡DOBLE!"
+   - "Available moves: X, Y" → "Movimientos disponibles: X, Y"
+   - "No moves available" → "No hay movimientos disponibles"
+
+4. **Error and Validation Messages**:
+   - "Invalid format" → "Formato inválido"
+   - "Invalid input. Please try again" → "Entrada inválida. Por favor intente nuevamente"
+   - "Invalid move. Try again" → "Movimiento inválido. Intente nuevamente"
+   - "Position must be between 1 and 24" → "La posición debe estar entre 1 y 24"
+
+5. **Help and Rules System**:
+   - Complete translation of help text with Spanish commands
+   - Full game rules translated to Spanish
+   - Command examples updated with Spanish terminology
+
+6. **Bilingual Command Support**:
+   - Spanish commands: "ayuda", "reglas", "salir", "barra", "fuera"
+   - English commands: "help", "rules", "quit", "bar", "off" (for backward compatibility)
+   - Response acceptance: "s", "sí", "si" (Spanish) + "y", "yes" (English)
+
+7. **Game Flow Messages**:
+   - "Welcome to Backgammon!" → "¡Bienvenido al Backgammon!"
+   - "Local two-player game" → "Juego local de dos jugadores"
+   - "CONGRATULATIONS!" → "¡FELICITACIONES!"
+   - "wins the game!" → "¡gana el juego!"
+   - "Thanks for playing!" → "¡Gracias por jugar!"
+
+#### Características Técnicas Implementadas
+
+**Input Processing Enhancement**:
+```python
+# Support for Spanish alternatives
+if from_pos == "barra":
+    from_pos = "bar"
+if to_pos == "fuera":
+    to_pos = "off"
+```
+
+**Color Localization**:
+```python
+color_spanish = "blanco" if color == "white" else "negro"
+```
+
+**Command Recognition**:
+```python
+if move_input.lower() in ["ayuda", "reglas", "salir", "help", "rules", "quit"]:
+```
+
+#### Beneficios de la Implementación
+
+1. **Accesibilidad**: Interface completamente en español para usuarios hispanohablantes
+2. **Compatibilidad**: Mantiene soporte para comandos en inglés
+3. **Consistencia**: Traducción uniforme en toda la interfaz
+4. **Usabilidad**: Terminología natural y ejemplos claros
+5. **Mantenibilidad**: Sin cambios en la lógica del juego, solo localización
+
+#### Validación y Corrección de Tests
+
+**Test Compatibility Updates Required:**
+
+After implementing the Spanish translation, 3 CLI tests failed because they were asserting English text in now Spanish outputs:
+
+1. **`test_display_dice_double`**: Expected "double" → Updated to expect "doble"
+2. **`test_display_help`**: Expected "help" → Updated to expect "ayuda"  
+3. **`test_display_winner`**: Expected "win" → Updated to expect "gana"
+
+**Test Fixes Applied:**
+```python
+# Before: self.assertIn("double", output.lower())
+# After: self.assertIn("doble", output.lower())
+
+# Before: self.assertIn("help", output.lower()) 
+# After: self.assertIn("ayuda", output.lower())
+
+# Before: self.assertIn("win", output.lower())
+# After: self.assertIn("gana", output.lower())
+```
+
+**Test Results**: All 41 CLI tests now pass successfully, validating that the Spanish translation maintains full functionality.
+
+#### Versioning y Documentación
+
+- **Version**: 0.2.7 (PATCH increment per guidelines - UI improvement without new features)
+- **CHANGELOG**: Documented as "Changed" section with comprehensive translation details
+- **Code Quality**: Maintained all existing type hints, docstrings, and structure
+
+The localization provides a complete Spanish user experience while preserving all existing functionality and maintaining backward compatibility with English commands.
+
 ## Prompt 16
 
 ### Modelo: GitHub Copilot (Claude 4 Sonnet)

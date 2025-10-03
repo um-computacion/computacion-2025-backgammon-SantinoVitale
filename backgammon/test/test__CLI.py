@@ -130,7 +130,7 @@ class TestCLI(unittest.TestCase):
         self.cli.display_winner(mock_player)
         output = mock_stdout.getvalue()
         self.assertIn("Player1", output)
-        self.assertIn("win", output.lower())
+        self.assertIn("gana", output.lower())
 
     @patch("sys.stdout", new_callable=StringIO)
     def test_display_current_player(self, mock_stdout):
@@ -166,7 +166,7 @@ class TestCLI(unittest.TestCase):
         self.cli.display_dice_roll(dice_values)
         output = mock_stdout.getvalue()
         self.assertIn("4", output)
-        self.assertIn("double", output.lower())
+        self.assertIn("doble", output.lower())
 
     @patch("sys.stdout", new_callable=StringIO)
     def test_display_available_moves(self, mock_stdout):
@@ -181,7 +181,7 @@ class TestCLI(unittest.TestCase):
     def test_display_help(self, mock_stdout):
         self.cli.display_help()
         output = mock_stdout.getvalue()
-        self.assertIn("help", output.lower())
+        self.assertIn("ayuda", output.lower())
         self.assertGreater(len(output), 50)
 
     @patch("sys.stdout", new_callable=StringIO)

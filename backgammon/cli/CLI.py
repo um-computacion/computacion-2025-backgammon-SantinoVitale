@@ -52,11 +52,11 @@ class CLI:
             board = self.game.board
 
         if not board:
-            print("No board available to display")
+            print("No hay tablero disponible para mostrar")
             return
 
         print("\n" + "=" * 50)
-        print("BACKGAMMON BOARD")
+        print("TABLERO DE BACKGAMMON")
         print("=" * 50)
 
         # Top half of board (points 13-24)
@@ -139,7 +139,7 @@ class CLI:
         # Display off checkers
         off_white = len(board.off.get("white", [])) if hasattr(board, "off") else 0
         off_black = len(board.off.get("black", [])) if hasattr(board, "off") else 0
-        print(f"\nOFF: White: {off_white}, Black: {off_black}")
+        print(f"\nFUERA: Blancas: {off_white}, Negras: {off_black}")
         print("=" * 50)
 
     def get_move_input(self) -> Tuple[Union[int, str], Union[int, str]]:
@@ -153,22 +153,28 @@ class CLI:
         while True:
             try:
                 move_input = input(
-                    "Enter move (e.g., '1 4', 'bar 20', '1 off'): "
+                    "Ingrese movimiento (ej: '1 4', 'barra 20', '1 fuera'): "
                 ).strip()
 
                 # Handle special commands
-                if move_input.lower() in ["help", "rules", "quit"]:
+                if move_input.lower() in ["ayuda", "reglas", "salir", "help", "rules", "quit"]:
                     return move_input.lower(), None
 
                 parts = move_input.split()
 
                 if len(parts) != 2:
                     print(
-                        "Invalid format. Please enter two positions separated by space."
+                        "Formato inválido. Por favor ingrese dos posiciones separadas por espacio."
                     )
                     continue
 
                 from_pos, to_pos = parts
+
+                # Convert to Spanish alternatives
+                if from_pos == "barra":
+                    from_pos = "bar"
+                if to_pos == "fuera":
+                    to_pos = "off"
 
                 # Convert numeric positions
                 if from_pos.isdigit():
@@ -179,7 +185,7 @@ class CLI:
                 return from_pos, to_pos
 
             except (ValueError, KeyboardInterrupt):
-                print("Invalid input. Please try again.")
+                print("Entrada inválida. Por favor intente nuevamente.")
                 continue
 
     def display_message(self, message: str) -> None:
@@ -210,9 +216,10 @@ class CLI:
         Returns:
             Player name string
         """
-        name = input(f"Enter name for {color} player: ").strip()
+        color_spanish = "blanco" if color == "white" else "negro"
+        name = input(f"Ingrese nombre para el jugador {color_spanish}: ").strip()
         if not name:
-            return f"{color.title()} Player"
+            return f"Jugador {color_spanish.title()}"
         return name
 
     def confirm_move(self, from_pos: Union[int, str], to_pos: Union[int, str]) -> bool:
@@ -227,9 +234,9 @@ class CLI:
             True if confirmed, False otherwise
         """
         response = (
-            input(f"Confirm move from {from_pos} to {to_pos}? (y/n): ").strip().lower()
+            input(f"¿Confirmar movimiento de {from_pos} a {to_pos}? (s/n): ").strip().lower()
         )
-        return response in ["y", "yes"]
+        return response in ["s", "sí", "si", "y", "yes"]
 
     def display_winner(self, player=None) -> None:
         """
@@ -244,12 +251,12 @@ class CLI:
                 player = self.game.get_winner()
 
         if player:
-            name = getattr(player, "name", "Unknown")
-            print("\n🎉 CONGRATULATIONS! 🎉")
-            print(f"{name} wins the game!")
+            name = getattr(player, "name", "Desconocido")
+            print("\n🎉 ¡FELICITACIONES! 🎉")
+            print(f"¡{name} gana el juego!")
             print("=" * 30)
         else:
-            print("\nGame over!")
+            print("\n¡Juego terminado!")
 
     def display_current_player(self, player=None) -> None:
         """
@@ -263,9 +270,10 @@ class CLI:
                 player = self.game.get_current_player()
 
         if player:
-            name = getattr(player, "name", "Unknown")
-            color = getattr(player, "color", "unknown")
-            print(f"\n{name} ({color}) - Your turn!")
+            name = getattr(player, "name", "Desconocido")
+            color = getattr(player, "color", "desconocido")
+            color_spanish = "blanco" if color == "white" else "negro" if color == "black" else color
+            print(f"\n{name} ({color_spanish}) - ¡Es tu turno!")
 
     def display_dice_roll(self, dice_values: Optional[List[int]] = None) -> None:
         """
@@ -280,9 +288,9 @@ class CLI:
 
         if dice_values and len(dice_values) >= 2:
             if len(dice_values) == 2 and dice_values[0] == dice_values[1]:
-                print(f"\n🎲 Dice roll: {dice_values[0]}, {dice_values[1]} - DOUBLE!")
+                print(f"\n🎲 Lanzamiento de dados: {dice_values[0]}, {dice_values[1]} - ¡DOBLE!")
             else:
-                print(f"\n🎲 Dice roll: {dice_values[0]}, {dice_values[1]}")
+                print(f"\n🎲 Lanzamiento de dados: {dice_values[0]}, {dice_values[1]}")
 
     def display_available_moves(self, moves: Optional[List[int]] = None) -> None:
         """
@@ -296,63 +304,63 @@ class CLI:
                 moves = self.game.get_available_moves()
 
         if moves:
-            print(f"Available moves: {', '.join(map(str, moves))}")
+            print(f"Movimientos disponibles: {', '.join(map(str, moves))}")
         else:
-            print("No moves available")
+            print("No hay movimientos disponibles")
 
     def display_help(self) -> None:
         """Display help information."""
         help_text = """
-BACKGAMMON HELP
-===============
+AYUDA DE BACKGAMMON
+===================
 
-Basic Commands:
-- Enter moves as 'from to' (e.g., '1 4', 'bar 20', '6 off')
-- 'help' - Show this help
-- 'rules' - Show game rules
-- 'quit' - Exit the game
+Comandos Básicos:
+- Ingrese movimientos como 'desde hasta' (ej: '1 4', 'barra 20', '6 fuera')
+- 'ayuda' - Mostrar esta ayuda
+- 'reglas' - Mostrar reglas del juego
+- 'salir' - Salir del juego
 
-Move Format:
-- Use point numbers 1-24
-- Use 'bar' for pieces on the bar
-- Use 'off' to bear off pieces
+Formato de Movimiento:
+- Use números de punto 1-24
+- Use 'barra' para fichas en la barra
+- Use 'fuera' para sacar fichas
 
-Example moves:
-- '8 12' - Move from point 8 to point 12
-- 'bar 20' - Move from bar to point 20
-- '6 off' - Bear off from point 6
+Ejemplos de movimientos:
+- '8 12' - Mover del punto 8 al punto 12
+- 'barra 20' - Mover de la barra al punto 20
+- '6 fuera' - Sacar ficha del punto 6
 """
         print(help_text)
 
     def display_game_rules(self) -> None:
         """Display the rules of backgammon."""
         rules_text = """
-BACKGAMMON RULES
-================
+REGLAS DE BACKGAMMON
+====================
 
-Objective: Move all your checkers to your home board (points 1-6 for white, 19-24 for black) and bear them off.
+Objetivo: Mover todas tus fichas a tu tablero casa (puntos 1-6 para blancas, 19-24 para negras) y sacarlas.
 
-Setup: Each player starts with 15 checkers arranged on the board.
+Configuración: Cada jugador comienza con 15 fichas dispuestas en el tablero.
 
-Movement:
-- Roll two dice to determine moves
-- Move checkers the number of points shown on dice
-- If you roll doubles, you get four moves of that number
-- You must use both dice if possible
+Movimiento:
+- Lanza dos dados para determinar movimientos
+- Mueve fichas el número de puntos mostrado en los dados
+- Si sacas dobles, obtienes cuatro movimientos de ese número
+- Debes usar ambos dados si es posible
 
-Special Rules:
-- Hit opponent checkers to send them to the bar
-- Must enter checkers from bar before making other moves
-- Can only bear off when all checkers are in home board
-- Cannot move to points occupied by 2+ opponent checkers
+Reglas Especiales:
+- Golpea fichas del oponente para enviarlas a la barra
+- Debes ingresar fichas de la barra antes de hacer otros movimientos
+- Solo puedes sacar fichas cuando todas estén en el tablero casa
+- No puedes mover a puntos ocupados por 2+ fichas del oponente
 
-Winning: First player to bear off all checkers wins!
+¡Ganador: El primer jugador en sacar todas las fichas gana!
 """
         print(rules_text)
 
     def pause_game(self) -> None:
         """Pause the game and wait for user input."""
-        input("\nPress Enter to continue...")
+        input("\nPresione Enter para continuar...")
 
     def clear_screen(self) -> None:
         """Clear the console screen."""
@@ -368,10 +376,10 @@ Winning: First player to bear off all checkers wins!
         Returns:
             Formatted position string
         """
-        if position == "bar":
-            return "BAR"
-        if position == "off":
-            return "OFF"
+        if position == "bar" or position == "barra":
+            return "BARRA"
+        if position == "off" or position == "fuera":
+            return "FUERA"
         return str(position)
 
     def get_valid_position(self) -> int:
@@ -383,12 +391,12 @@ Winning: First player to bear off all checkers wins!
         """
         while True:
             try:
-                position = int(input("Enter position (1-24): ").strip())
+                position = int(input("Ingrese posición (1-24): ").strip())
                 if 1 <= position <= 24:
                     return position
-                print("Position must be between 1 and 24.")
+                print("La posición debe estar entre 1 y 24.")
             except ValueError:
-                print("Please enter a valid number.")
+                print("Por favor ingrese un número válido.")
 
     def confirm_quit(self) -> bool:
         """
@@ -397,8 +405,8 @@ Winning: First player to bear off all checkers wins!
         Returns:
             True if confirmed, False otherwise
         """
-        response = input("Are you sure you want to quit? (y/n): ").strip().lower()
-        return response in ["y", "yes"]
+        response = input("¿Está seguro que desea salir? (s/n): ").strip().lower()
+        return response in ["s", "sí", "si", "y", "yes"]
 
     def display_statistics(self, stats: Optional[Dict[str, Any]] = None) -> None:
         """
@@ -412,11 +420,11 @@ Winning: First player to bear off all checkers wins!
                 stats = self.game.get_statistics()
 
         if stats:
-            print("\nGame Statistics:")
-            print("=" * 20)
+            print("\nEstadísticas del Juego:")
+            print("=" * 22)
             for key, value in stats.items():
                 print(f"{key.title()}: {value}")
-            print("=" * 20)
+            print("=" * 22)
 
     def run_game(self) -> None:
         """
@@ -425,11 +433,11 @@ Winning: First player to bear off all checkers wins!
         Simple local two-player Backgammon game.
         """
         if not self.game:
-            print("Error: No game instance available")
+            print("Error: No hay instancia de juego disponible")
             return
 
-        self.display_message("Welcome to Backgammon!")
-        self.display_message("Local two-player game")
+        self.display_message("¡Bienvenido al Backgammon!")
+        self.display_message("Juego local de dos jugadores")
 
         # Get player names
         player1_name = self.get_player_name("white")
@@ -477,7 +485,7 @@ Winning: First player to bear off all checkers wins!
                     hasattr(self.game, "has_valid_moves")
                     and not self.game.has_valid_moves()
                 ):
-                    self.display_message("No valid moves available. Turn skipped.")
+                    self.display_message("No hay movimientos válidos disponibles. Turno omitido.")
                     if hasattr(self.game, "switch_turns"):
                         self.game.switch_turns()
                     continue
@@ -494,13 +502,13 @@ Winning: First player to bear off all checkers wins!
                     from_pos, to_pos = self.get_move_input()
 
                     # Handle special commands
-                    if from_pos == "help":
+                    if from_pos in ["help", "ayuda"]:
                         self.display_help()
                         continue
-                    elif from_pos == "rules":
+                    elif from_pos in ["rules", "reglas"]:
                         self.display_game_rules()
                         continue
-                    elif from_pos == "quit":
+                    elif from_pos in ["quit", "salir"]:
                         if self.confirm_quit():
                             return
                         continue
@@ -510,7 +518,7 @@ Winning: First player to bear off all checkers wins!
                         try:
                             if self.game.make_move(from_pos, to_pos):
                                 self.display_message(
-                                    f"Move made: {from_pos} to {to_pos}"
+                                    f"Movimiento realizado: {from_pos} a {to_pos}"
                                 )
 
                                 # Consume the dice move
@@ -532,12 +540,12 @@ Winning: First player to bear off all checkers wins!
                                     if remaining_moves:
                                         self.display_available_moves(remaining_moves)
                                     else:
-                                        self.display_message("All dice used!")
+                                        self.display_message("¡Todos los dados usados!")
                                         break
                             else:
-                                self.display_error("Invalid move. Try again.")
+                                self.display_error("Movimiento inválido. Intente nuevamente.")
                         except (ValueError, TypeError, AttributeError) as e:
-                            self.display_error(f"Move failed: {str(e)}")
+                            self.display_error(f"Movimiento falló: {str(e)}")
 
                 # Switch players
                 if hasattr(self.game, "switch_turns"):
@@ -547,7 +555,7 @@ Winning: First player to bear off all checkers wins!
                 if self.confirm_quit():
                     break
             except (ValueError, TypeError, AttributeError) as e:
-                self.display_error(f"Game error: {str(e)}")
+                self.display_error(f"Error del juego: {str(e)}")
                 break
 
-        self.display_message("Thanks for playing!")
+        self.display_message("¡Gracias por jugar!")

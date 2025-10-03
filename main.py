@@ -11,19 +11,19 @@ from backgammon.cli.CLI import CLI
 def display_welcome_message() -> None:
     """Display the welcome message and game information."""
     print("=" * 60)
-    print("             WELCOME TO BACKGAMMON GAME")
+    print("             Bienvenido al juego de Backgammon")
     print("=" * 60)
-    print("A classic board game for two players")
-    print("Developed using Python with multiple interface options")
+    print("Un juego de mesa clásico para dos jugadores")
+    print("Desarrollado en Python con múltiples opciones de interfaz")
     print("=" * 60)
 
 
 def display_interface_menu() -> None:
     """Display the interface selection menu."""
-    print("\nPlease choose your preferred interface:")
-    print("1. CLI (Command Line Interface) - ✓ Available")
-    print("2. Pygame (Graphical Interface) - ⚠️  Coming Soon")
-    print("3. Exit")
+    print("\nPor favor, elige tu interfaz preferida:")
+    print("1. CLI (Interfaz de Línea de Comandos) - ✓ Disponible")
+    print("2. Pygame (Interfaz Gráfica) - Próximamente")
+    print("3. Salir")
     print("-" * 40)
 
 
@@ -36,19 +36,19 @@ def get_user_choice() -> str:
     """
     while True:
         try:
-            choice = input("Enter your choice (1-3): ").strip()
+            choice = input("Ingresa tu opción (1-3): ").strip()
             if choice in ['1', '2', '3']:
                 return choice
-            print("❌ Invalid choice. Please enter 1, 2, or 3.")
+            print("Opción inválida. Por favor, ingresa 1, 2 o 3.")
         except (EOFError, KeyboardInterrupt):
-            print("\n👋 Goodbye!")
+            print("\n👋 Adiós!")
             sys.exit(0)
 
 
 def start_cli_game() -> None:
     """Initialize and start the CLI version of the game."""
     try:
-        print("\n🎮 Starting CLI Backgammon Game...")
+        print("\nIniciando el juego de Backgammon en CLI...")
 
         # Create CLI interface and game
         cli = CLI()
@@ -57,35 +57,35 @@ def start_cli_game() -> None:
         game.set_ui(cli)
 
         # Start the game using CLI
-        print("\n🎲 Starting Backgammon Game!")
-        print("Good luck and have fun!")
+        print("\n🎲 Iniciando el juego de Backgammon!")
+        print("¡Buena suerte y diviértete!")
         print("=" * 50)
 
         # Start the game loop through CLI
         cli.run_game()
 
     except (EOFError, KeyboardInterrupt):
-        print("\n\n🛑 Game interrupted by user")
-        print("👋 Thanks for playing!")
+        print("\n\nJuego interrumpido por el usuario")
+        print("Gracias por jugar!")
         sys.exit(0)
     except Exception as e:  # pylint: disable=broad-exception-caught
-        print(f"\n❌ An error occurred: {e}")
-        print("Please try again or report this issue.")
+        print(f"\nOcurrió un error: {e}")
+        print("Por favor, intenta de nuevo o informa sobre este problema.")
         sys.exit(1)
 
 
 def start_pygame_game() -> None:
     """Placeholder for Pygame interface (not yet implemented)."""
-    print("\n🚧 Pygame Interface - Coming Soon!")
+    print("\n🚧 Pygame Interfaz - Próximamente!")
     print("=" * 40)
-    print("The graphical interface using Pygame is currently")
-    print("under development and will be available in a future update.")
-    print("\nFeatures planned for Pygame interface:")
-    print("• Visual board representation")
-    print("• Click-to-move functionality")
-    print("• Animations and sound effects")
-    print("• Enhanced user experience")
-    print("\nFor now, please use the CLI interface (Option 1)")
+    print("La interfaz gráfica utilizando Pygame está actualmente")
+    print("en desarrollo y estará disponible en una futura actualización.")
+    print("\nCaracterísticas planeadas para la interfaz Pygame:")
+    print("• Representación visual del tablero")
+    print("• Funcionalidad de clic para mover")
+    print("• Animaciones y efectos de sonido")
+    print("• Experiencia de usuario mejorada")
+    print("\nPor ahora, por favor utiliza la interfaz CLI (Opción 1)")
     print("=" * 40)
 
 
@@ -117,29 +117,29 @@ def main() -> None:
                 start_pygame_game()
 
                 # Ask if user wants to try CLI instead
-                print("\nWould you like to try the CLI interface instead? (y/n)")
+                print("¿Quisieras intentar la interfaz CLI en su lugar? (y/n)")
                 try:
-                    retry_choice = input("Choice: ").strip().lower()
+                    retry_choice = input("Opción: ").strip().lower()
                     if retry_choice in ['y', 'yes']:
                         start_cli_game()
                         break
-                    print("Returning to main menu...\n")
+                    print("Regresando al menú principal...\n")
                     continue
                 except (EOFError, KeyboardInterrupt):
-                    print("\n👋 Goodbye!")
+                    print("\n👋 ¡Adiós!")
                     break
 
             if choice == '3':
                 # Exit the application
-                print("\n👋 Thanks for your interest in Backgammon!")
-                print("Come back soon to play!")
+                print("\n👋 ¡Gracias por tu interés en Backgammon!")
+                print("¡Vuelve pronto para jugar!")
                 break
 
     except KeyboardInterrupt:
-        print("\n\n👋 Goodbye!")
+        print("\n\n👋 ¡Adiós!")
     except Exception as e:  # pylint: disable=broad-exception-caught
-        print(f"\n❌ An unexpected error occurred: {e}")
-        print("Please try again or report this issue.")
+        print(f"\n❌ Ocurrió un error inesperado: {e}")
+        print("Por favor, intenta de nuevo o informa sobre este problema.")
         sys.exit(1)
 
 
