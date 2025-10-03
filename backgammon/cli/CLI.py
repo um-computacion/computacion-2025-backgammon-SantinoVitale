@@ -493,8 +493,8 @@ Reglas Especiales:
                 # Human player turn - get moves until all dice used
                 while (
                     hasattr(self.game, "dice")
-                    and hasattr(self.game.dice, "has_moves_available")
-                    and self.game.dice.has_moves_available()
+                    and hasattr(self.game.dice, "has_moves")
+                    and self.game.dice.has_moves()
                     and hasattr(self.game, "has_valid_moves")
                     and self.game.has_valid_moves()
                 ):
@@ -547,9 +547,19 @@ Reglas Especiales:
                         except (ValueError, TypeError, AttributeError) as e:
                             self.display_error(f"Movimiento falló: {str(e)}")
 
-                # Switch players
-                if hasattr(self.game, "switch_turns"):
-                    self.game.switch_turns()
+                # Complete turn and switch players if dice are used up or no valid moves
+                if hasattr(self.game, "can_continue_turn"):
+                    if not self.game.can_continue_turn():
+                        if hasattr(self.game, "complete_turn"):
+                            self.game.complete_turn()
+                        else:
+                            # Fallback to direct turn switching
+                            if hasattr(self.game, "switch_turns"):
+                                self.game.switch_turns()
+                else:
+                    # Fallback behavior
+                    if hasattr(self.game, "switch_turns"):
+                        self.game.switch_turns()
 
             except KeyboardInterrupt:
                 if self.confirm_quit():

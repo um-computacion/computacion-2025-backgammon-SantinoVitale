@@ -350,6 +350,8 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
 
         Should be called when all dice are used or no more valid moves available.
         """
+        # Reset dice for next turn
+        self.dice.reset()
         self.switch_turns()
 
     def play_game(self) -> None:
