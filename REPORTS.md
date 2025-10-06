@@ -16,18 +16,31 @@ TOTAL                                 600    126    79%
 ## Pylint Report
 ```text
 ************* Module backgammon.cli.CLI
-backgammon/cli/CLI.py:164:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:562:0: C0301: Line too long (106/100) (line-too-long)
-backgammon/cli/CLI.py:569:0: C0301: Line too long (101/100) (line-too-long)
-backgammon/cli/CLI.py:44:4: R0915: Too many statements (54/50) (too-many-statements)
-backgammon/cli/CLI.py:391:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('bar', 'barra')'. Use a set instead if elements are hashable. (consider-using-in)
-backgammon/cli/CLI.py:393:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('off', 'fuera')'. Use a set instead if elements are hashable. (consider-using-in)
-backgammon/cli/CLI.py:517:20: R1724: Unnecessary "elif" after "continue", remove the leading "el" from "elif" (no-else-continue)
-backgammon/cli/CLI.py:466:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:466:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:466:8: R1702: Too many nested blocks (9/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:466:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:441:4: R0915: Too many statements (86/50) (too-many-statements)
+backgammon/cli/CLI.py:73:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:89:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:94:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:109:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:114:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:124:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:133:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:138:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:141:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:146:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:149:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:161:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:172:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:194:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:592:0: C0301: Line too long (106/100) (line-too-long)
+backgammon/cli/CLI.py:599:0: C0301: Line too long (101/100) (line-too-long)
+backgammon/cli/CLI.py:44:4: R0915: Too many statements (70/50) (too-many-statements)
+backgammon/cli/CLI.py:421:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('bar', 'barra')'. Use a set instead if elements are hashable. (consider-using-in)
+backgammon/cli/CLI.py:423:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('off', 'fuera')'. Use a set instead if elements are hashable. (consider-using-in)
+backgammon/cli/CLI.py:547:20: R1724: Unnecessary "elif" after "continue", remove the leading "el" from "elif" (no-else-continue)
+backgammon/cli/CLI.py:496:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:496:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:496:8: R1702: Too many nested blocks (9/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:496:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:471:4: R0915: Too many statements (86/50) (too-many-statements)
 ************* Module backgammon.core.BackgammonGame
 backgammon/core/BackgammonGame.py:206:0: C0303: Trailing whitespace (trailing-whitespace)
 backgammon/core/BackgammonGame.py:211:16: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
@@ -74,7 +87,7 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
         """ (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 9.85/10
+Your code has been rated at 9.79/10
 
 
 ```
