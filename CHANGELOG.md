@@ -5,6 +5,42 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.10] - 2025-10-06
+
+### Fixed
+- **CLI Board Display Alignment**: Completely redesigned board display with proper alignment and visual clarity
+  - Fixed board layout spacing and alignment issues that made the game board difficult to read
+  - Implemented structured ASCII art with clear borders, separators, and visual organization
+  - Added proper column alignment for all 24 points with consistent spacing
+  - Enhanced bar and off-board display with clear visual indicators
+  - Improved legend and status information layout
+  - Added visual separators and borders for better readability
+  - Fixed point numbering display to be clearly readable and properly aligned
+  - Board now displays in 80-character width with proper proportions
+
+### Added
+- **Enhanced CLI User Experience**: Major improvements to user interaction and feedback
+  - Added emoji and Unicode symbols for better visual communication (🎲, 🎯, ✅, ❌, 🏆, etc.)
+  - Implemented visual dice representation with Unicode dice faces (⚀ ⚁ ⚂ ⚃ ⚄ ⚅)
+  - Enhanced error messages with clear formatting and helpful guidance
+  - Added contextual move input assistance with direction hints for each player
+  - Improved dice roll display with double detection and clear move explanations
+  - Enhanced winner celebration display with festive formatting
+  - Added comprehensive input validation with specific error messages
+  - Implemented better move guidance showing available moves and direction hints
+  - Added visual formatting for all user interactions with consistent emoji usage
+
+### Changed
+- **CLI Display Methods**: Refactored multiple display methods for better user experience
+  - `display_board()`: Complete redesign with proper ASCII art layout
+  - `display_dice_roll()`: Enhanced with visual dice faces and clear explanations  
+  - `display_available_moves()`: Improved formatting with emoji indicators
+  - `display_message()`: Added emoji prefixes for better visual communication
+  - `display_error()`: Enhanced with clear formatting and helpful guidance
+  - `display_current_player()`: Added color symbols and better turn indication
+  - `display_winner()`: Redesigned with celebration formatting and detailed information
+  - `get_move_input()`: Major enhancement with contextual guidance and validation
+
 ## [0.2.9] - 2025-10-03
 
 ### Fixed

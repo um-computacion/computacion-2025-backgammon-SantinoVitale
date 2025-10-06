@@ -43,7 +43,7 @@ class CLI:
 
     def display_board(self, board=None) -> None:  # pylint: disable=too-many-branches
         """
-        Display the current board state in ASCII format.
+        Display the current board state in ASCII format with proper alignment.
 
         Args:
             board: Board object containing game state (optional, uses game.board if not provided)
@@ -55,92 +55,122 @@ class CLI:
             print("No hay tablero disponible para mostrar")
             return
 
-        print("\n" + "=" * 50)
-        print("TABLERO DE BACKGAMMON")
-        print("=" * 50)
+        print("\n" + "=" * 80)
+        print(" " * 30 + "TABLERO DE BACKGAMMON")
+        print("=" * 80)
 
-        # Top half of board (points 13-24)
-        top_line = "13 14 15 16 17 18   BAR   19 20 21 22 23 24"
-        print(f"   {top_line}")
-
-        # Display top checkers
-        for row in range(5):
-            line = " "
-            for point in range(13, 19):
-                checkers = board.points[point - 1] if hasattr(board, "points") else []
-                if len(checkers) > row:
-                    color = (
-                        checkers[row].color[0].upper()
-                        if hasattr(checkers[row], "color")
-                        else "X"
-                    )
-                    line += f" {color} "
-                else:
-                    line += "   "
-
-            # Bar display
-            bar_white = len(board.bar.get("white", [])) if hasattr(board, "bar") else 0
-            bar_black = len(board.bar.get("black", [])) if hasattr(board, "bar") else 0
-            if row == 0 and bar_white > 0:
-                line += f"  W{bar_white} "
-            elif row == 1 and bar_black > 0:
-                line += f"  B{bar_black} "
-            else:
-                line += "     "
-
-            for point in range(19, 25):
-                checkers = board.points[point - 1] if hasattr(board, "points") else []
-                if len(checkers) > row:
-                    color = (
-                        checkers[row].color[0].upper()
-                        if hasattr(checkers[row], "color")
-                        else "X"
-                    )
-                    line += f" {color} "
-                else:
-                    line += "   "
-            print(line)
-
-        print("   " + "-" * 45)
-
-        # Bottom half of board (points 12-1)
-        for row in range(4, -1, -1):
-            line = " "
-            for point in range(12, 6, -1):
-                checkers = board.points[point - 1] if hasattr(board, "points") else []
-                if len(checkers) > row:
-                    color = (
-                        checkers[row].color[0].upper()
-                        if hasattr(checkers[row], "color")
-                        else "X"
-                    )
-                    line += f" {color} "
-                else:
-                    line += "   "
-
-            line += "     "  # Bar space
-
-            for point in range(6, 0, -1):
-                checkers = board.points[point - 1] if hasattr(board, "points") else []
-                if len(checkers) > row:
-                    color = (
-                        checkers[row].color[0].upper()
-                        if hasattr(checkers[row], "color")
-                        else "X"
-                    )
-                    line += f" {color} "
-                else:
-                    line += "   "
-            print(line)
-
-        bottom_line = "12 11 10  9  8  7         6  5  4  3  2  1"
-        print(f"   {bottom_line}")
-
-        # Display off checkers
+        # Get bar and off information
+        bar_white = len(board.bar.get("white", [])) if hasattr(board, "bar") else 0
+        bar_black = len(board.bar.get("black", [])) if hasattr(board, "bar") else 0
         off_white = len(board.off.get("white", [])) if hasattr(board, "off") else 0
         off_black = len(board.off.get("black", [])) if hasattr(board, "off") else 0
-        print(f"\nFUERA: Blancas: {off_white}, Negras: {off_black}")
-        print("=" * 50)
+
+        # Helper function to get checker display
+        def get_checker_display(point_index, row):
+            """Get the display character for a checker at given point and row"""
+            if not hasattr(board, "points") or point_index < 0 or point_index >= 24:
+                return "  "
+            
+            checkers = board.points[point_index]
+            if len(checkers) > row:
+                if hasattr(checkers[row], "color"):
+                    color_char = "W" if checkers[row].color == "white" else "B"
+                    return f" {color_char}"
+                return " X"
+            return "  "
+
+        # Top numbers (points 13-24)
+        print("   13 14 15 16 17 18  │BAR│  19 20 21 22 23 24    OFF")
+        print("   ── ── ── ── ── ──  │───│  ── ── ── ── ── ──    ───")
+
+        # Top checkers (display from bottom to top of stack)
+        for row in range(5):
+            line = "  "
+            
+            # Points 13-18 (left side)
+            for point in range(12, 18):  # 12-17 in 0-based indexing = 13-18 in 1-based
+                line += get_checker_display(point, row)
+                line += " "
+            
+            # Bar display
+            line += " │"
+            if row == 0 and (bar_white > 0 or bar_black > 0):
+                if bar_white > 0:
+                    line += f"W{bar_white:1d}"
+                else:
+                    line += "  "
+                if bar_black > 0:
+                    line += f"B{bar_black:1d}"
+                else:
+                    line += "  "
+            else:
+                line += "   "
+            line += "│ "
+            
+            # Points 19-24 (right side)
+            for point in range(18, 24):  # 18-23 in 0-based indexing = 19-24 in 1-based
+                line += get_checker_display(point, row)
+                line += " "
+            
+            # Off display
+            line += "  │"
+            if row == 0:
+                line += f"W{off_white:2d}"
+            elif row == 1:
+                line += f"B{off_black:2d}"
+            else:
+                line += "   "
+            line += "│"
+            
+            print(line)
+
+        # Middle separator
+        print("   " + "─" * 60)
+
+        # Bottom checkers (display from top to bottom of stack)
+        for row in range(4, -1, -1):
+            line = "  "
+            
+            # Points 12-7 (left side)
+            for point in range(11, 5, -1):  # 11-6 in 0-based indexing = 12-7 in 1-based
+                line += get_checker_display(point, row)
+                line += " "
+            
+            # Bar space (empty in bottom)
+            line += " │   │ "
+            
+            # Points 6-1 (right side)
+            for point in range(5, -1, -1):  # 5-0 in 0-based indexing = 6-1 in 1-based
+                line += get_checker_display(point, row)
+                line += " "
+            
+            # Off space (empty in bottom)
+            line += "  │   │"
+            
+            print(line)
+
+        # Bottom numbers (points 12-1)
+        print("   ── ── ── ── ── ──  │───│  ── ── ── ── ── ──")
+        print("   12 11 10  9  8  7  │BAR│   6  5  4  3  2  1")
+
+        # Legend and game state
+        print("\n" + "─" * 80)
+        print("LEYENDA: W = Fichas Blancas, B = Fichas Negras")
+        print(f"BARRA: Blancas: {bar_white}, Negras: {bar_black}")
+        print(f"FUERA: Blancas: {off_white}, Negras: {off_black}")
+        
+        # Show current player if available
+        if self.game and hasattr(self.game, "get_current_player") and self.game.players:
+            try:
+                current_player = self.game.get_current_player()
+                if current_player:
+                    player_color = "Blancas" if current_player.color == "white" else "Negras"
+                    print(f"TURNO: {current_player.name} ({player_color})")
+            except (IndexError, AttributeError):
+                # No players set up yet
+                pass
+        
+        print("=" * 80)
 
     def get_move_input(self) -> Tuple[Union[int, str], Union[int, str]]:
         """
