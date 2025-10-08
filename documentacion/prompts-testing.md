@@ -2096,3 +2096,137 @@ La implementación fue usada con modificaciones menores para corregir tests que 
 **Additional Tests Added: 35 tests**
 **Total Tests in Project: 74 new tests (2 iterations)**
 **Final Test Count: 252 tests**
+
+---
+
+## Prompt 11
+
+### Modelo: GitHub Copilot (GPT-4o)
+
+### Fecha: 2025-10-08
+
+### Prompt:
+```
+Quiero aumentar el coverage de los test para que sea mayor al 90% porque este fue el resultado de los tests:
+
+Run # Ejecutar coverage con el source correcto
+...........................................................................................................................TERM environment variable not set.
+.................................................................................
+----------------------------------------------------------------------
+Ran 204 tests in 0.077s
+
+OK
+
+[... coverage output showing 79% total coverage ...]
+
+Name                                Stmts   Miss  Cover   Missing
+-----------------------------------------------------------------
+backgammon/core/BackgammonGame.py     219     50    77%   54-57, 87-88, 160-165, 168-173, 179, 212, 217-237, 252, 272, 277-281, 285-289, 299, 309, 468-470, 478-480, 494-495, 540
+backgammon/core/Board.py              150     59    61%   113, 123, 146, 153, 185, 189, 196-197, 217, 220, 223, 245-261, 309, 328-387, 400-421, 433, 447
+backgammon/core/Checker.py             78      6    92%   125, 135, 141, 151, 157, 188
+backgammon/core/Dice.py                50      2    96%   69, 164
+backgammon/core/Player.py              97      9    91%   182, 195, 262, 284, 299-303
+backgammon/core/__init__.py             6      0   100%
+-----------------------------------------------------------------
+TOTAL                                 600    126    79%
+```
+
+### Respuesta:
+
+I'll analyze the coverage report and create tests to increase the coverage above 90%.
+
+**Analysis of Missing Coverage:**
+- BackgammonGame.py: Missing UI integration tests, move validation with edge cases, distance calculations
+- Board.py: Missing bearing off tests, home board validation, possible moves generation
+- Checker.py: Missing static method tests (get_home_board_positions, get_opposite_color)
+- Player.py: Missing edge cases for no color scenarios and state management
+- Dice.py: Missing string representation tests
+
+**Tests Added:**
+
+1. **test__backgammongame.py** - 13 new tests:
+   - `test_set_ui_with_set_game_method`: Test UI connection with set_game method
+   - `test_start_game_with_ui`: Test UI display calls during game start
+   - `test_make_move_from_bar_with_invalid_to_pos`: Test bar moves with invalid destinations
+   - `test_make_move_bear_off_with_invalid_from_pos`: Test bearing off with invalid positions
+   - `test_make_move_normal_with_invalid_positions`: Test normal moves with out-of-range positions
+   - `test_calculate_move_distance_white_invalid_direction`: Test white moving in wrong direction
+   - `test_calculate_move_distance_black_invalid_direction`: Test black moving in wrong direction
+   - `test_calculate_move_distance_from_bar_white`: Test distance calculation from bar for white
+   - `test_calculate_move_distance_from_bar_black`: Test distance calculation from bar for black
+   - `test_calculate_move_distance_to_off_white`: Test distance calculation for white bearing off
+   - `test_calculate_move_distance_to_off_black`: Test distance calculation for black bearing off
+   - `test_validate_move_coordinates_invalid_to_pos_type`: Test coordinate validation with invalid types
+   - `test_validate_move_coordinates_invalid_to_pos_string`: Test coordinate validation with invalid strings
+   - `test_validate_move_coordinates_invalid_to_pos_range`: Test coordinate validation with out-of-range values
+
+2. **test_board.py** - 10 new tests:
+   - `test_is_point_available_invalid_indexes`: Test point availability with invalid indexes
+   - `test_get_possible_moves_with_bar`: Test possible moves when pieces are on bar
+   - `test_get_possible_moves_bearing_off_white`: Test bearing off moves for white
+   - `test_get_possible_moves_bearing_off_black`: Test bearing off moves for black
+   - `test_can_bear_off_white_with_checkers_outside_home`: Test bear off validation for white
+   - `test_can_bear_off_black_with_checkers_outside_home`: Test bear off validation for black
+   - `test_can_bear_off_with_checkers_on_bar`: Test bear off with pieces on bar
+   - `test_can_bear_off_white_all_in_home`: Test successful bear off condition for white
+   - `test_can_bear_off_black_all_in_home`: Test successful bear off condition for black
+   - `test_all_checkers_in_home_board_white`: Test home board checking for white
+   - `test_all_checkers_in_home_board_black`: Test home board checking for black
+   - `test_all_checkers_in_home_board_with_bar`: Test home board with pieces on bar
+   - `test_all_checkers_in_home_board_with_outside_pieces`: Test home board with outside pieces
+
+3. **test_checker.py** - 7 new tests:
+   - `test_get_home_board_positions_white`: Test getting home positions for white
+   - `test_get_home_board_positions_black`: Test getting home positions for black
+   - `test_get_home_board_positions_invalid_color`: Test home positions with invalid color
+   - `test_get_opposite_color_white`: Test getting opposite of white
+   - `test_get_opposite_color_black`: Test getting opposite of black
+   - `test_get_opposite_color_invalid`: Test opposite color with invalid input
+
+4. **test__player.py** - 5 new tests:
+   - `test_get_direction_no_color`: Test direction when player has no color
+   - `test_get_home_board_range_no_color`: Test home board range with no color
+   - `test_get_opponent_color_no_color`: Test opponent color when player has no color
+   - `test_set_state`: Test state restoration functionality
+
+5. **test_dice.py** - 3 new tests:
+   - `test_str_representation_with_roll`: Test string representation after rolling
+   - `test_repr_representation`: Test repr representation
+
+**Test Results:**
+```
+Ran 243 tests in 0.135s
+OK
+```
+
+**Coverage Results:**
+```
+Name                                Stmts   Miss  Cover
+-------------------------------------------------------
+backgammon\core\BackgammonGame.py     219     26    88%
+backgammon\core\Board.py              150     14    91%
+backgammon\core\Checker.py             78      5    94%
+backgammon\core\Dice.py                50      1    98%
+backgammon\core\Player.py              97      1    99%
+backgammon\core\__init__.py             6      0   100%
+-------------------------------------------------------
+TOTAL                                 600     47    92%
+```
+
+**Improvements:**
+- Overall coverage increased from 79% to 92% (+13%)
+- BackgammonGame: 77% → 88% (+11%)
+- Board: 61% → 91% (+30%)
+- Checker: 92% → 94% (+2%)
+- Dice: 96% → 98% (+2%)
+- Player: 91% → 99% (+8%)
+
+### Estado: Usado sin cambios
+
+**Total Tests Added: 38 tests**
+**New Total Test Count: 243 tests**
+**Coverage Achievement: 92% (Target: >90% ✅)**
+
+**Referencias:**
+- Test files: `backgammon/test/test__backgammongame.py`, `backgammon/test/test_board.py`, `backgammon/test/test_checker.py`, `backgammon/test/test__player.py`, `backgammon/test/test_dice.py`
+- CHANGELOG.md version 0.2.13

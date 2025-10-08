@@ -203,7 +203,7 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
             int: Distance of the move
         """
         current_player = self.get_current_player()
-        
+
         if isinstance(from_pos, int) and isinstance(to_pos, int):
             # For regular moves, consider direction of play
             if current_player.color == "white":
