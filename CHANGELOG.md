@@ -5,6 +5,99 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.11] - 2025-01-08
+
+### Changed
+- **Complete CLI Visual Redesign**: Comprehensive overhaul of all CLI display methods for professional appearance
+  - `display_board()`: Complete redesign using Unicode box-drawing characters (╔╗╚╝║═╠╣╬) for clean, aligned structure
+    - Fixed all alignment issues with consistent 4-character width per point
+    - Changed checker symbols from W/B letters to intuitive circles: ● (white) and ○ (black)
+    - Added clear visual separation between board sections (Bar, OFF)
+    - Implemented professional bordered layout with 78-80 character width
+    - Enhanced legend and status information with better formatting
+  
+  - `display_current_player()`: Enhanced turn indicator with bordered box and color symbols
+    - Added 🎮 icon for turn indication
+    - Integrated circle symbols (● ○) for immediate color recognition
+    - Professional bordered display using box-drawing characters
+  
+  - `display_dice_roll()`: Redesigned dice display with bordered box
+    - Added clear bracketed display: [ 6 ] [ 2 ]
+    - Prominent double detection indicator
+    - 🎲 icon for immediate recognition
+  
+  - `display_available_moves()`: Enhanced with icon and clearer formatting
+    - Added 📍 icon for visual clarity
+    - Bracketed list of available moves
+    - Clear message when no moves available with ❌ icon
+  
+  - `get_move_input()`: Completely redesigned input prompt system
+    - Added visual separators (60-character lines) for input area distinction
+    - Integrated 🎯 icon for move input
+    - Clearer examples and help text on multiple lines
+    - Better error messages with ❌ icon and specific guidance
+  
+  - `display_message()` & `display_error()`: Enhanced with emoji icons
+    - Messages prefixed with 💬 icon
+    - Errors prefixed with ❌ icon for immediate recognition
+  
+  - `display_winner()`: Professional winner announcement redesign
+    - Centered bordered box with 🏆 icon
+    - Player name and color symbol display
+    - Elegant spacing and formatting
+  
+  - `display_help()`: Restructured help system with sections and icons
+    - Used box-drawing characters for professional layout
+    - Added section icons: 📋 (commands), 🎯 (format), 💡 (examples)
+    - Clear hierarchical organization
+    - Consistent 68-character box width
+  
+  - `display_game_rules()`: Redesigned rules display with clear sections
+    - Professional bordered layout
+    - Section icons: 🎯 (objective), 🎲 (movement), ⚠️ (special rules), 🏆 (winner)
+    - Integrated circle symbols (● ○) in explanations
+    - Consistent 78-character box width
+  
+  - `get_player_name()`: Enhanced player name input with borders
+    - Added bordered input box with 50-character width
+    - Integrated color symbols (● ○) for clarity
+  
+  - `run_game()`: Redesigned welcome banner
+    - Professional bordered welcome message with 🎲 icon
+    - Multi-line centered layout
+    - Clear game type indication
+    - Success message with ✅ icon after game start
+
+### Added
+- **Icon System**: Comprehensive emoji icon system for visual communication
+  - 🎲 Dice rolls and game title
+  - 🎮 Turn indicator
+  - 🎯 Move input and objectives
+  - ❌ Errors and unavailable actions
+  - ✅ Success confirmations
+  - 💬 General messages
+  - 📍 Available moves
+  - 🏆 Winner announcement
+  - 📋 Commands and menus
+  - 💡 Examples and tips
+  - ⚠️ Special rules and warnings
+
+- **Visual Design System**: Consistent design language across all displays
+  - Heavy borders (╔═╗╚╝) for major sections
+  - Light borders (┌─┐└┘) for information boxes
+  - Consistent width standards (60, 68, 78-80 characters)
+  - Uniform spacing and padding
+  - Professional alignment throughout
+
+### Improved
+- **User Experience**: Significantly enhanced readability and usability
+  - All text elements now properly aligned and spaced
+  - Clear visual hierarchy with consistent formatting
+  - Intuitive symbols that work without color
+  - Better guidance through clear prompts and examples
+  - Professional appearance suitable for extended play sessions
+  - Reduced eye strain through better organization
+
 ## [0.2.10] - 2025-10-06
 
 ### Fixed

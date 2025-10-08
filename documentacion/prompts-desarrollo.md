@@ -1,3 +1,59 @@
+## Prompt 24
+
+### Modelo: GitHub Copilot (Claude 4 Sonnet)
+
+### Fecha: 2025-01-08
+
+### Prompt: 
+El CLI está mal, se ve de manera rara y como corrida, como se podria mejorar esta parte del juego?
+
+The user reported that the CLI board display looks misaligned and shifted, making it difficult to read and understand the game state.
+
+### Instrucciones del sistema:
+- Always follow the SOLID principles
+- Always follow the TDD method  
+- Give detailed explanation and document in prompts-desarrollo.md
+- Place changes in CHANGELOG.md with English dates in Year-Month-Day format
+- Answer always in English
+- Use consistent type hints and docstrings
+- Follow PEP 8 guidelines
+- Program like a Junior developer, avoiding complex techniques
+
+### Respuesta:
+
+#### Análisis del Problema
+
+The CLI interface had several critical UX/UI issues that severely impacted gameplay experience:
+
+1. **Visual Alignment Problems**: Board columns were misaligned, point numbers didn't match positions
+2. **Poor Visual Hierarchy**: No clear distinction between sections, minimal separators
+3. **Limited User Feedback**: Unclear prompts, weak error messages, confusing instructions
+4. **Inconsistent Formatting**: Mixed borders, spacing, no cohesive design system
+
+#### Solución Implementada
+
+**Complete CLI Redesign with Professional Visual System:**
+
+1. **Board Display** - Used Unicode box-drawing characters () for clean structure
+2. **Checker Symbols** - Changed to intuitive circles:  (white) and  (black)
+3. **Information Boxes** - Created visually distinct bordered sections
+4. **Enhanced Prompts** - Clear input areas with separators and examples
+5. **Icon System** - Added emoji for visual cues ()
+6. **Status Displays** - Professional bordered boxes for turns, dice, winner
+7. **Help System** - Restructured with clear sections and icons
+
+#### Archivos Modificados
+
+**backgammon/cli/CLI.py:**
+- Complete redesign of all display methods
+- Consistent 78-80 character width layout
+- Professional box-drawing character usage
+- Enhanced visual feedback system
+
+#### Conclusión
+
+Delivered professional CLI interface with clear alignment, intuitive symbols, consistent formatting, and enhanced user experience while maintaining all existing functionality.
+
 ## Prompt 23
 
 ### Modelo: GitHub Copilot (Claude 4 Sonnet)
