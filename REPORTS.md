@@ -3,54 +3,35 @@
 ```text
 Name                                Stmts   Miss  Cover   Missing
 -----------------------------------------------------------------
-backgammon/core/BackgammonGame.py     219     50    77%   54-57, 87-88, 160-165, 168-173, 179, 212, 217-237, 252, 272, 277-281, 285-289, 299, 309, 468-470, 478-480, 494-495, 540
-backgammon/core/Board.py              150     59    61%   113, 123, 146, 153, 185, 189, 196-197, 217, 220, 223, 245-261, 309, 328-387, 400-421, 433, 447
-backgammon/core/Checker.py             78      6    92%   125, 135, 141, 151, 157, 188
-backgammon/core/Dice.py                50      2    96%   69, 164
-backgammon/core/Player.py              97      9    91%   182, 195, 262, 284, 299-303
+backgammon/core/BackgammonGame.py     219     26    88%   164-165, 172-173, 212, 218, 237, 252, 272, 277-281, 285-289, 299, 309, 468-470, 494-495, 540
+backgammon/core/Board.py              150     14    91%   123, 146, 153, 185, 189, 196-197, 217, 220, 223, 309, 339, 433, 447
+backgammon/core/Checker.py             78      5    94%   125, 135, 141, 151, 157
+backgammon/core/Dice.py                50      1    98%   69
+backgammon/core/Player.py              97      1    99%   284
 backgammon/core/__init__.py             6      0   100%
 -----------------------------------------------------------------
-TOTAL                                 600    126    79%
+TOTAL                                 600     47    92%
 
 ```
 ## Pylint Report
 ```text
 ************* Module backgammon.cli.CLI
-backgammon/cli/CLI.py:76:0: C0301: Line too long (104/100) (line-too-long)
-backgammon/cli/CLI.py:77:0: C0301: Line too long (102/100) (line-too-long)
-backgammon/cli/CLI.py:78:0: C0301: Line too long (102/100) (line-too-long)
-backgammon/cli/CLI.py:91:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:99:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:105:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:113:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:114:0: C0301: Line too long (105/100) (line-too-long)
-backgammon/cli/CLI.py:126:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:132:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:141:0: C0301: Line too long (102/100) (line-too-long)
-backgammon/cli/CLI.py:144:0: C0301: Line too long (125/100) (line-too-long)
-backgammon/cli/CLI.py:145:0: C0301: Line too long (125/100) (line-too-long)
-backgammon/cli/CLI.py:146:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:152:0: C0301: Line too long (101/100) (line-too-long)
-backgammon/cli/CLI.py:161:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:183:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:197:0: C0301: Line too long (104/100) (line-too-long)
-backgammon/cli/CLI.py:296:0: C0301: Line too long (101/100) (line-too-long)
-backgammon/cli/CLI.py:316:0: C0301: Line too long (110/100) (line-too-long)
-backgammon/cli/CLI.py:318:0: C0301: Line too long (108/100) (line-too-long)
-backgammon/cli/CLI.py:602:0: C0301: Line too long (106/100) (line-too-long)
-backgammon/cli/CLI.py:609:0: C0301: Line too long (101/100) (line-too-long)
+backgammon/cli/CLI.py:77:0: C0301: Line too long (101/100) (line-too-long)
+backgammon/cli/CLI.py:125:0: C0301: Line too long (102/100) (line-too-long)
+backgammon/cli/CLI.py:173:0: C0301: Line too long (122/100) (line-too-long)
+backgammon/cli/CLI.py:176:0: C0301: Line too long (122/100) (line-too-long)
+backgammon/cli/CLI.py:247:0: C0301: Line too long (101/100) (line-too-long)
 backgammon/cli/CLI.py:44:4: R0914: Too many local variables (19/15) (too-many-locals)
 backgammon/cli/CLI.py:44:4: R0915: Too many statements (65/50) (too-many-statements)
-backgammon/cli/CLI.py:422:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('bar', 'barra')'. Use a set instead if elements are hashable. (consider-using-in)
-backgammon/cli/CLI.py:424:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('off', 'fuera')'. Use a set instead if elements are hashable. (consider-using-in)
-backgammon/cli/CLI.py:557:20: R1724: Unnecessary "elif" after "continue", remove the leading "el" from "elif" (no-else-continue)
-backgammon/cli/CLI.py:506:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:506:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:506:8: R1702: Too many nested blocks (9/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:506:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:472:4: R0915: Too many statements (93/50) (too-many-statements)
+backgammon/cli/CLI.py:517:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('bar', 'barra')'. Use a set instead if elements are hashable. (consider-using-in)
+backgammon/cli/CLI.py:519:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('off', 'fuera')'. Use a set instead if elements are hashable. (consider-using-in)
+backgammon/cli/CLI.py:654:20: R1724: Unnecessary "elif" after "continue", remove the leading "el" from "elif" (no-else-continue)
+backgammon/cli/CLI.py:601:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:601:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:601:8: R1702: Too many nested blocks (9/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:601:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:567:4: R0915: Too many statements (93/50) (too-many-statements)
 ************* Module backgammon.core.BackgammonGame
-backgammon/core/BackgammonGame.py:206:0: C0303: Trailing whitespace (trailing-whitespace)
 backgammon/core/BackgammonGame.py:211:16: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
 backgammon/core/BackgammonGame.py:217:16: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
 backgammon/core/BackgammonGame.py:223:12: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
@@ -64,7 +45,14 @@ backgammon/core/Board.py:331:8: R1702: Too many nested blocks (6/5) (too-many-ne
 backgammon/core/Board.py:317:4: R0912: Too many branches (17/12) (too-many-branches)
 backgammon/core/Board.py:331:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
 ************* Module backgammon.test.test__BackgammonGame
+backgammon/test/test__BackgammonGame.py:584:0: C0305: Trailing newlines (trailing-newlines)
 backgammon/test/test__BackgammonGame.py:1:0: C0103: Module name "test__BackgammonGame" doesn't conform to snake_case naming style (invalid-name)
+backgammon/test/test__BackgammonGame.py:528:19: W0212: Access to a protected member _calculate_move_distance of a client class (protected-access)
+backgammon/test/test__BackgammonGame.py:535:19: W0212: Access to a protected member _calculate_move_distance of a client class (protected-access)
+backgammon/test/test__BackgammonGame.py:541:19: W0212: Access to a protected member _calculate_move_distance of a client class (protected-access)
+backgammon/test/test__BackgammonGame.py:548:19: W0212: Access to a protected member _calculate_move_distance of a client class (protected-access)
+backgammon/test/test__BackgammonGame.py:554:19: W0212: Access to a protected member _calculate_move_distance of a client class (protected-access)
+backgammon/test/test__BackgammonGame.py:561:19: W0212: Access to a protected member _calculate_move_distance of a client class (protected-access)
 ************* Module backgammon.test.test__Player
 backgammon/test/test__Player.py:1:0: C0103: Module name "test__Player" doesn't conform to snake_case naming style (invalid-name)
 ************* Module backgammon.test.test__CLI
@@ -72,6 +60,12 @@ backgammon/test/test__CLI.py:338:0: C0303: Trailing whitespace (trailing-whitesp
 backgammon/test/test__CLI.py:1:0: C0103: Module name "test__CLI" doesn't conform to snake_case naming style (invalid-name)
 ************* Module backgammon.test.test_Board
 backgammon/test/test_Board.py:1:0: C0103: Module name "test_Board" doesn't conform to snake_case naming style (invalid-name)
+backgammon/test/test_Board.py:214:25: W0212: Access to a protected member _can_bear_off of a client class (protected-access)
+backgammon/test/test_Board.py:220:25: W0212: Access to a protected member _can_bear_off of a client class (protected-access)
+backgammon/test/test_Board.py:226:25: W0212: Access to a protected member _can_bear_off of a client class (protected-access)
+backgammon/test/test_Board.py:234:24: W0212: Access to a protected member _can_bear_off of a client class (protected-access)
+backgammon/test/test_Board.py:242:24: W0212: Access to a protected member _can_bear_off of a client class (protected-access)
+backgammon/test/test_Board.py:13:0: R0904: Too many public methods (30/20) (too-many-public-methods)
 ************* Module backgammon.test.test_Checker
 backgammon/test/test_Checker.py:1:0: C0103: Module name "test_Checker" doesn't conform to snake_case naming style (invalid-name)
 ************* Module backgammon.test.test_Dice
@@ -95,7 +89,7 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
         """ (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 9.76/10
+Your code has been rated at 9.81/10
 
 
 ```
