@@ -171,6 +171,108 @@ class TestBoard(unittest.TestCase):
         with self.assertRaises(IndexError):
             _ = self.board.get_point_top_color(-25)
 
+    def test_is_point_available_invalid_indexes(self):
+        """Test is_point_available with invalid indexes"""
+        self.assertFalse(self.board.is_point_available(-1, "white"))
+        self.assertFalse(self.board.is_point_available(24, "white"))
+
+    def test_get_possible_moves_with_bar(self):
+        """Test get_possible_moves when pieces are on bar"""
+        # Put a white checker on the bar
+        self.board.bar["white"].append(Checker("white"))
+        # Test possible moves from bar
+        moves = self.board.get_possible_moves("white", [3, 5])
+        # Should only return moves from bar
+        self.assertTrue(all(move[0] == "bar" for move in moves))
+
+    def test_get_possible_moves_bearing_off_white(self):
+        """Test get_possible_moves with bearing off for white"""
+        # Clear board and put white checkers in home board
+        self.board.reset()
+        self.board.points[0] = [Checker("white")]
+        self.board.points[1] = [Checker("white")]
+        # Test bearing off
+        moves = self.board.get_possible_moves("white", [1, 2])
+        # Should include bearing off moves
+        self.assertTrue(any(move[1] == "off" for move in moves))
+
+    def test_get_possible_moves_bearing_off_black(self):
+        """Test get_possible_moves with bearing off for black"""
+        # Clear board and put black checkers in home board
+        self.board.reset()
+        self.board.points[22] = [Checker("black")]
+        self.board.points[23] = [Checker("black")]
+        # Test bearing off
+        moves = self.board.get_possible_moves("black", [1, 2])
+        # Should include bearing off moves
+        self.assertTrue(any(move[1] == "off" for move in moves))
+
+    def test_can_bear_off_white_with_checkers_outside_home(self):
+        """Test can_bear_off returns False when white has checkers outside home"""
+        self.board.setup_initial_position()
+        # White has checkers outside home board (points 6+)
+        self.assertFalse(self.board._can_bear_off("white"))
+
+    def test_can_bear_off_black_with_checkers_outside_home(self):
+        """Test can_bear_off returns False when black has checkers outside home"""
+        self.board.setup_initial_position()
+        # Black has checkers outside home board (points below 18)
+        self.assertFalse(self.board._can_bear_off("black"))
+
+    def test_can_bear_off_with_checkers_on_bar(self):
+        """Test can_bear_off returns False when checkers on bar"""
+        self.board.reset()
+        self.board.bar["white"].append(Checker("white"))
+        self.assertFalse(self.board._can_bear_off("white"))
+
+    def test_can_bear_off_white_all_in_home(self):
+        """Test can_bear_off returns True when all white checkers in home"""
+        self.board.reset()
+        # Put all white checkers in home board (points 0-5)
+        for i in range(6):
+            self.board.points[i] = [Checker("white")]
+        self.assertTrue(self.board._can_bear_off("white"))
+
+    def test_can_bear_off_black_all_in_home(self):
+        """Test can_bear_off returns True when all black checkers in home"""
+        self.board.reset()
+        # Put all black checkers in home board (points 18-23)
+        for i in range(18, 24):
+            self.board.points[i] = [Checker("black")]
+        self.assertTrue(self.board._can_bear_off("black"))
+
+    def test_all_checkers_in_home_board_white(self):
+        """Test all_checkers_in_home_board for white"""
+        self.board.reset()
+        # Put white checkers in home board
+        for i in range(6):
+            self.board.points[i].append(Checker("white"))
+        self.assertTrue(self.board.all_checkers_in_home_board("white"))
+
+    def test_all_checkers_in_home_board_black(self):
+        """Test all_checkers_in_home_board for black"""
+        self.board.reset()
+        # Put black checkers in home board
+        for i in range(18, 24):
+            self.board.points[i].append(Checker("black"))
+        self.assertTrue(self.board.all_checkers_in_home_board("black"))
+
+    def test_all_checkers_in_home_board_with_bar(self):
+        """Test all_checkers_in_home_board with checkers on bar"""
+        self.board.reset()
+        for i in range(6):
+            self.board.points[i].append(Checker("white"))
+        self.board.bar["white"].append(Checker("white"))
+        self.assertFalse(self.board.all_checkers_in_home_board("white"))
+
+    def test_all_checkers_in_home_board_with_outside_pieces(self):
+        """Test all_checkers_in_home_board with pieces outside home"""
+        self.board.reset()
+        for i in range(6):
+            self.board.points[i].append(Checker("white"))
+        self.board.points[10].append(Checker("white"))
+        self.assertFalse(self.board.all_checkers_in_home_board("white"))
+
 
 if __name__ == "__main__":
     unittest.main()

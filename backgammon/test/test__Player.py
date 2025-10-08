@@ -377,6 +377,40 @@ class TestPlayer(unittest.TestCase):
         with self.assertRaises(ValueError):
             player.set_color("invalid_color")
 
+    def test_get_direction_no_color(self):
+        """Test get_direction when player has no color"""
+        player = Player()
+        direction = player.get_direction()
+        self.assertEqual(direction, 0)
+
+    def test_get_home_board_range_no_color(self):
+        """Test get_home_board_range when player has no color"""
+        player = Player()
+        result = player.get_home_board_range()
+        self.assertEqual(result, range(0, 0))
+
+    def test_get_opponent_color_no_color(self):
+        """Test get_opponent_color when player has no color"""
+        player = Player()
+        result = player.get_opponent_color()
+        self.assertIsNone(result)
+
+    def test_set_state(self):
+        """Test set_state method"""
+        state = {
+            "name": "TestPlayer",
+            "color": "white",
+            "checkers_on_board": 10,
+            "checkers_off_board": 3,
+            "checkers_on_bar": 2,
+        }
+        self.player_default.set_state(state)
+        self.assertEqual(self.player_default.name, "TestPlayer")
+        self.assertEqual(self.player_default.color, "white")
+        self.assertEqual(self.player_default.checkers_on_board, 10)
+        self.assertEqual(self.player_default.checkers_off_board, 3)
+        self.assertEqual(self.player_default.checkers_on_bar, 2)
+
 
 if __name__ == "__main__":
     unittest.main()

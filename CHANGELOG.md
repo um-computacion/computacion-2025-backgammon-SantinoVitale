@@ -5,6 +5,31 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.13] - 2025-10-08
+
+### Added
+- **Test Coverage Improvements**: Added comprehensive unit tests to increase coverage above 90%
+  - Added 13 new tests for BackgammonGame covering UI integration, move validation, and distance calculations
+  - Added 10 new tests for Board covering bearing off, home board validation, and possible moves
+  - Added 7 new tests for Checker covering static methods (get_home_board_positions, get_opposite_color)
+  - Added 5 new tests for Player covering edge cases for no color scenarios and state management
+  - Added 3 new tests for Dice covering string representations
+  
+### Changed
+- **Test Suite Enhancement**: Improved test coverage from 79% to 92%
+  - BackgammonGame coverage increased from 77% to 88%
+  - Board coverage increased from 61% to 91%
+  - Checker coverage increased from 92% to 94%
+  - Dice coverage increased from 96% to 98%
+  - Player coverage increased from 91% to 99%
+  
+### Improved
+- **Code Quality**: Enhanced test reliability and maintainability
+  - Better coverage of edge cases and error conditions
+  - More comprehensive testing of UI integration
+  - Improved testing of move validation logic
+  - Enhanced testing of bearing off mechanics
+
 ## [0.2.12] - 2025-01-08
 
 ### Fixed

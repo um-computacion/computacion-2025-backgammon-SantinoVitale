@@ -282,6 +282,36 @@ class TestChecker(unittest.TestCase):
             with self.assertRaises(TypeError):
                 self.white_checker.set_position(pos)
 
+    def test_get_home_board_positions_white(self):
+        """Test get_home_board_positions for white"""
+        positions = Checker.get_home_board_positions("white")
+        self.assertEqual(positions, list(range(1, 7)))
+
+    def test_get_home_board_positions_black(self):
+        """Test get_home_board_positions for black"""
+        positions = Checker.get_home_board_positions("black")
+        self.assertEqual(positions, list(range(19, 25)))
+
+    def test_get_home_board_positions_invalid_color(self):
+        """Test get_home_board_positions with invalid color"""
+        with self.assertRaises(ValueError):
+            Checker.get_home_board_positions("red")
+
+    def test_get_opposite_color_white(self):
+        """Test get_opposite_color for white"""
+        opposite = Checker.get_opposite_color("white")
+        self.assertEqual(opposite, "black")
+
+    def test_get_opposite_color_black(self):
+        """Test get_opposite_color for black"""
+        opposite = Checker.get_opposite_color("black")
+        self.assertEqual(opposite, "white")
+
+    def test_get_opposite_color_invalid(self):
+        """Test get_opposite_color with invalid color"""
+        with self.assertRaises(ValueError):
+            Checker.get_opposite_color("red")
+
 
 if __name__ == "__main__":
     unittest.main()

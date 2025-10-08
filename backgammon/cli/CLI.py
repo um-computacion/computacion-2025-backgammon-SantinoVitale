@@ -73,13 +73,23 @@ class CLI:
             return " "
 
         # Header
-        print("\n╔═══════════════════════════════════════════════════════════════════════════════════╗")
-        print("║                              TABLERO DE BACKGAMMON                                ║")
-        print("╠═══════════════════════════════════════════════════════════════════════════════════╣")
+        print(
+            "\n╔═══════════════════════════════════════════════════════════════════════════════════╗"
+        )
+        print(
+            "║                              TABLERO DE BACKGAMMON                                ║"
+        )
+        print(
+            "╠═══════════════════════════════════════════════════════════════════════════════════╣"
+        )
 
         # Top row: point numbers - cada punto ocupa 5 caracteres
-        print("║  13   14   15   16   17   18  ║ BAR ║  19   20   21   22   23   24  ║  OFF  ║")
-        print("║  ──   ──   ──   ──   ──   ──  ╠═════╣  ──   ──   ──   ──   ──   ──  ╠═══════╣")
+        print(
+            "║  13   14   15   16   17   18  ║ BAR ║  19   20   21   22   23   24  ║  OFF  ║"
+        )
+        print(
+            "║  ──   ──   ──   ──   ──   ──  ╠═════╣  ──   ──   ──   ──   ──   ──  ╠═══════╣"
+        )
 
         # Top checkers (5 rows) - cada ficha centrada en 5 caracteres
         for row in range(5):
@@ -88,7 +98,7 @@ class CLI:
             for i in range(12, 18):
                 ch = get_checker(i, row)
                 left_checkers.append(f"  {ch}  ")
-            
+
             # Bar display
             if row == 0:
                 bar_display = f" W:{bar_white} "
@@ -96,13 +106,13 @@ class CLI:
                 bar_display = f" B:{bar_black} "
             else:
                 bar_display = "     "
-            
+
             # Points 19-24 (indices 18-23)
             right_checkers = []
             for i in range(18, 24):
                 ch = get_checker(i, row)
                 right_checkers.append(f"  {ch}  ")
-            
+
             # OFF display
             if row == 0:
                 off_display = f" W:{off_white:2d} "
@@ -110,11 +120,15 @@ class CLI:
                 off_display = f" B:{off_black:2d} "
             else:
                 off_display = "      "
-            
-            print(f"║{''.join(left_checkers)} ║{bar_display}║{''.join(right_checkers)} ║{off_display} ║")
+
+            print(
+                f"║{''.join(left_checkers)} ║{bar_display}║{''.join(right_checkers)} ║{off_display} ║"
+            )
 
         # Middle separator
-        print("╠═══════════════════════════════╬═════╬═══════════════════════════════╬═══════╣")
+        print(
+            "╠═══════════════════════════════╬═════╬═══════════════════════════════╬═══════╣"
+        )
 
         # Bottom checkers (5 rows, reversed) - cada ficha centrada en 5 caracteres
         for row in range(4, -1, -1):
@@ -123,43 +137,71 @@ class CLI:
             for i in range(11, 5, -1):
                 ch = get_checker(i, row)
                 left_checkers.append(f"  {ch}  ")
-            
+
             # Points 6-1 (indices 5-0, descending)
             right_checkers = []
             for i in range(5, -1, -1):
                 ch = get_checker(i, row)
                 right_checkers.append(f"  {ch}  ")
-            
-            print(f"║{''.join(left_checkers)} ║     ║{''.join(right_checkers)} ║       ║")
+
+            print(
+                f"║{''.join(left_checkers)} ║     ║{''.join(right_checkers)} ║       ║"
+            )
 
         # Bottom row: point numbers
-        print("║  ──   ──   ──   ──   ──   ──  ╠═════╣  ──   ──   ──   ──   ──   ──  ╚═══════╝")
-        print("║  12   11   10   09   08   07  ║ BAR ║  06   05   04   03   02   01            ")
-        print("╚═══════════════════════════════╩═════╩════════════════════════════════╝        ")
+        print(
+            "║  ──   ──   ──   ──   ──   ──  ╠═════╣  ──   ──   ──   ──   ──   ──  ╚═══════╝"
+        )
+        print(
+            "║  12   11   10   09   08   07  ║ BAR ║  06   05   04   03   02   01            "
+        )
+        print(
+            "╚═══════════════════════════════╩═════╩════════════════════════════════╝        "
+        )
 
         # Legend and game state
-        print("\n┌─────────────────────────────────────────────────────────────────────────────────┐")
-        print("│ LEYENDA: ● = Fichas Blancas  |  ○ = Fichas Negras                               │")
-        print("├─────────────────────────────────────────────────────────────────────────────────┤")
-        print(f"│ BARRA → Blancas: {bar_white:2d}  |  Negras: {bar_black:2d}                                              │")
-        print(f"│ FUERA → Blancas: {off_white:2d}  |  Negras: {off_black:2d}                                              │")
-        
+        print(
+            "\n┌─────────────────────────────────────────────────────────────────────────────────┐"
+        )
+        print(
+            "│ LEYENDA: ● = Fichas Blancas  |  ○ = Fichas Negras                               │"
+        )
+        print(
+            "├─────────────────────────────────────────────────────────────────────────────────┤"
+        )
+        print(
+            f"│ BARRA → Blancas: {bar_white:2d}  |  Negras: {bar_black:2d}                                              │"
+        )
+        print(
+            f"│ FUERA → Blancas: {off_white:2d}  |  Negras: {off_black:2d}                                              │"
+        )
+
         # Show current player if available
         if self.game and hasattr(self.game, "get_current_player") and self.game.players:
             try:
                 current_player = self.game.get_current_player()
                 if current_player:
-                    player_color = "Blancas (●)" if current_player.color == "white" else "Negras (○)"
+                    player_color = (
+                        "Blancas (●)"
+                        if current_player.color == "white"
+                        else "Negras (○)"
+                    )
                     name_len = len(current_player.name)
                     color_len = len(player_color)
                     # 86 total width - "│ TURNO → " (9) - name - " - " (3) - color
                     padding = 78 - 5 - name_len - 3 - color_len - 1  # -1 for final │
-                    print(f"│ TURNO → {current_player.name} - {player_color}" + " " * padding + "│")
+                    print(
+                        f"│ TURNO → {current_player.name} - {player_color}"
+                        + " " * padding
+                        + "│"
+                    )
             except (IndexError, AttributeError):
                 # No players set up yet
                 pass
-        
-        print("└─────────────────────────────────────────────────────────────────────────────────┘")
+
+        print(
+            "└─────────────────────────────────────────────────────────────────────────────────┘"
+        )
 
     def get_move_input(self) -> Tuple[Union[int, str], Union[int, str]]:
         """
@@ -172,7 +214,7 @@ class CLI:
         while True:
             try:
                 # Show some example moves based on current player
-                if self.game and hasattr(self.game, 'get_current_player'):
+                if self.game and hasattr(self.game, "get_current_player"):
                     current_player = self.game.get_current_player()
                     if current_player.color == "white":
                         examples = "'12 8', '1 fuera'"
@@ -180,7 +222,7 @@ class CLI:
                         examples = "'8 12', '24 fuera'"
                 else:
                     examples = "'12 8', 'barra 20', '1 fuera'"
-                
+
                 print("\n" + "─" * 60)
                 move_input = input(
                     f"🎯 Movimiento DESDE-HASTA (ej: {examples})\n   o 'ayuda', 'reglas', 'salir': "
@@ -188,13 +230,22 @@ class CLI:
                 print("─" * 60)
 
                 # Handle special commands
-                if move_input.lower() in ["ayuda", "reglas", "salir", "help", "rules", "quit"]:
+                if move_input.lower() in [
+                    "ayuda",
+                    "reglas",
+                    "salir",
+                    "help",
+                    "rules",
+                    "quit",
+                ]:
                     return move_input.lower(), None
 
                 parts = move_input.split()
 
                 if len(parts) != 2:
-                    print("\n❌ Formato inválido. Necesita especificar posición DESDE y posición HASTA.")
+                    print(
+                        "\n❌ Formato inválido. Necesita especificar posición DESDE y posición HASTA."
+                    )
                     print("   Ejemplo: '12 8' = mover del punto 12 al punto 8")
                     print("   Use 'barra' para la barra y 'fuera' para sacar fichas")
                     continue
@@ -268,7 +319,9 @@ class CLI:
             True if confirmed, False otherwise
         """
         response = (
-            input(f"¿Confirmar movimiento de {from_pos} a {to_pos}? (s/n): ").strip().lower()
+            input(f"¿Confirmar movimiento de {from_pos} a {to_pos}? (s/n): ")
+            .strip()
+            .lower()
         )
         return response in ["s", "sí", "si", "y", "yes"]
 
@@ -293,7 +346,11 @@ class CLI:
             print("║" + " " * 58 + "║")
             print("║" + " " * 18 + "� ¡FELICITACIONES! �" + " " * 18 + "║")
             print("║" + " " * 58 + "║")
-            print(f"║  {name} {color_symbol} ha ganado el juego!" + " " * (56 - len(name) - 2) + "║")
+            print(
+                f"║  {name} {color_symbol} ha ganado el juego!"
+                + " " * (56 - len(name) - 2)
+                + "║"
+            )
             print("║" + " " * 58 + "║")
             print("╚" + "═" * 58 + "╝")
         else:
@@ -313,9 +370,17 @@ class CLI:
         if player:
             name = getattr(player, "name", "Desconocido")
             color = getattr(player, "color", "desconocido")
-            color_spanish = "Blancas (●)" if color == "white" else "Negras (○)" if color == "black" else color
+            color_spanish = (
+                "Blancas (●)"
+                if color == "white"
+                else "Negras (○)" if color == "black" else color
+            )
             print("\n" + "╔" + "═" * 58 + "╗")
-            print(f"║  TURNO: {name} - {color_spanish}" + " " * (46 - len(name) - len(color_spanish)) + "║")
+            print(
+                f"║  TURNO: {name} - {color_spanish}"
+                + " " * (46 - len(name) - len(color_spanish))
+                + "║"
+            )
             print("╚" + "═" * 58 + "╝")
 
     def display_dice_roll(self, dice_values: Optional[List[int]] = None) -> None:
@@ -332,7 +397,9 @@ class CLI:
         if dice_values and len(dice_values) >= 2:
             print("\n┌─────────────────────────────┐")
             if dice_values[0] == dice_values[1]:
-                print(f"│ 🎲 DADOS: [ {dice_values[0]} ] [ {dice_values[1]} ] ¡DOBLE! │")
+                print(
+                    f"│ 🎲 DADOS: [ {dice_values[0]} ] [ {dice_values[1]} ] ¡DOBLE! │"
+                )
             else:
                 print(f"│ 🎲 DADOS: [ {dice_values[0]} ] [ {dice_values[1]} ]       │")
             print("└─────────────────────────────┘")
@@ -345,7 +412,9 @@ class CLI:
             moves: List of available move distances (optional, gets from game if not provided)
         """
         if moves is None and self.game:
-            if hasattr(self.game, "dice") and hasattr(self.game.dice, "get_available_moves"):
+            if hasattr(self.game, "dice") and hasattr(
+                self.game.dice, "get_available_moves"
+            ):
                 moves = self.game.dice.get_available_moves()
 
         if moves:
@@ -382,20 +451,46 @@ class CLI:
         print("║" + " " * 28 + "REGLAS DE BACKGAMMON" + " " * 30 + "║")
         print("╠" + "═" * 78 + "╣")
         print("║  🎯 OBJETIVO:" + " " * 63 + "║")
-        print("║  Mover todas tus fichas a tu tablero casa y sacarlas del juego." + " " * 13 + "║")
-        print("║  • Blancas (●): puntos 1-6  |  Negras (○): puntos 19-24" + " " * 21 + "║")
+        print(
+            "║  Mover todas tus fichas a tu tablero casa y sacarlas del juego."
+            + " " * 13
+            + "║"
+        )
+        print(
+            "║  • Blancas (●): puntos 1-6  |  Negras (○): puntos 19-24" + " " * 21 + "║"
+        )
         print("╠" + "═" * 78 + "╣")
         print("║  🎲 MOVIMIENTO:" + " " * 61 + "║")
         print("║  • Lanza dos dados para determinar tus movimientos" + " " * 26 + "║")
-        print("║  • Mueve fichas el número de puntos mostrado en los dados" + " " * 19 + "║")
-        print("║  • Si sacas dobles, obtienes cuatro movimientos de ese número" + " " * 16 + "║")
+        print(
+            "║  • Mueve fichas el número de puntos mostrado en los dados"
+            + " " * 19
+            + "║"
+        )
+        print(
+            "║  • Si sacas dobles, obtienes cuatro movimientos de ese número"
+            + " " * 16
+            + "║"
+        )
         print("║  • Debes usar ambos dados si es posible" + " " * 37 + "║")
         print("╠" + "═" * 78 + "╣")
         print("║  ⚠️  REGLAS ESPECIALES:" + " " * 54 + "║")
-        print("║  • Golpea fichas del oponente para enviarlas a la barra" + " " * 21 + "║")
-        print("║  • Debes ingresar fichas de la barra antes de otros movimientos" + " " * 13 + "║")
-        print("║  • Solo puedes sacar cuando todas estén en el tablero casa" + " " * 18 + "║")
-        print("║  • No puedes mover a puntos con 2+ fichas del oponente" + " " * 23 + "║")
+        print(
+            "║  • Golpea fichas del oponente para enviarlas a la barra" + " " * 21 + "║"
+        )
+        print(
+            "║  • Debes ingresar fichas de la barra antes de otros movimientos"
+            + " " * 13
+            + "║"
+        )
+        print(
+            "║  • Solo puedes sacar cuando todas estén en el tablero casa"
+            + " " * 18
+            + "║"
+        )
+        print(
+            "║  • No puedes mover a puntos con 2+ fichas del oponente" + " " * 23 + "║"
+        )
         print("╠" + "═" * 78 + "╣")
         print("║  🏆 GANADOR:" + " " * 64 + "║")
         print("║  ¡El primer jugador en sacar todas sus fichas gana!" + " " * 25 + "║")
@@ -537,7 +632,9 @@ class CLI:
                     hasattr(self.game, "has_valid_moves")
                     and not self.game.has_valid_moves()
                 ):
-                    self.display_message("No hay movimientos válidos disponibles. Turno omitido.")
+                    self.display_message(
+                        "No hay movimientos válidos disponibles. Turno omitido."
+                    )
                     if hasattr(self.game, "switch_turns"):
                         self.game.switch_turns()
                     continue
@@ -596,19 +693,27 @@ class CLI:
                                         break
                             else:
                                 # Show more helpful error message
-                                if hasattr(self.game, 'get_possible_moves'):
+                                if hasattr(self.game, "get_possible_moves"):
                                     possible_moves = self.game.get_possible_moves()
                                     if possible_moves:
-                                        self.display_error(f"Movimiento inválido: {from_pos} a {to_pos}.")
+                                        self.display_error(
+                                            f"Movimiento inválido: {from_pos} a {to_pos}."
+                                        )
                                         print("Movimientos válidos disponibles:")
                                         for fp, tp in possible_moves[:5]:
                                             print(f"  {fp} {tp}")
                                         if len(possible_moves) > 5:
-                                            print(f"  ... y {len(possible_moves) - 5} más")
+                                            print(
+                                                f"  ... y {len(possible_moves) - 5} más"
+                                            )
                                     else:
-                                        self.display_error("No hay movimientos válidos disponibles.")
+                                        self.display_error(
+                                            "No hay movimientos válidos disponibles."
+                                        )
                                 else:
-                                    self.display_error("Movimiento inválido. Intente nuevamente.")
+                                    self.display_error(
+                                        "Movimiento inválido. Intente nuevamente."
+                                    )
                         except (ValueError, TypeError, AttributeError) as e:
                             self.display_error(f"Movimiento falló: {str(e)}")
 

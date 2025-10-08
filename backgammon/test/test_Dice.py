@@ -291,6 +291,23 @@ class TestDice(unittest.TestCase):
             self.assertEqual(len(self.dice.values), 4)
             self.assertTrue(all(v == value for v in self.dice.values))
 
+    def test_str_representation_with_roll(self):
+        """Test string representation after roll"""
+        self.dice.last_roll = [3, 5]
+        dice_str = str(self.dice)
+        self.assertIn("3", dice_str)
+        self.assertIn("5", dice_str)
+        self.assertIsInstance(dice_str, str)
+
+    def test_repr_representation(self):
+        """Test repr representation"""
+        self.dice.last_roll = [2, 4]
+        self.dice.values = [2, 4]
+        repr_str = repr(self.dice)
+        self.assertIn("2", repr_str)
+        self.assertIn("4", repr_str)
+        self.assertIsInstance(repr_str, str)
+
 
 if __name__ == "__main__":
     unittest.main()
