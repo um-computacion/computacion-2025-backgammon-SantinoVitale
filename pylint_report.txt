@@ -1,29 +1,37 @@
 ************* Module backgammon.cli.CLI
-backgammon/cli/CLI.py:73:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:89:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:94:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:109:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:114:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:124:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:133:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:138:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:141:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:76:0: C0301: Line too long (104/100) (line-too-long)
+backgammon/cli/CLI.py:77:0: C0301: Line too long (102/100) (line-too-long)
+backgammon/cli/CLI.py:78:0: C0301: Line too long (102/100) (line-too-long)
+backgammon/cli/CLI.py:91:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:99:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:105:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:113:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:114:0: C0301: Line too long (105/100) (line-too-long)
+backgammon/cli/CLI.py:126:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:132:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:141:0: C0301: Line too long (102/100) (line-too-long)
+backgammon/cli/CLI.py:144:0: C0301: Line too long (125/100) (line-too-long)
+backgammon/cli/CLI.py:145:0: C0301: Line too long (125/100) (line-too-long)
 backgammon/cli/CLI.py:146:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:149:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:152:0: C0301: Line too long (101/100) (line-too-long)
 backgammon/cli/CLI.py:161:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:172:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:194:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/cli/CLI.py:592:0: C0301: Line too long (106/100) (line-too-long)
-backgammon/cli/CLI.py:599:0: C0301: Line too long (101/100) (line-too-long)
-backgammon/cli/CLI.py:44:4: R0915: Too many statements (70/50) (too-many-statements)
-backgammon/cli/CLI.py:421:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('bar', 'barra')'. Use a set instead if elements are hashable. (consider-using-in)
-backgammon/cli/CLI.py:423:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('off', 'fuera')'. Use a set instead if elements are hashable. (consider-using-in)
-backgammon/cli/CLI.py:547:20: R1724: Unnecessary "elif" after "continue", remove the leading "el" from "elif" (no-else-continue)
-backgammon/cli/CLI.py:496:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:496:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:496:8: R1702: Too many nested blocks (9/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:496:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:471:4: R0915: Too many statements (86/50) (too-many-statements)
+backgammon/cli/CLI.py:183:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/cli/CLI.py:197:0: C0301: Line too long (104/100) (line-too-long)
+backgammon/cli/CLI.py:296:0: C0301: Line too long (101/100) (line-too-long)
+backgammon/cli/CLI.py:316:0: C0301: Line too long (110/100) (line-too-long)
+backgammon/cli/CLI.py:318:0: C0301: Line too long (108/100) (line-too-long)
+backgammon/cli/CLI.py:602:0: C0301: Line too long (106/100) (line-too-long)
+backgammon/cli/CLI.py:609:0: C0301: Line too long (101/100) (line-too-long)
+backgammon/cli/CLI.py:44:4: R0914: Too many local variables (19/15) (too-many-locals)
+backgammon/cli/CLI.py:44:4: R0915: Too many statements (65/50) (too-many-statements)
+backgammon/cli/CLI.py:422:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('bar', 'barra')'. Use a set instead if elements are hashable. (consider-using-in)
+backgammon/cli/CLI.py:424:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('off', 'fuera')'. Use a set instead if elements are hashable. (consider-using-in)
+backgammon/cli/CLI.py:557:20: R1724: Unnecessary "elif" after "continue", remove the leading "el" from "elif" (no-else-continue)
+backgammon/cli/CLI.py:506:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:506:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:506:8: R1702: Too many nested blocks (9/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:506:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:472:4: R0915: Too many statements (93/50) (too-many-statements)
 ************* Module backgammon.core.BackgammonGame
 backgammon/core/BackgammonGame.py:206:0: C0303: Trailing whitespace (trailing-whitespace)
 backgammon/core/BackgammonGame.py:211:16: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
@@ -61,14 +69,14 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
             return 1
         return 0
 
-    def get_home_board_range(self):
+    def can_bear_off(self):
         """
-        Obtiene el rango del home board para este jugador.
+        Verifica si la ficha puede hacer bearing off desde su posición actual.
 
         Returns:
-          range: Rango de posiciones del home board
+          bool: True si puede hacer bearing off, False en caso contrario
         """ (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 9.79/10
+Your code has been rated at 9.76/10
 
