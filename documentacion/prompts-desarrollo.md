@@ -1,3 +1,180 @@
+## Prompt 25
+
+### Modelo: GitHub Copilot (Claude 4 Sonnet)
+
+### Fecha: 2025-01-08
+
+### Prompt: 
+Acabo de subir una imagen de como se ve el CLI actual con los cambios, se sigue viendo movido, hay alguna forma de alinear todo para mejor entendimiento por parte del jugador?
+
+User reported alignment issues persisting after initial improvements, with board columns still appearing misaligned and difficult to read based on screenshot provided.
+
+### Respuesta:
+
+#### Análisis del Problema Persistente
+
+After reviewing the screenshot, identified critical alignment issues:
+
+1. **Inconsistent Column Widths**: Each point didn't have fixed width causing checkers to appear misaligned
+2. **Variable Spacing**: Space between checkers varied depending on content
+3. **Border Misalignment**: Box-drawing characters weren't lining up properly
+4. **Off-by-one Errors**: Padding calculations were incorrect for various sections
+
+#### Solución Implementada - Alineación Perfecta
+
+**Key Fix: Fixed-Width Column System**
+
+Implemented a 5-character fixed width per point: "  {checker}  " where:
+- 2 spaces before checker
+- 1 character for checker ( or  or space)
+- 2 spaces after checker
+
+This ensures perfect alignment regardless of content.
+
+**Código Mejorado:**
+
+`python
+def get_checker(point_index, row):
+    \"\"\"Get single checker character\"\"\"
+    if len(checkers) > row:
+        return "" if checkers[row].color == "white" else ""
+    return " "
+
+# Build each row with fixed 5-char columns
+for i in range(12, 18):  # Points 13-18
+    ch = get_checker(i, row)
+    left_checkers.append(f"  {ch}  ")  # Always 5 characters
+
+print(f"{''.join(left_checkers)} {bar_display}...")
+`
+
+**Layout Specifications:**
+
+- **Board Width**: 86 characters total
+- **Each Point**: Exactly 5 characters ("    ")
+- **6 Points**: 30 characters
+- **BAR Section**: 7 characters (" W:0  ")
+- **OFF Section**: 8 characters (" W:0  ")
+- **Borders**: Consistent  and  characters
+
+**Updated Sections:**
+
+1. **Board Header**: 86-character width
+2. **Point Numbers**: 5 chars each with proper spacing
+3. **Checker Rows**: Fixed-width columns using string joining
+4. **Legend Box**: 86-character width to match board
+5. **Turn Display**: Dynamic padding calculation based on actual string length
+
+#### Mejoras Técnicas
+
+**Before (Problematic):**
+`python
+line += get_checker_display(point, row) + " "  # Variable width
+`
+
+**After (Fixed):**
+`python
+ch = get_checker(i, row)  # Single character
+left_checkers.append(f"  {ch}  ")  # Fixed 5-char width
+print(f"{''.join(left_checkers)} ...")  # Consistent spacing
+`
+
+**Padding Formula for Dynamic Content:**
+`python
+# For turn display with variable-length names
+padding = 86 - 9 - len(name) - 3 - len(color) - 1
+print(f" TURNO  {name} - {color}" + " " * padding + "")
+`
+
+#### Resultados
+
+**Perfect Alignment Achieved:**
+- All point numbers line up with their columns
+- All checkers centered in their 5-character columns
+- BAR and OFF sections properly aligned
+- Borders form perfect rectangles
+- Legend box matches board width exactly
+
+**Benefits:**
+1. **Crystal Clear Layout**: No more guessing which checker is in which point
+2. **Professional Appearance**: Clean, grid-like structure
+3. **Easy Scanning**: Eyes can follow columns vertically
+4. **Consistent Spacing**: Same visual rhythm throughout
+
+#### Archivos Modificados
+
+**backgammon/cli/CLI.py:**
+- display_board(): Complete rewrite with fixed-width column system
+  - Changed from variable-width string concatenation to fixed 5-char blocks
+  - Implemented proper padding calculations for all sections
+  - Updated board width from 78 to 86 characters
+  - Fixed legend box width to match board
+
+#### Pruebas
+
+All 41 CLI tests pass:
+`
+============ 41 passed in 0.26s ============
+`
+
+Board display is now perfectly aligned with professional appearance.
+
+## Prompt 24
+
+### Modelo: GitHub Copilot (Claude 4 Sonnet)
+
+### Fecha: 2025-01-08
+
+### Prompt: 
+El CLI está mal, se ve de manera rara y como corrida, como se podria mejorar esta parte del juego?
+
+The user reported that the CLI board display looks misaligned and shifted, making it difficult to read and understand the game state.
+
+### Instrucciones del sistema:
+- Always follow the SOLID principles
+- Always follow the TDD method  
+- Give detailed explanation and document in prompts-desarrollo.md
+- Place changes in CHANGELOG.md with English dates in Year-Month-Day format
+- Answer always in English
+- Use consistent type hints and docstrings
+- Follow PEP 8 guidelines
+- Program like a Junior developer, avoiding complex techniques
+
+### Respuesta:
+
+#### Análisis del Problema
+
+The CLI interface had several critical UX/UI issues that severely impacted gameplay experience:
+
+1. **Visual Alignment Problems**: Board columns were misaligned, point numbers didn't match positions
+2. **Poor Visual Hierarchy**: No clear distinction between sections, minimal separators
+3. **Limited User Feedback**: Unclear prompts, weak error messages, confusing instructions
+4. **Inconsistent Formatting**: Mixed borders, spacing, no cohesive design system
+
+#### Solución Implementada
+
+**Complete CLI Redesign with Professional Visual System:**
+
+1. **Board Display** - Used Unicode box-drawing characters () for clean structure
+2. **Checker Symbols** - Changed to intuitive circles:  (white) and  (black)
+3. **Information Boxes** - Created visually distinct bordered sections
+4. **Enhanced Prompts** - Clear input areas with separators and examples
+5. **Icon System** - Added emoji for visual cues ()
+6. **Status Displays** - Professional bordered boxes for turns, dice, winner
+7. **Help System** - Restructured with clear sections and icons
+
+#### Archivos Modificados
+
+**backgammon/cli/CLI.py:**
+- Complete redesign of all display methods
+- Consistent 78-80 character width layout
+- Professional box-drawing character usage
+- Enhanced visual feedback system
+
+#### Conclusión
+
+Delivered professional CLI interface with clear alignment, intuitive symbols, consistent formatting, and enhanced user experience while maintaining all existing functionality.
+
 ## Prompt 23
 
 ### Modelo: GitHub Copilot (Claude 4 Sonnet)

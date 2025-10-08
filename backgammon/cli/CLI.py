@@ -55,122 +55,111 @@ class CLI:
             print("No hay tablero disponible para mostrar")
             return
 
-        print("\n" + "=" * 80)
-        print(" " * 30 + "TABLERO DE BACKGAMMON")
-        print("=" * 80)
-
         # Get bar and off information
         bar_white = len(board.bar.get("white", [])) if hasattr(board, "bar") else 0
         bar_black = len(board.bar.get("black", [])) if hasattr(board, "bar") else 0
         off_white = len(board.off.get("white", [])) if hasattr(board, "off") else 0
         off_black = len(board.off.get("black", [])) if hasattr(board, "off") else 0
 
-        # Helper function to get checker display
-        def get_checker_display(point_index, row):
-            """Get the display character for a checker at given point and row"""
+        # Helper function to get single checker character
+        def get_checker(point_index, row):
+            """Get single checker character"""
             if not hasattr(board, "points") or point_index < 0 or point_index >= 24:
-                return "  "
-            
+                return " "
             checkers = board.points[point_index]
             if len(checkers) > row:
                 if hasattr(checkers[row], "color"):
-                    color_char = "W" if checkers[row].color == "white" else "B"
-                    return f" {color_char}"
-                return " X"
-            return "  "
+                    return "●" if checkers[row].color == "white" else "○"
+            return " "
 
-        # Top numbers (points 13-24)
-        print("   13 14 15 16 17 18  │BAR│  19 20 21 22 23 24    OFF")
-        print("   ── ── ── ── ── ──  │───│  ── ── ── ── ── ──    ───")
+        # Header
+        print("\n╔═══════════════════════════════════════════════════════════════════════════════════╗")
+        print("║                              TABLERO DE BACKGAMMON                                ║")
+        print("╠═══════════════════════════════════════════════════════════════════════════════════╣")
 
-        # Top checkers (display from bottom to top of stack)
+        # Top row: point numbers - cada punto ocupa 5 caracteres
+        print("║  13   14   15   16   17   18  ║ BAR ║  19   20   21   22   23   24  ║  OFF  ║")
+        print("║  ──   ──   ──   ──   ──   ──  ╠═════╣  ──   ──   ──   ──   ──   ──  ╠═══════╣")
+
+        # Top checkers (5 rows) - cada ficha centrada en 5 caracteres
         for row in range(5):
-            line = "  "
-            
-            # Points 13-18 (left side)
-            for point in range(12, 18):  # 12-17 in 0-based indexing = 13-18 in 1-based
-                line += get_checker_display(point, row)
-                line += " "
+            # Points 13-18 (indices 12-17)
+            left_checkers = []
+            for i in range(12, 18):
+                ch = get_checker(i, row)
+                left_checkers.append(f"  {ch}  ")
             
             # Bar display
-            line += " │"
-            if row == 0 and (bar_white > 0 or bar_black > 0):
-                if bar_white > 0:
-                    line += f"W{bar_white:1d}"
-                else:
-                    line += "  "
-                if bar_black > 0:
-                    line += f"B{bar_black:1d}"
-                else:
-                    line += "  "
-            else:
-                line += "   "
-            line += "│ "
-            
-            # Points 19-24 (right side)
-            for point in range(18, 24):  # 18-23 in 0-based indexing = 19-24 in 1-based
-                line += get_checker_display(point, row)
-                line += " "
-            
-            # Off display
-            line += "  │"
             if row == 0:
-                line += f"W{off_white:2d}"
+                bar_display = f" W:{bar_white} "
             elif row == 1:
-                line += f"B{off_black:2d}"
+                bar_display = f" B:{bar_black} "
             else:
-                line += "   "
-            line += "│"
+                bar_display = "     "
             
-            print(line)
+            # Points 19-24 (indices 18-23)
+            right_checkers = []
+            for i in range(18, 24):
+                ch = get_checker(i, row)
+                right_checkers.append(f"  {ch}  ")
+            
+            # OFF display
+            if row == 0:
+                off_display = f" W:{off_white:2d} "
+            elif row == 1:
+                off_display = f" B:{off_black:2d} "
+            else:
+                off_display = "      "
+            
+            print(f"║{''.join(left_checkers)} ║{bar_display}║{''.join(right_checkers)} ║{off_display} ║")
 
         # Middle separator
-        print("   " + "─" * 60)
+        print("╠═══════════════════════════════╬═════╬═══════════════════════════════╬═══════╣")
 
-        # Bottom checkers (display from top to bottom of stack)
+        # Bottom checkers (5 rows, reversed) - cada ficha centrada en 5 caracteres
         for row in range(4, -1, -1):
-            line = "  "
+            # Points 12-7 (indices 11-6, descending)
+            left_checkers = []
+            for i in range(11, 5, -1):
+                ch = get_checker(i, row)
+                left_checkers.append(f"  {ch}  ")
             
-            # Points 12-7 (left side)
-            for point in range(11, 5, -1):  # 11-6 in 0-based indexing = 12-7 in 1-based
-                line += get_checker_display(point, row)
-                line += " "
+            # Points 6-1 (indices 5-0, descending)
+            right_checkers = []
+            for i in range(5, -1, -1):
+                ch = get_checker(i, row)
+                right_checkers.append(f"  {ch}  ")
             
-            # Bar space (empty in bottom)
-            line += " │   │ "
-            
-            # Points 6-1 (right side)
-            for point in range(5, -1, -1):  # 5-0 in 0-based indexing = 6-1 in 1-based
-                line += get_checker_display(point, row)
-                line += " "
-            
-            # Off space (empty in bottom)
-            line += "  │   │"
-            
-            print(line)
+            print(f"║{''.join(left_checkers)} ║     ║{''.join(right_checkers)} ║       ║")
 
-        # Bottom numbers (points 12-1)
-        print("   ── ── ── ── ── ──  │───│  ── ── ── ── ── ──")
-        print("   12 11 10  9  8  7  │BAR│   6  5  4  3  2  1")
+        # Bottom row: point numbers
+        print("║  ──   ──   ──   ──   ──   ──  ╠═════╣  ──   ──   ──   ──   ──   ──  ╚═══════╝")
+        print("║  12   11   10   09   08   07  ║ BAR ║  06   05   04   03   02   01            ")
+        print("╚═══════════════════════════════╩═════╩════════════════════════════════╝        ")
 
         # Legend and game state
-        print("\n" + "─" * 80)
-        print("LEYENDA: W = Fichas Blancas, B = Fichas Negras")
-        print(f"BARRA: Blancas: {bar_white}, Negras: {bar_black}")
-        print(f"FUERA: Blancas: {off_white}, Negras: {off_black}")
+        print("\n┌─────────────────────────────────────────────────────────────────────────────────┐")
+        print("│ LEYENDA: ● = Fichas Blancas  |  ○ = Fichas Negras                               │")
+        print("├─────────────────────────────────────────────────────────────────────────────────┤")
+        print(f"│ BARRA → Blancas: {bar_white:2d}  |  Negras: {bar_black:2d}                                              │")
+        print(f"│ FUERA → Blancas: {off_white:2d}  |  Negras: {off_black:2d}                                              │")
         
         # Show current player if available
         if self.game and hasattr(self.game, "get_current_player") and self.game.players:
             try:
                 current_player = self.game.get_current_player()
                 if current_player:
-                    player_color = "Blancas" if current_player.color == "white" else "Negras"
-                    print(f"TURNO: {current_player.name} ({player_color})")
+                    player_color = "Blancas (●)" if current_player.color == "white" else "Negras (○)"
+                    name_len = len(current_player.name)
+                    color_len = len(player_color)
+                    # 86 total width - "│ TURNO → " (9) - name - " - " (3) - color
+                    padding = 78 - 5 - name_len - 3 - color_len - 1  # -1 for final │
+                    print(f"│ TURNO → {current_player.name} - {player_color}" + " " * padding + "│")
             except (IndexError, AttributeError):
                 # No players set up yet
                 pass
         
-        print("=" * 80)
+        print("└─────────────────────────────────────────────────────────────────────────────────┘")
 
     def get_move_input(self) -> Tuple[Union[int, str], Union[int, str]]:
         """
@@ -186,15 +175,17 @@ class CLI:
                 if self.game and hasattr(self.game, 'get_current_player'):
                     current_player = self.game.get_current_player()
                     if current_player.color == "white":
-                        examples = "'12 8' (mover del 12 al 8), '1 fuera' (sacar del 1)"
+                        examples = "'12 8', '1 fuera'"
                     else:
-                        examples = "'8 12' (mover del 8 al 12), '24 fuera' (sacar del 24)"
+                        examples = "'8 12', '24 fuera'"
                 else:
                     examples = "'12 8', 'barra 20', '1 fuera'"
                 
+                print("\n" + "─" * 60)
                 move_input = input(
-                    f"Ingrese movimiento DESDE-HASTA (ej: {examples}): "
+                    f"🎯 Movimiento DESDE-HASTA (ej: {examples})\n   o 'ayuda', 'reglas', 'salir': "
                 ).strip()
+                print("─" * 60)
 
                 # Handle special commands
                 if move_input.lower() in ["ayuda", "reglas", "salir", "help", "rules", "quit"]:
@@ -203,31 +194,29 @@ class CLI:
                 parts = move_input.split()
 
                 if len(parts) != 2:
-                    print(
-                        "\nFormato inválido. Necesita especificar posición DESDE y posición HASTA."
-                    )
-                    print("Ejemplo: '12 8' significa mover una ficha del punto 12 al punto 8.")
-                    print("Use 'barra' para fichas en la barra y 'fuera' para sacar fichas.\n")
+                    print("\n❌ Formato inválido. Necesita especificar posición DESDE y posición HASTA.")
+                    print("   Ejemplo: '12 8' = mover del punto 12 al punto 8")
+                    print("   Use 'barra' para la barra y 'fuera' para sacar fichas")
                     continue
 
                 from_pos, to_pos = parts
 
                 # Convert to Spanish alternatives
-                if from_pos == "barra":
+                if from_pos.lower() == "barra":
                     from_pos = "bar"
-                if to_pos == "fuera":
+                if to_pos.lower() == "fuera":
                     to_pos = "off"
 
                 # Convert numeric positions
-                if from_pos.isdigit():
+                if isinstance(from_pos, str) and from_pos.isdigit():
                     from_pos = int(from_pos)
-                if to_pos.isdigit():
+                if isinstance(to_pos, str) and to_pos.isdigit():
                     to_pos = int(to_pos)
 
                 return from_pos, to_pos
 
             except (ValueError, KeyboardInterrupt):
-                print("Entrada inválida. Por favor intente nuevamente.")
+                print("\n❌ Entrada inválida. Por favor intente nuevamente.")
                 continue
 
     def display_message(self, message: str) -> None:
@@ -237,7 +226,7 @@ class CLI:
         Args:
             message: Message text to display
         """
-        print(f"\n{message}")
+        print(f"\n💬 {message}")
 
     def display_error(self, error: str) -> None:
         """
@@ -246,7 +235,7 @@ class CLI:
         Args:
             error: Error message to display
         """
-        print(f"\nError: {error}")
+        print(f"\n❌ Error: {error}")
 
     def get_player_name(self, color: str) -> str:
         """
@@ -258,10 +247,13 @@ class CLI:
         Returns:
             Player name string
         """
-        color_spanish = "blanco" if color == "white" else "negro"
-        name = input(f"Ingrese nombre para el jugador {color_spanish}: ").strip()
+        color_spanish = "Blancas (●)" if color == "white" else "Negras (○)"
+        default_name = "Jugador Blanco" if color == "white" else "Jugador Negro"
+        print(f"\n┌{'─' * 50}┐")
+        name = input(f"│ Nombre para {color_spanish}: ").strip()
+        print(f"└{'─' * 50}┘")
         if not name:
-            return f"Jugador {color_spanish.title()}"
+            return default_name
         return name
 
     def confirm_move(self, from_pos: Union[int, str], to_pos: Union[int, str]) -> bool:
@@ -294,9 +286,16 @@ class CLI:
 
         if player:
             name = getattr(player, "name", "Desconocido")
-            print("\n🎉 ¡FELICITACIONES! 🎉")
-            print(f"¡{name} gana el juego!")
-            print("=" * 30)
+            color = getattr(player, "color", "desconocido")
+            color_symbol = "●" if color == "white" else "○"
+            print("\n")
+            print("╔" + "═" * 58 + "╗")
+            print("║" + " " * 58 + "║")
+            print("║" + " " * 18 + "� ¡FELICITACIONES! �" + " " * 18 + "║")
+            print("║" + " " * 58 + "║")
+            print(f"║  {name} {color_symbol} ha ganado el juego!" + " " * (56 - len(name) - 2) + "║")
+            print("║" + " " * 58 + "║")
+            print("╚" + "═" * 58 + "╝")
         else:
             print("\n¡Juego terminado!")
 
@@ -314,8 +313,10 @@ class CLI:
         if player:
             name = getattr(player, "name", "Desconocido")
             color = getattr(player, "color", "desconocido")
-            color_spanish = "blanco" if color == "white" else "negro" if color == "black" else color
-            print(f"\n{name} ({color_spanish}) - ¡Es tu turno!")
+            color_spanish = "Blancas (●)" if color == "white" else "Negras (○)" if color == "black" else color
+            print("\n" + "╔" + "═" * 58 + "╗")
+            print(f"║  TURNO: {name} - {color_spanish}" + " " * (46 - len(name) - len(color_spanish)) + "║")
+            print("╚" + "═" * 58 + "╝")
 
     def display_dice_roll(self, dice_values: Optional[List[int]] = None) -> None:
         """
@@ -325,14 +326,16 @@ class CLI:
             dice_values: List of dice values [die1, die2] (optional, uses game dice if not provided)
         """
         if dice_values is None and self.game:
-            if hasattr(self.game, "dice") and hasattr(self.game.dice, "values"):
-                dice_values = self.game.dice.values
+            if hasattr(self.game, "dice") and hasattr(self.game.dice, "last_roll"):
+                dice_values = self.game.dice.last_roll
 
         if dice_values and len(dice_values) >= 2:
-            if len(dice_values) == 2 and dice_values[0] == dice_values[1]:
-                print(f"\n🎲 Lanzamiento de dados: {dice_values[0]}, {dice_values[1]} - ¡DOBLE!")
+            print("\n┌─────────────────────────────┐")
+            if dice_values[0] == dice_values[1]:
+                print(f"│ 🎲 DADOS: [ {dice_values[0]} ] [ {dice_values[1]} ] ¡DOBLE! │")
             else:
-                print(f"\n🎲 Lanzamiento de dados: {dice_values[0]}, {dice_values[1]}")
+                print(f"│ 🎲 DADOS: [ {dice_values[0]} ] [ {dice_values[1]} ]       │")
+            print("└─────────────────────────────┘")
 
     def display_available_moves(self, moves: Optional[List[int]] = None) -> None:
         """
@@ -342,63 +345,61 @@ class CLI:
             moves: List of available move distances (optional, gets from game if not provided)
         """
         if moves is None and self.game:
-            if hasattr(self.game, "get_available_moves"):
-                moves = self.game.get_available_moves()
+            if hasattr(self.game, "dice") and hasattr(self.game.dice, "get_available_moves"):
+                moves = self.game.dice.get_available_moves()
 
         if moves:
-            print(f"Movimientos disponibles: {', '.join(map(str, moves))}")
+            moves_str = ", ".join(map(str, moves))
+            print(f"\n📍 Movimientos disponibles: [ {moves_str} ]")
         else:
-            print("No hay movimientos disponibles")
+            print("\n❌ No hay movimientos disponibles")
 
     def display_help(self) -> None:
         """Display help information."""
-        help_text = """
-AYUDA DE BACKGAMMON
-===================
-
-Comandos Básicos:
-- Ingrese movimientos como 'desde hasta' (ej: '1 4', 'barra 20', '6 fuera')
-- 'ayuda' - Mostrar esta ayuda
-- 'reglas' - Mostrar reglas del juego
-- 'salir' - Salir del juego
-
-Formato de Movimiento:
-- Use números de punto 1-24
-- Use 'barra' para fichas en la barra
-- Use 'fuera' para sacar fichas
-
-Ejemplos de movimientos:
-- '8 12' - Mover del punto 8 al punto 12
-- 'barra 20' - Mover de la barra al punto 20
-- '6 fuera' - Sacar ficha del punto 6
-"""
-        print(help_text)
+        print("\n╔" + "═" * 68 + "╗")
+        print("║" + " " * 24 + "AYUDA DE BACKGAMMON" + " " * 25 + "║")
+        print("╠" + "═" * 68 + "╣")
+        print("║  📋 COMANDOS BÁSICOS:" + " " * 45 + "║")
+        print("║  • 'desde hasta' - Realizar movimiento (ej: '12 8', '1 fuera')  ║")
+        print("║  • 'ayuda' - Mostrar esta ayuda" + " " * 34 + "║")
+        print("║  • 'reglas' - Mostrar reglas del juego" + " " * 28 + "║")
+        print("║  • 'salir' - Salir del juego" + " " * 38 + "║")
+        print("╠" + "═" * 68 + "╣")
+        print("║  🎯 FORMATO DE MOVIMIENTO:" + " " * 40 + "║")
+        print("║  • Números 1-24 para posiciones del tablero" + " " * 23 + "║")
+        print("║  • 'barra' para fichas en la barra" + " " * 32 + "║")
+        print("║  • 'fuera' para sacar fichas del tablero" + " " * 26 + "║")
+        print("╠" + "═" * 68 + "╣")
+        print("║  💡 EJEMPLOS:" + " " * 53 + "║")
+        print("║  • '8 12' - Mover del punto 8 al punto 12" + " " * 25 + "║")
+        print("║  • 'barra 20' - Mover de la barra al punto 20" + " " * 21 + "║")
+        print("║  • '6 fuera' - Sacar ficha del punto 6" + " " * 28 + "║")
+        print("╚" + "═" * 68 + "╝")
 
     def display_game_rules(self) -> None:
         """Display the rules of backgammon."""
-        rules_text = """
-REGLAS DE BACKGAMMON
-====================
-
-Objetivo: Mover todas tus fichas a tu tablero casa (puntos 1-6 para blancas, 19-24 para negras) y sacarlas.
-
-Configuración: Cada jugador comienza con 15 fichas dispuestas en el tablero.
-
-Movimiento:
-- Lanza dos dados para determinar movimientos
-- Mueve fichas el número de puntos mostrado en los dados
-- Si sacas dobles, obtienes cuatro movimientos de ese número
-- Debes usar ambos dados si es posible
-
-Reglas Especiales:
-- Golpea fichas del oponente para enviarlas a la barra
-- Debes ingresar fichas de la barra antes de hacer otros movimientos
-- Solo puedes sacar fichas cuando todas estén en el tablero casa
-- No puedes mover a puntos ocupados por 2+ fichas del oponente
-
-¡Ganador: El primer jugador en sacar todas las fichas gana!
-"""
-        print(rules_text)
+        print("\n╔" + "═" * 78 + "╗")
+        print("║" + " " * 28 + "REGLAS DE BACKGAMMON" + " " * 30 + "║")
+        print("╠" + "═" * 78 + "╣")
+        print("║  🎯 OBJETIVO:" + " " * 63 + "║")
+        print("║  Mover todas tus fichas a tu tablero casa y sacarlas del juego." + " " * 13 + "║")
+        print("║  • Blancas (●): puntos 1-6  |  Negras (○): puntos 19-24" + " " * 21 + "║")
+        print("╠" + "═" * 78 + "╣")
+        print("║  🎲 MOVIMIENTO:" + " " * 61 + "║")
+        print("║  • Lanza dos dados para determinar tus movimientos" + " " * 26 + "║")
+        print("║  • Mueve fichas el número de puntos mostrado en los dados" + " " * 19 + "║")
+        print("║  • Si sacas dobles, obtienes cuatro movimientos de ese número" + " " * 16 + "║")
+        print("║  • Debes usar ambos dados si es posible" + " " * 37 + "║")
+        print("╠" + "═" * 78 + "╣")
+        print("║  ⚠️  REGLAS ESPECIALES:" + " " * 54 + "║")
+        print("║  • Golpea fichas del oponente para enviarlas a la barra" + " " * 21 + "║")
+        print("║  • Debes ingresar fichas de la barra antes de otros movimientos" + " " * 13 + "║")
+        print("║  • Solo puedes sacar cuando todas estén en el tablero casa" + " " * 18 + "║")
+        print("║  • No puedes mover a puntos con 2+ fichas del oponente" + " " * 23 + "║")
+        print("╠" + "═" * 78 + "╣")
+        print("║  🏆 GANADOR:" + " " * 64 + "║")
+        print("║  ¡El primer jugador en sacar todas sus fichas gana!" + " " * 25 + "║")
+        print("╚" + "═" * 78 + "╝")
 
     def pause_game(self) -> None:
         """Pause the game and wait for user input."""
@@ -478,8 +479,15 @@ Reglas Especiales:
             print("Error: No hay instancia de juego disponible")
             return
 
-        self.display_message("¡Bienvenido al Backgammon!")
-        self.display_message("Juego local de dos jugadores")
+        # Welcome banner
+        print("\n")
+        print("╔" + "═" * 78 + "╗")
+        print("║" + " " * 78 + "║")
+        print("║" + " " * 25 + "🎲 BACKGAMMON 🎲" + " " * 37 + "║")
+        print("║" + " " * 78 + "║")
+        print("║" + " " * 20 + "Juego local para dos jugadores" + " " * 28 + "║")
+        print("║" + " " * 78 + "║")
+        print("╚" + "═" * 78 + "╝")
 
         # Get player names
         player1_name = self.get_player_name("white")
@@ -491,6 +499,8 @@ Reglas Especiales:
 
         if hasattr(self.game, "start_game"):
             self.game.start_game()
+
+        print("\n✅ ¡Juego iniciado! Que comience la partida...\n")
 
         # Main game loop
         while True:
