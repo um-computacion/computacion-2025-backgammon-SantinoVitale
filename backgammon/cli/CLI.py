@@ -61,97 +61,88 @@ class CLI:
         off_white = len(board.off.get("white", [])) if hasattr(board, "off") else 0
         off_black = len(board.off.get("black", [])) if hasattr(board, "off") else 0
 
-        # Helper function to get checker display
-        def get_checker_display(point_index, row):
-            """Get the display character for a checker at given point and row"""
+        # Helper function to get single checker character
+        def get_checker(point_index, row):
+            """Get single checker character"""
             if not hasattr(board, "points") or point_index < 0 or point_index >= 24:
-                return "  "
-            
+                return " "
             checkers = board.points[point_index]
             if len(checkers) > row:
                 if hasattr(checkers[row], "color"):
-                    color_char = "●" if checkers[row].color == "white" else "○"
-                    return f"{color_char} "
-                return "X "
-            return "  "
+                    return "●" if checkers[row].color == "white" else "○"
+            return " "
 
         # Header
-        print("\n" + "╔" + "═" * 78 + "╗")
-        print("║" + " " * 26 + "TABLERO DE BACKGAMMON" + " " * 31 + "║")
-        print("╠" + "═" * 78 + "╣")
+        print("\n╔═══════════════════════════════════════════════════════════════════════════════════╗")
+        print("║                              TABLERO DE BACKGAMMON                                ║")
+        print("╠═══════════════════════════════════════════════════════════════════════════════════╣")
 
-        # Top numbers (points 13-24)
-        print("║  13  14  15  16  17  18  ║ BAR ║  19  20  21  22  23  24  ║  OFF  ║")
-        print("║  ──  ──  ──  ──  ──  ──  ╠═════╣  ──  ──  ──  ──  ──  ──  ╠═══════╣")
+        # Top row: point numbers - cada punto ocupa 5 caracteres
+        print("║  13   14   15   16   17   18  ║ BAR ║  19   20   21   22   23   24  ║  OFF  ║")
+        print("║  ──   ──   ──   ──   ──   ──  ╠═════╣  ──   ──   ──   ──   ──   ──  ╠═══════╣")
 
-        # Top checkers (display from bottom to top of stack)
+        # Top checkers (5 rows) - cada ficha centrada en 5 caracteres
         for row in range(5):
-            line = "║ "
-            
-            # Points 13-18 (left side)
-            for point in range(12, 18):
-                line += get_checker_display(point, row) + " "
+            # Points 13-18 (indices 12-17)
+            left_checkers = []
+            for i in range(12, 18):
+                ch = get_checker(i, row)
+                left_checkers.append(f"  {ch}  ")
             
             # Bar display
-            line += " ║ "
             if row == 0:
-                line += f"W:{bar_white:<2d}"
+                bar_display = f" W:{bar_white} "
             elif row == 1:
-                line += f"B:{bar_black:<2d}"
+                bar_display = f" B:{bar_black} "
             else:
-                line += "    "
-            line += " ║ "
+                bar_display = "     "
             
-            # Points 19-24 (right side)
-            for point in range(18, 24):
-                line += get_checker_display(point, row) + " "
+            # Points 19-24 (indices 18-23)
+            right_checkers = []
+            for i in range(18, 24):
+                ch = get_checker(i, row)
+                right_checkers.append(f"  {ch}  ")
             
-            # Off display
-            line += " ║ "
+            # OFF display
             if row == 0:
-                line += f"W:{off_white:<2d}"
+                off_display = f" W:{off_white:2d} "
             elif row == 1:
-                line += f"B:{off_black:<2d}"
+                off_display = f" B:{off_black:2d} "
             else:
-                line += "     "
-            line += " ║"
+                off_display = "      "
             
-            print(line)
+            print(f"║{''.join(left_checkers)} ║{bar_display}║{''.join(right_checkers)} ║{off_display} ║")
 
         # Middle separator
-        print("╠" + "═" * 31 + "╬" + "═" * 5 + "╬" + "═" * 31 + "╬" + "═" * 7 + "╣")
+        print("╠═══════════════════════════════╬═════╬═══════════════════════════════╬═══════╣")
 
-        # Bottom checkers (display from top to bottom of stack)
+        # Bottom checkers (5 rows, reversed) - cada ficha centrada en 5 caracteres
         for row in range(4, -1, -1):
-            line = "║ "
+            # Points 12-7 (indices 11-6, descending)
+            left_checkers = []
+            for i in range(11, 5, -1):
+                ch = get_checker(i, row)
+                left_checkers.append(f"  {ch}  ")
             
-            # Points 12-7 (left side)
-            for point in range(11, 5, -1):
-                line += get_checker_display(point, row) + " "
+            # Points 6-1 (indices 5-0, descending)
+            right_checkers = []
+            for i in range(5, -1, -1):
+                ch = get_checker(i, row)
+                right_checkers.append(f"  {ch}  ")
             
-            # Bar space (empty in bottom)
-            line += " ║     ║ "
-            
-            # Points 6-1 (right side)
-            for point in range(5, -1, -1):
-                line += get_checker_display(point, row) + " "
-            
-            # Off space (empty in bottom)
-            line += " ║       ║"
-            
-            print(line)
+            print(f"║{''.join(left_checkers)} ║     ║{''.join(right_checkers)} ║       ║")
 
-        # Bottom numbers (points 12-1)
-        print("║  ──  ──  ──  ──  ──  ──  ╠═════╣  ──  ──  ──  ──  ──  ──  ╚═══════╝")
-        print("║  12  11  10  09  08  07  ║ BAR ║  06  05  04  03  02  01  ")
-        print("╚" + "═" * 31 + "╩" + "═" * 5 + "╩" + "═" * 31 + "╝")
+        # Bottom row: point numbers
+        print("║  ──   ──   ──   ──   ──   ──  ╠═════╣  ──   ──   ──   ──   ──   ──  ╚═══════╝")
+        print("║  12   11   10   09   08   07  ║ BAR ║  06   05   04   03   02   01            ")
+        print("╚═══════════════════════════════╩═════╩════════════════════════════════╝        ")
 
         # Legend and game state
-        print("\n┌" + "─" * 78 + "┐")
-        print("│ LEYENDA: ● = Fichas Blancas  |  ○ = Fichas Negras" + " " * 27 + "│")
-        print("├" + "─" * 78 + "┤")
-        print(f"│ BARRA → Blancas: {bar_white:<2d}  |  Negras: {bar_black:<2d}" + " " * 45 + "│")
-        print(f"│ FUERA → Blancas: {off_white:<2d}  |  Negras: {off_black:<2d}" + " " * 45 + "│")
+        print("\n┌─────────────────────────────────────────────────────────────────────────────────┐")
+        print("│ LEYENDA: ● = Fichas Blancas  |  ○ = Fichas Negras                               │")
+        print("├─────────────────────────────────────────────────────────────────────────────────┤")
+        print(f"│ BARRA → Blancas: {bar_white:2d}  |  Negras: {bar_black:2d}                                              │")
+        print(f"│ FUERA → Blancas: {off_white:2d}  |  Negras: {off_black:2d}                                              │")
         
         # Show current player if available
         if self.game and hasattr(self.game, "get_current_player") and self.game.players:
@@ -159,14 +150,16 @@ class CLI:
                 current_player = self.game.get_current_player()
                 if current_player:
                     player_color = "Blancas (●)" if current_player.color == "white" else "Negras (○)"
-                    status_line = f"│ TURNO → {current_player.name} - {player_color}"
-                    padding = 78 - len(status_line) + 1
-                    print(status_line + " " * padding + "│")
+                    name_len = len(current_player.name)
+                    color_len = len(player_color)
+                    # 86 total width - "│ TURNO → " (9) - name - " - " (3) - color
+                    padding = 78 - 5 - name_len - 3 - color_len - 1  # -1 for final │
+                    print(f"│ TURNO → {current_player.name} - {player_color}" + " " * padding + "│")
             except (IndexError, AttributeError):
                 # No players set up yet
                 pass
         
-        print("└" + "─" * 78 + "┘")
+        print("└─────────────────────────────────────────────────────────────────────────────────┘")
 
     def get_move_input(self) -> Tuple[Union[int, str], Union[int, str]]:
         """
@@ -322,7 +315,7 @@ class CLI:
             color = getattr(player, "color", "desconocido")
             color_spanish = "Blancas (●)" if color == "white" else "Negras (○)" if color == "black" else color
             print("\n" + "╔" + "═" * 58 + "╗")
-            print(f"║  🎮 TURNO: {name} - {color_spanish}" + " " * (57 - len(name) - len(color_spanish)) + "║")
+            print(f"║  TURNO: {name} - {color_spanish}" + " " * (46 - len(name) - len(color_spanish)) + "║")
             print("╚" + "═" * 58 + "╝")
 
     def display_dice_roll(self, dice_values: Optional[List[int]] = None) -> None:
@@ -341,7 +334,7 @@ class CLI:
             if dice_values[0] == dice_values[1]:
                 print(f"│ 🎲 DADOS: [ {dice_values[0]} ] [ {dice_values[1]} ] ¡DOBLE! │")
             else:
-                print(f"│ 🎲 DADOS: [ {dice_values[0]} ] [ {dice_values[1]} ]         │")
+                print(f"│ 🎲 DADOS: [ {dice_values[0]} ] [ {dice_values[1]} ]       │")
             print("└─────────────────────────────┘")
 
     def display_available_moves(self, moves: Optional[List[int]] = None) -> None:
@@ -490,9 +483,9 @@ class CLI:
         print("\n")
         print("╔" + "═" * 78 + "╗")
         print("║" + " " * 78 + "║")
-        print("║" + " " * 25 + "🎲 BACKGAMMON 🎲" + " " * 35 + "║")
+        print("║" + " " * 25 + "🎲 BACKGAMMON 🎲" + " " * 37 + "║")
         print("║" + " " * 78 + "║")
-        print("║" + " " * 20 + "Juego local para dos jugadores" + " " * 27 + "║")
+        print("║" + " " * 20 + "Juego local para dos jugadores" + " " * 28 + "║")
         print("║" + " " * 78 + "║")
         print("╚" + "═" * 78 + "╝")
 

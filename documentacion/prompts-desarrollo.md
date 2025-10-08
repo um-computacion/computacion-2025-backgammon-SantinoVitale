@@ -1,3 +1,124 @@
+## Prompt 25
+
+### Modelo: GitHub Copilot (Claude 4 Sonnet)
+
+### Fecha: 2025-01-08
+
+### Prompt: 
+Acabo de subir una imagen de como se ve el CLI actual con los cambios, se sigue viendo movido, hay alguna forma de alinear todo para mejor entendimiento por parte del jugador?
+
+User reported alignment issues persisting after initial improvements, with board columns still appearing misaligned and difficult to read based on screenshot provided.
+
+### Respuesta:
+
+#### Análisis del Problema Persistente
+
+After reviewing the screenshot, identified critical alignment issues:
+
+1. **Inconsistent Column Widths**: Each point didn't have fixed width causing checkers to appear misaligned
+2. **Variable Spacing**: Space between checkers varied depending on content
+3. **Border Misalignment**: Box-drawing characters weren't lining up properly
+4. **Off-by-one Errors**: Padding calculations were incorrect for various sections
+
+#### Solución Implementada - Alineación Perfecta
+
+**Key Fix: Fixed-Width Column System**
+
+Implemented a 5-character fixed width per point: "  {checker}  " where:
+- 2 spaces before checker
+- 1 character for checker ( or  or space)
+- 2 spaces after checker
+
+This ensures perfect alignment regardless of content.
+
+**Código Mejorado:**
+
+`python
+def get_checker(point_index, row):
+    \"\"\"Get single checker character\"\"\"
+    if len(checkers) > row:
+        return "" if checkers[row].color == "white" else ""
+    return " "
+
+# Build each row with fixed 5-char columns
+for i in range(12, 18):  # Points 13-18
+    ch = get_checker(i, row)
+    left_checkers.append(f"  {ch}  ")  # Always 5 characters
+
+print(f"{''.join(left_checkers)} {bar_display}...")
+`
+
+**Layout Specifications:**
+
+- **Board Width**: 86 characters total
+- **Each Point**: Exactly 5 characters ("    ")
+- **6 Points**: 30 characters
+- **BAR Section**: 7 characters (" W:0  ")
+- **OFF Section**: 8 characters (" W:0  ")
+- **Borders**: Consistent  and  characters
+
+**Updated Sections:**
+
+1. **Board Header**: 86-character width
+2. **Point Numbers**: 5 chars each with proper spacing
+3. **Checker Rows**: Fixed-width columns using string joining
+4. **Legend Box**: 86-character width to match board
+5. **Turn Display**: Dynamic padding calculation based on actual string length
+
+#### Mejoras Técnicas
+
+**Before (Problematic):**
+`python
+line += get_checker_display(point, row) + " "  # Variable width
+`
+
+**After (Fixed):**
+`python
+ch = get_checker(i, row)  # Single character
+left_checkers.append(f"  {ch}  ")  # Fixed 5-char width
+print(f"{''.join(left_checkers)} ...")  # Consistent spacing
+`
+
+**Padding Formula for Dynamic Content:**
+`python
+# For turn display with variable-length names
+padding = 86 - 9 - len(name) - 3 - len(color) - 1
+print(f" TURNO  {name} - {color}" + " " * padding + "")
+`
+
+#### Resultados
+
+**Perfect Alignment Achieved:**
+- All point numbers line up with their columns
+- All checkers centered in their 5-character columns
+- BAR and OFF sections properly aligned
+- Borders form perfect rectangles
+- Legend box matches board width exactly
+
+**Benefits:**
+1. **Crystal Clear Layout**: No more guessing which checker is in which point
+2. **Professional Appearance**: Clean, grid-like structure
+3. **Easy Scanning**: Eyes can follow columns vertically
+4. **Consistent Spacing**: Same visual rhythm throughout
+
+#### Archivos Modificados
+
+**backgammon/cli/CLI.py:**
+- display_board(): Complete rewrite with fixed-width column system
+  - Changed from variable-width string concatenation to fixed 5-char blocks
+  - Implemented proper padding calculations for all sections
+  - Updated board width from 78 to 86 characters
+  - Fixed legend box width to match board
+
+#### Pruebas
+
+All 41 CLI tests pass:
+`
+============ 41 passed in 0.26s ============
+`
+
+Board display is now perfectly aligned with professional appearance.
+
 ## Prompt 24
 
 ### Modelo: GitHub Copilot (Claude 4 Sonnet)

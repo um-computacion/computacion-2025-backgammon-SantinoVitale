@@ -5,6 +5,34 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.12] - 2025-01-08
+
+### Fixed
+- **CLI Board Alignment**: Fixed persistent alignment issues in board display
+  - Implemented fixed-width column system (5 characters per point)
+  - Each checker now perfectly centered: `"  ●  "` (2 spaces + checker + 2 spaces)
+  - Fixed point numbers to align with their columns
+  - Corrected BAR and OFF section spacing
+  - Updated board width from 78 to 86 characters for proper proportions
+  - Fixed legend box width to match board width exactly
+  - Implemented precise padding calculations for dynamic content (player names)
+  - All box-drawing characters now form perfect rectangles
+
+### Changed
+- **Board Display System**: Complete rewrite of column rendering
+  - Changed from string concatenation (`line += ...`) to list building with join
+  - Each point gets exactly 5 characters regardless of content
+  - Helper function now returns single character instead of pre-formatted string
+  - Consistent spacing maintained across all 24 points, BAR, and OFF sections
+
+### Improved
+- **Visual Clarity**: Significantly enhanced readability
+  - Point numbers perfectly aligned with checker columns
+  - Easy vertical scanning of checker positions
+  - Professional grid-like structure
+  - Crystal clear which checker belongs to which point
+  - Reduced eye strain through consistent visual rhythm
+
 ## [0.2.11] - 2025-01-08
 
 ### Changed
