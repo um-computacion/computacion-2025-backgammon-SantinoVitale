@@ -16,21 +16,14 @@ TOTAL                                 600     47    92%
 ## Pylint Report
 ```text
 ************* Module backgammon.cli.CLI
-backgammon/cli/CLI.py:77:0: C0301: Line too long (101/100) (line-too-long)
-backgammon/cli/CLI.py:125:0: C0301: Line too long (102/100) (line-too-long)
-backgammon/cli/CLI.py:173:0: C0301: Line too long (122/100) (line-too-long)
-backgammon/cli/CLI.py:176:0: C0301: Line too long (122/100) (line-too-long)
-backgammon/cli/CLI.py:247:0: C0301: Line too long (101/100) (line-too-long)
-backgammon/cli/CLI.py:44:4: R0914: Too many local variables (19/15) (too-many-locals)
+backgammon/cli/CLI.py:44:4: R0914: Too many local variables (18/15) (too-many-locals)
 backgammon/cli/CLI.py:44:4: R0915: Too many statements (65/50) (too-many-statements)
-backgammon/cli/CLI.py:517:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('bar', 'barra')'. Use a set instead if elements are hashable. (consider-using-in)
-backgammon/cli/CLI.py:519:11: R1714: Consider merging these comparisons with 'in' by using 'position in ('off', 'fuera')'. Use a set instead if elements are hashable. (consider-using-in)
-backgammon/cli/CLI.py:654:20: R1724: Unnecessary "elif" after "continue", remove the leading "el" from "elif" (no-else-continue)
-backgammon/cli/CLI.py:601:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:601:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:601:8: R1702: Too many nested blocks (9/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:601:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
-backgammon/cli/CLI.py:567:4: R0915: Too many statements (93/50) (too-many-statements)
+backgammon/cli/CLI.py:636:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:636:8: R1702: Too many nested blocks (8/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:636:8: R1702: Too many nested blocks (9/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:636:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+backgammon/cli/CLI.py:602:4: R0915: Too many statements (96/50) (too-many-statements)
+backgammon/cli/CLI.py:14:0: R0904: Too many public methods (21/20) (too-many-public-methods)
 ************* Module backgammon.core.BackgammonGame
 backgammon/core/BackgammonGame.py:211:16: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
 backgammon/core/BackgammonGame.py:217:16: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
@@ -80,16 +73,16 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
             return 1
         return 0
 
-    def can_bear_off(self):
+    def get_home_board_range(self):
         """
-        Verifica si la ficha puede hacer bearing off desde su posición actual.
+        Obtiene el rango del home board para este jugador.
 
         Returns:
-          bool: True si puede hacer bearing off, False en caso contrario
+          range: Rango de posiciones del home board
         """ (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 9.81/10
+Your code has been rated at 9.84/10
 
 
 ```
