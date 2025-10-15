@@ -1,0 +1,1 @@
+# Acá se implementan los recursos del juego, como imágenes y sonidos
