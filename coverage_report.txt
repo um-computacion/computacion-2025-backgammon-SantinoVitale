@@ -1,7 +1,7 @@
 Name                                Stmts   Miss  Cover   Missing
 -----------------------------------------------------------------
 backgammon/core/BackgammonGame.py     219     26    88%   164-165, 172-173, 212, 218, 237, 252, 272, 277-281, 285-289, 299, 309, 468-470, 494-495, 540
-backgammon/core/Board.py              150     14    91%   123, 146, 153, 185, 189, 196-197, 217, 220, 223, 309, 339, 433, 447
+backgammon/core/Board.py              150     14    91%   120, 143, 150, 182, 186, 193-194, 214, 217, 220, 306, 336, 430, 444
 backgammon/core/Checker.py             78      5    94%   125, 135, 141, 151, 157
 backgammon/core/Dice.py                50      1    98%   69
 backgammon/core/Player.py              97      1    99%   284
