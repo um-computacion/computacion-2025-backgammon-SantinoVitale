@@ -315,11 +315,11 @@ class CLI:
             print("\n")
             print("╔" + "═" * 58 + "╗")
             print("║" + " " * 58 + "║")
-            print("║" + " " * 18 + "¡FELICITACIONES!" + " " * 18 + "║")
+            print("║" + " " * 18 + "¡FELICITACIONES!" + " " * 24 + "║")
             print("║" + " " * 58 + "║")
             print(
                 f"║  {name} {color_symbol} ha ganado el juego!"
-                + " " * (56 - len(name) - 2)
+                + " " * (36 - len(name) - 2)
                 + "║"
             )
             print("║" + " " * 58 + "║")

@@ -525,40 +525,40 @@ class TestBackgammonGame(unittest.TestCase):
     def test_calculate_move_distance_white_invalid_direction(self):
         """Test calculate move distance for white moving in invalid direction"""
         self.game.setup_players()
-        distance = self.game._calculate_move_distance(5, 10)
+        distance = self.game._calculate_move_distance(5, 10)  # pylint: disable=W0212
         self.assertEqual(distance, 0)
 
     def test_calculate_move_distance_black_invalid_direction(self):
         """Test calculate move distance for black moving in invalid direction"""
         self.game.setup_players()
         self.game.current_player_index = 1
-        distance = self.game._calculate_move_distance(10, 5)
+        distance = self.game._calculate_move_distance(10, 5)  # pylint: disable=W0212
         self.assertEqual(distance, 0)
 
     def test_calculate_move_distance_from_bar_white(self):
         """Test calculate move distance from bar for white"""
         self.game.setup_players()
-        distance = self.game._calculate_move_distance("bar", 20)
+        distance = self.game._calculate_move_distance("bar", 20)  # pylint: disable=W0212
         self.assertEqual(distance, 5)
 
     def test_calculate_move_distance_from_bar_black(self):
         """Test calculate move distance from bar for black"""
         self.game.setup_players()
         self.game.current_player_index = 1
-        distance = self.game._calculate_move_distance("bar", 5)
+        distance = self.game._calculate_move_distance("bar", 5)  # pylint: disable=W0212
         self.assertEqual(distance, 5)
 
     def test_calculate_move_distance_to_off_white(self):
         """Test calculate move distance to off for white"""
         self.game.setup_players()
-        distance = self.game._calculate_move_distance(3, "off")
+        distance = self.game._calculate_move_distance(3, "off")  # pylint: disable=W0212
         self.assertEqual(distance, 3)
 
     def test_calculate_move_distance_to_off_black(self):
         """Test calculate move distance to off for black"""
         self.game.setup_players()
         self.game.current_player_index = 1
-        distance = self.game._calculate_move_distance(20, "off")
+        distance = self.game._calculate_move_distance(20, "off")  # pylint: disable=W0212
         self.assertEqual(distance, 5)
 
     def test_validate_move_coordinates_invalid_to_pos_type(self):
@@ -581,4 +581,3 @@ class TestBackgammonGame(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

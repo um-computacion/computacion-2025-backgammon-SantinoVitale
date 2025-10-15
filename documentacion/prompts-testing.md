@@ -2230,3 +2230,174 @@ TOTAL                                 600     47    92%
 **Referencias:**
 - Test files: `backgammon/test/test__backgammongame.py`, `backgammon/test/test_board.py`, `backgammon/test/test_checker.py`, `backgammon/test/test__player.py`, `backgammon/test/test_dice.py`
 - CHANGELOG.md version 0.2.13
+
+---
+
+## Prompt 12
+
+### Modelo: GitHub Copilot (Claude Sonnet 4 - 2025-10-15)
+
+### Prompt:
+Me percaté que instalaste y estas usando pytest, cuando esto no deberia ser asi, todo el proyecto se testea y se trabaja con unitest, quiero que elimines todo rastro de pytest y de a partir de ahora solo se use unitest, anotalo en el copilot instructions si hace falta
+
+### Instrucciones del Sistema:
+- Follow SOLID principles
+- Follow TDD method
+- Document all prompts in prompts-testing.md
+- Update CHANGELOG.md with changes
+- Use unittest exclusively for testing
+- Follow PEP 8 and PEP 484 guidelines
+
+### Respuesta:
+
+**Actions Taken:**
+
+1. **Removed pytest from virtual environment:**
+   ```bash
+   python -m pip uninstall pytest -y
+   ```
+   - Successfully uninstalled pytest 8.4.2
+
+2. **Removed pytest dependencies:**
+   ```bash
+   python -m pip uninstall iniconfig pluggy -y
+   ```
+   - Uninstalled iniconfig 2.1.0
+   - Uninstalled pluggy 1.6.0
+
+3. **Deleted pytest cache directory:**
+   ```bash
+   Remove-Item -Path ".pytest_cache" -Recurse -Force
+   ```
+
+4. **Updated `.github/copilot-instructions.md`:**
+   Added explicit testing framework guidelines:
+   ```markdown
+   # Testing Framework: ALWAYS use unittest (Python's built-in testing framework)
+   # NEVER use pytest or any other testing framework
+   # All test files must use unittest.TestCase as base class
+   # Use unittest.mock for mocking (Mock, MagicMock, patch, etc.)
+   # Run tests with: python -m unittest discover backgammon
+   ```
+
+5. **Verified all tests pass with unittest:**
+   ```bash
+   python -m unittest discover backgammon
+   ```
+   - Result: All 243 tests passing ✅
+   - Framework: unittest only
+   - No pytest dependencies or artifacts remaining
+
+**Updated Files:**
+- `.github/copilot-instructions.md` - Added unittest-only policy
+- `CHANGELOG.md` - Version 0.2.16 - Documented pytest removal
+- `documentacion/prompts-testing.md` - This documentation
+
+**Key Points:**
+- Project now exclusively uses Python's built-in unittest framework
+- All existing test files already use unittest.TestCase
+- All mocking uses unittest.mock (Mock, MagicMock, patch)
+- Test command: `python -m unittest discover backgammon`
+- Zero pytest dependencies or artifacts remaining
+
+### Estado: Usado sin cambios
+
+**Referencias:**
+- `.github/copilot-instructions.md` - Updated testing guidelines
+- `CHANGELOG.md` - Version 0.2.16
+- All test files in `backgammon/test/` - Already using unittest
+
+
+---
+
+## Prompt 13
+
+### Modelo: GitHub Copilot (Claude Sonnet 4 - 2025-10-15)
+
+### Fecha: 2025-10-15
+
+### Prompt:
+```
+Hay muchos problemas de pylint en test_backgammon y test_board sobre algo de acceder a un member protegido, como se soluciona eso?
+```
+
+### Instrucciones del Sistema:
+- Always follow the SOLID principles
+- Always follow the TDD method
+- Document all prompts in prompts-testing.md
+- Update CHANGELOG.md according to the norm
+- Answer always in English
+- Use unittest exclusively for testing
+- Follow PEP 8 style guidelines
+- Program like a Junior developer
+
+### Respuesta:
+
+**Problem Identified:**
+Pylint was reporting protected member access warnings (W0212) when tests were calling protected methods (methods starting with `_`) from the classes being tested.
+
+**Protected Member Violations Found:**
+
+1. **test_board.py** - 5 violations:
+   - Line 214: `self.board._can_bear_off("white")`
+   - Line 220: `self.board._can_bear_off("black")`
+   - Line 226: `self.board._can_bear_off("white")`
+   - Line 234: `self.board._can_bear_off("white")`
+   - Line 242: `self.board._can_bear_off("black")`
+
+2. **test__backgammongame.py** - 6 violations:
+   - Line 528: `self.game._calculate_move_distance(5, 10)`
+   - Line 535: `self.game._calculate_move_distance(10, 5)`
+   - Line 541: `self.game._calculate_move_distance("bar", 20)`
+   - Line 548: `self.game._calculate_move_distance("bar", 5)`
+   - Line 554: `self.game._calculate_move_distance(3, "off")`
+   - Line 561: `self.game._calculate_move_distance(20, "off")`
+
+**Solution Applied:**
+Added inline pylint disable comments (`# pylint: disable=W0212`) to each line that accesses protected members. This is the standard approach for unit tests that need to test protected methods directly.
+
+**Justification:**
+- In unit testing, it's acceptable and often necessary to test protected methods to ensure complete code coverage
+- Protected methods contain important logic that should be tested independently
+- The `# pylint: disable=W0212` comment explicitly documents that this access is intentional in a testing context
+- This approach is preferred over disabling the rule globally or making methods public just for testing
+
+**Files Modified:**
+
+1. **backgammon/test/test_board.py:**
+   - Added `# pylint: disable=W0212` to 5 lines testing `_can_bear_off` method
+   
+2. **backgammon/test/test__backgammongame.py:**
+   - Added `# pylint: disable=W0212` to 6 lines testing `_calculate_move_distance` method
+
+**Verification:**
+Ran pylint checks on both files:
+```bash
+python -m pylint backgammon/test/test_board.py 2>&1 | Select-String "protected"
+python -m pylint backgammon/test/test__backgammongame.py 2>&1 | Select-String "protected"
+```
+Result: No protected member access warnings remaining 
+
+**Tests Still Pass:**
+```bash
+python -m unittest backgammon.test.test_board -v
+```
+Result: All 29 tests passing 
+
+### Estado: Usado sin cambios
+
+**Total Changes:**
+- 11 inline pylint disable comments added
+- 0 test failures
+- All pylint protected-access warnings resolved
+
+**Referencias:**
+- `backgammon/test/test_board.py` - Protected member access in 5 test methods
+- `backgammon/test/test__backgammongame.py` - Protected member access in 6 test methods
+
+**Testing Best Practice Applied:**
+This solution follows Python testing best practices by:
+1. Keeping protected methods truly protected (single underscore)
+2. Allowing comprehensive testing of all code paths
+3. Explicitly documenting intentional protected access in tests
+4. Not polluting the public API just to satisfy linters

@@ -11,6 +11,12 @@
 # Follow PEP 8 style guidelines for Python code formatting.
 # Program like a Junior developer, avoiding complex or advanced programming techniques.
 
+# Testing Framework: ALWAYS use unittest (Python's built-in testing framework)
+# NEVER use pytest or any other testing framework
+# All test files must use unittest.TestCase as base class
+# Use unittest.mock for mocking (Mock, MagicMock, patch, etc.)
+# Run tests with: python -m unittest discover backgammon
+
 # Versioning Rules for CHANGELOG.md
 
 Follow these rules to determine the appropriate version number when updating CHANGELOG.md:

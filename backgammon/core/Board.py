@@ -11,10 +11,7 @@ from .Checker import Checker
 
 class Board:
     """
-    Clase q                             possible_moves.append((\"bar\", to_point + 1))                  if len(self.points[to_point]) == 1
-                    ):
-                        # Convert to human-readable coordinates (1-24)
-                        possible_moves.append(("bar", to_point + 1))representa el tablero del juego Backgammon.
+    Clase que representa el tablero del juego Backgammon.
     Maneja las posiciones de las fichas y las reglas de movimiento.
     """
 
@@ -423,10 +420,10 @@ class Board:
     def can_bear_off(self, color):
         """
         Public method to check if a player can bear off pieces.
-        
+
         Args:
             color (str): Color of the player
-            
+
         Returns:
             bool: True if player can bear off pieces
         """

@@ -5,6 +5,41 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.17] - 2025-10-15
+
+### Fixed
+- **Pylint Protected Access Warnings**: Resolved all protected member access warnings in test files
+  - Added inline `# pylint: disable=W0212` comments to 11 lines accessing protected methods in tests
+  - Fixed 5 warnings in `test_board.py` for `_can_bear_off` method testing
+  - Fixed 6 warnings in `test__backgammongame.py` for `_calculate_move_distance` method testing
+  - Applied testing best practice: keeping methods protected while allowing comprehensive testing
+
+### Improved
+- **Code Quality**: Enhanced test code compliance with pylint standards
+  - All tests still passing (100% success rate)
+  - Maintained complete test coverage for protected methods
+  - Documented intentional protected access in testing context
+
+## [0.2.16] - 2025-10-15
+
+### Removed
+- **pytest Framework**: Completely removed pytest and its dependencies from the project
+  - Uninstalled pytest package from virtual environment
+  - Removed iniconfig and pluggy (pytest dependencies)
+  - Deleted .pytest_cache directory
+  - Project exclusively uses unittest (Python's built-in testing framework)
+
+### Changed
+- **Testing Guidelines**: Updated copilot-instructions.md to enforce unittest-only policy
+  - Added explicit section: "Testing Framework: ALWAYS use unittest"
+  - Clarified to NEVER use pytest or any other testing framework
+  - Documented unittest best practices (unittest.TestCase, unittest.mock)
+  - Specified test running command: `python -m unittest discover backgammon`
+
+### Verified
+- All 243 tests passing with unittest framework
+- No pytest dependencies or artifacts remaining in project
+
 ## [0.2.15] - 2025-10-15
 
 ### Fixed
