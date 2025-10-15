@@ -335,7 +335,7 @@ class TestCLI(unittest.TestCase):
     def test_run_game_method(self, mock_input):
         """Test run_game method runs without error when game is set"""
         mock_input.side_effect = ["Player1", "Player2"]
-        
+
         mock_game = Mock()
         mock_game.start_game = Mock()
         mock_game.setup_players = Mock()

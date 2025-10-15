@@ -211,19 +211,19 @@ class TestBoard(unittest.TestCase):
         """Test can_bear_off returns False when white has checkers outside home"""
         self.board.setup_initial_position()
         # White has checkers outside home board (points 6+)
-        self.assertFalse(self.board._can_bear_off("white"))
+        self.assertFalse(self.board._can_bear_off("white"))  # pylint: disable=W0212
 
     def test_can_bear_off_black_with_checkers_outside_home(self):
         """Test can_bear_off returns False when black has checkers outside home"""
         self.board.setup_initial_position()
         # Black has checkers outside home board (points below 18)
-        self.assertFalse(self.board._can_bear_off("black"))
+        self.assertFalse(self.board._can_bear_off("black"))  # pylint: disable=W0212
 
     def test_can_bear_off_with_checkers_on_bar(self):
         """Test can_bear_off returns False when checkers on bar"""
         self.board.reset()
         self.board.bar["white"].append(Checker("white"))
-        self.assertFalse(self.board._can_bear_off("white"))
+        self.assertFalse(self.board._can_bear_off("white"))  # pylint: disable=W0212
 
     def test_can_bear_off_white_all_in_home(self):
         """Test can_bear_off returns True when all white checkers in home"""
@@ -231,7 +231,7 @@ class TestBoard(unittest.TestCase):
         # Put all white checkers in home board (points 0-5)
         for i in range(6):
             self.board.points[i] = [Checker("white")]
-        self.assertTrue(self.board._can_bear_off("white"))
+        self.assertTrue(self.board._can_bear_off("white"))  # pylint: disable=W0212
 
     def test_can_bear_off_black_all_in_home(self):
         """Test can_bear_off returns True when all black checkers in home"""
@@ -239,7 +239,7 @@ class TestBoard(unittest.TestCase):
         # Put all black checkers in home board (points 18-23)
         for i in range(18, 24):
             self.board.points[i] = [Checker("black")]
-        self.assertTrue(self.board._can_bear_off("black"))
+        self.assertTrue(self.board._can_bear_off("black"))  # pylint: disable=W0212
 
     def test_all_checkers_in_home_board_white(self):
         """Test all_checkers_in_home_board for white"""
