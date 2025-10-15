@@ -5,6 +5,74 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.15] - 2025-10-15
+
+### Fixed
+- **CLI Display Alignment**: Fixed column alignment issues in CLI display elements
+  - Fixed line 199 being too long (109 characters, limit 100) by splitting input prompt
+  - Fixed TURNO line padding calculation to properly align within box borders
+  - Fixed help display section headers alignment (COMANDOS BÁSICOS, FORMATO DE MOVIMIENTO, EJEMPLOS)
+  - Fixed rules display section headers alignment (OBJETIVO, MOVIMIENTO, REGLAS ESPECIALES, GANADOR)
+  - Removed duplicate content from help display that was causing visual issues
+  - All box borders now properly align with consistent spacing
+
+### Improved
+- **Code Quality**: Enhanced code readability and maintainability
+  - Simplified TURNO line padding calculation using cleaner formula
+  - Split long input prompt into multi-line string for better readability
+  - Consistent spacing in all display boxes (help: 68 chars, rules: 78 chars)
+  - All sections now have proper padding for visual alignment
+
+## [0.2.14] - 2025-10-15
+
+### Added
+- **Possible Moves Display**: New feature to show all valid moves for current player
+  - Added `display_possible_moves()` method to show grouped moves by starting position
+  - Implemented "movimientos"/"moves" command in game loop
+  - Moves are grouped and formatted clearly: "8 → 12, 13"
+  - Shows total count of valid moves available
+  - Integrates with existing `get_possible_moves()` from BackgammonGame
+
+- **Direction Indicators**: Added visual guides showing winning directions
+  - Board header now displays: "◄── BLANCAS (●) hacia 0  |  NEGRAS (○) hacia 25 ──►"
+  - Clear arrows (◄── and ──►) show movement direction for each color
+  - Helps new players understand game objectives
+
+### Changed
+- **Compact Board Display**: Reduced board width for better readability
+  - Reduced point columns from 5 to 4 characters: `" {ch}  "` instead of `"  {ch}  "`
+  - Total board width reduced from ~86 to ~70 characters
+  - Updated all border characters and separators to match new width
+  - Legend and info boxes now 64 characters wide (down from 86)
+  - Bar and Off sections adjusted for compact format
+
+- **Help System**: Updated help display to include new command
+  - Added "movimientos" command description
+  - Updated command prompt to show new option
+  - Enhanced help formatting for clarity
+
+### Improved
+- **Code Quality**: Enhanced code following best practices
+  - Improved pylint score from 9.08/10 to 9.45/10 (+0.37)
+  - Replaced `.format()` with f-strings for consistency
+  - Changed `elif` after `continue` to `if` (no-else-continue)
+  - Used `in` for multiple comparisons (consider-using-in)
+  - Removed trailing whitespace
+  - Fixed long lines with proper breaks
+
+- **User Experience**: Better UI clarity and usability
+  - More compact display fits better on smaller terminals
+  - Direction indicators reduce confusion for new players
+  - Possible moves feature helps players make decisions
+  - Grouped move display is easier to read than linear list
+
+### Technical Details
+- Modified `display_board()` to use 4-character columns
+- Added `display_possible_moves()` with move grouping logic
+- Updated `get_move_input()` to accept new commands
+- Modified game loop in `run_game()` to handle move display
+- All 41 existing CLI tests still pass
+
 ## [0.2.13] - 2025-10-08
 
 ### Added

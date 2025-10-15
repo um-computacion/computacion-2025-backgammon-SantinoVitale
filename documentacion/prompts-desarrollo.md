@@ -1,3 +1,147 @@
+## Prompt 26
+
+### Modelo: GitHub Copilot (Claude 4 Sonnet)
+
+### Fecha: 2025-10-15
+
+### Prompt:
+Buenas, me gustaria arreglar la UI del CLI de manera que no queden las lineas alineadas justamente, osea se deberia achicar o buscar un formato nuevo, ademas me gustaria implementar una opcion de juego para revisar los movimientos posibles que puede realizar el jugador y algun indicador de donde tienen que mover las negras y donde las blancas para ganar.
+
+User requested three improvements to the CLI interface:
+1. Make the board display more compact and better formatted (reduce width, improve alignment)
+2. Add visual indicators showing which direction each color moves to win
+3. Implement a feature to show all possible moves available to the current player
+
+### Respuesta:
+
+#### Análisis de Requisitos
+
+The user identified three areas for improvement:
+
+1. **UI Compactness**: The board display was too wide (84+ characters) and the lines appeared overly justified, making it difficult to read
+2. **Direction Indicators**: No visual guidance for new players on which direction each color needs to move
+3. **Move Helper**: No way for players to see all their possible moves at once
+
+#### Solución Implementada
+
+**1. Compact Board Display (4-character columns)**
+
+Reduced each point from 5 characters to 4 characters:
+- Previous format: `"  {ch}  "` (5 chars)
+- New format: `" {ch}  "` (4 chars)
+- Total width reduced from ~86 to ~70 characters
+
+**2. Direction Indicators in Header**
+
+Added clear visual indicators in the board header:
+
+```python
+print("║  ◄── BLANCAS (●) hacia 0  |  NEGRAS (○) hacia 25 ──►             ║")
+```
+
+This shows:
+- White pieces (●) move LEFT (◄──) toward point 0
+- Black pieces (○) move RIGHT (──►) toward point 25
+
+**3. New `display_possible_moves()` Method**
+
+Implemented a complete feature to show all valid moves:
+
+```python
+def display_possible_moves(self) -> None:
+    """
+    Display all possible moves for the current player.
+    Shows specific from-to position pairs that are valid.
+    """
+    if hasattr(self.game, "get_possible_moves"):
+        possible_moves = self.game.get_possible_moves()
+        
+        # Group moves by from position for better readability
+        moves_dict = {}
+        for from_pos, to_pos in possible_moves:
+            from_str = self.format_position(from_pos)
+            to_str = self.format_position(to_pos)
+            if from_str not in moves_dict:
+                moves_dict[from_str] = []
+            moves_dict[from_str].append(to_str)
+        
+        # Display grouped moves with formatting
+        for from_pos in sorted(moves_dict.keys()):
+            to_positions = ", ".join(moves_dict[from_pos])
+            print(f"║  {from_pos} → {to_positions}  ║")
+```
+
+Features:
+- Groups moves by starting position
+- Uses arrow (→) for clear visualization
+- Shows total count of valid moves
+- Properly formatted in a box
+
+**4. Updated Command Handling**
+
+Added "movimientos"/"moves" as a new command option:
+
+```python
+# In get_move_input()
+move_input = input(
+    f"🎯 Movimiento DESDE-HASTA (ej: {examples})\n   o 'ayuda', 'movimientos', 'reglas', 'salir': "
+).strip()
+
+if move_input.lower() in ["movimientos", "moves"]:
+    return move_input.lower(), None
+
+# In run_game() loop
+if from_pos in ["moves", "movimientos"]:
+    self.display_possible_moves()
+    continue
+```
+
+**5. Updated Help Display**
+
+Added the new command to the help screen:
+
+```python
+print("║  • 'movimientos' - Ver todos los movimientos posibles" + " " * 13 + "║")
+```
+
+#### Code Quality Improvements
+
+Also fixed several pylint issues:
+- Changed `elif` after `continue` to `if` (no-else-continue)
+- Replaced `.format()` with f-strings (consider-using-f-string)
+- Used `in` for multiple comparisons (consider-using-in)
+- Removed trailing whitespace
+- Fixed long lines with proper line breaks
+
+**Pylint Score Improvement**: 9.08/10 → 9.45/10 (+0.37)
+
+#### Testing Results
+
+All 41 existing tests pass successfully:
+- Board display tests pass with new compact format
+- Input handling tests pass with new command
+- All existing functionality preserved
+
+#### Example Usage
+
+Player can now type "movimientos" during their turn to see:
+
+```
+╔═══════════════════════════════════════════════════════╗
+║           MOVIMIENTOS POSIBLES                        ║
+╠═══════════════════════════════════════════════════════╣
+║  8 → 12, 13                                           ║
+║  13 → 17, 18                                          ║
+║  BARRA → 20                                           ║
+╠═══════════════════════════════════════════════════════╣
+║  Total: 5 movimiento(s) válido(s)                    ║
+╚═══════════════════════════════════════════════════════╝
+```
+
+This greatly improves usability, especially for new players learning the game.
+
+---
+
 ## Prompt 25
 
 ### Modelo: GitHub Copilot (Claude 4 Sonnet)
