@@ -5,6 +5,31 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2025-10-19
+
+### Added
+- **Pygame UI Integration**: Complete integration of Pygame graphical interface into main game launcher
+  - Created `PygameUI` class in `backgammon/pygame_ui/pygame.py` with full game integration
+  - Implemented `__init__()`, `set_game()`, `display_message()`, `display_board()`, `handle_events()`, `run_game()`, `get_player_move()`, and `display_winner()` methods
+  - Visual board display with brown/tan backgammon-themed color scheme (1280x720 window)
+  - 60 FPS rendering loop with proper event handling (ESC key, window close)
+  - Bidirectional game integration following same interface pattern as CLI
+  - Type hints and comprehensive docstrings following PEP 257
+
+### Changed
+- **Main Menu System**: Updated `main.py` to enable Pygame interface
+  - Added import: `from backgammon.pygame_ui.pygame import PygameUI`
+  - Rewrote `start_pygame_game()` from placeholder to actual Pygame launcher
+  - Updated menu display: "2. Pygame (Interfaz Gráfica) - ✓ Disponible"
+  - Simplified menu flow: option 2 now directly launches Pygame window
+  - Removed "coming soon" placeholder logic and retry prompts
+
+### Technical Details
+- **Visual Elements**: Window title "Backgammon Game", board rectangle with border, title text, status text "In Development", exit instructions
+- **User Controls**: Window close button (X), ESC key to exit, proper cleanup with `pygame.quit()`
+- **Architecture**: Follows SOLID principles with proper separation of concerns
+- **Status**: Foundation ready for incremental feature development (board visualization, checker rendering, click-based input, dice visualization, animations)
+
 ## [0.2.17] - 2025-10-15
 
 ### Fixed

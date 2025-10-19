@@ -6,6 +6,7 @@ Provides user interface selection and game initialization.
 import sys
 from backgammon.core.BackgammonGame import BackgammonGame
 from backgammon.cli.CLI import CLI
+from backgammon.pygame_ui.pygame import PygameUI
 
 
 def display_welcome_message() -> None:
@@ -22,7 +23,7 @@ def display_interface_menu() -> None:
     """Display the interface selection menu."""
     print("\nPor favor, elige tu interfaz preferida:")
     print("1. CLI (Interfaz de Línea de Comandos) - ✓ Disponible")
-    print("2. Pygame (Interfaz Gráfica) - Próximamente")
+    print("2. Pygame (Interfaz Gráfica) - ✓ Disponible")
     print("3. Salir")
     print("-" * 40)
 
@@ -41,7 +42,7 @@ def get_user_choice() -> str:
                 return choice
             print("Opción inválida. Por favor, ingresa 1, 2 o 3.")
         except (EOFError, KeyboardInterrupt):
-            print("\n👋 Adiós!")
+            print("\nAdiós!")
             sys.exit(0)
 
 
@@ -57,7 +58,7 @@ def start_cli_game() -> None:
         game.set_ui(cli)
 
         # Start the game using CLI
-        print("\n🎲 Iniciando el juego de Backgammon!")
+        print("\nIniciando el juego de Backgammon!")
         print("¡Buena suerte y diviértete!")
         print("=" * 50)
 
@@ -75,18 +76,33 @@ def start_cli_game() -> None:
 
 
 def start_pygame_game() -> None:
-    """Placeholder for Pygame interface (not yet implemented)."""
-    print("\n🚧 Pygame Interfaz - Próximamente!")
-    print("=" * 40)
-    print("La interfaz gráfica utilizando Pygame está actualmente")
-    print("en desarrollo y estará disponible en una futura actualización.")
-    print("\nCaracterísticas planeadas para la interfaz Pygame:")
-    print("• Representación visual del tablero")
-    print("• Funcionalidad de clic para mover")
-    print("• Animaciones y efectos de sonido")
-    print("• Experiencia de usuario mejorada")
-    print("\nPor ahora, por favor utiliza la interfaz CLI (Opción 1)")
-    print("=" * 40)
+    """Initialize and start the Pygame version of the game."""
+    try:
+        print("\nIniciando el juego de Backgammon con Pygame...")
+        print("=" * 40)
+
+        # Create Pygame interface and game
+        pygame_ui = PygameUI()
+        game = BackgammonGame()
+        pygame_ui.set_game(game)
+        game.set_ui(pygame_ui)
+
+        # Start the game using Pygame
+        print("\nIniciando el juego de Backgammon!")
+        print("¡Buena suerte y diviértete!")
+        print("=" * 50)
+
+        # Start the game loop through Pygame
+        pygame_ui.run_game()
+
+    except (EOFError, KeyboardInterrupt):
+        print("\n\nJuego interrumpido por el usuario")
+        print("Gracias por jugar!")
+        sys.exit(0)
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        print(f"\nOcurrió un error: {e}")
+        print("Por favor, intenta de nuevo o informa sobre este problema.")
+        sys.exit(1)
 
 
 def main() -> None:
@@ -113,32 +129,20 @@ def main() -> None:
                 break
 
             if choice == '2':
-                # Show Pygame coming soon message
+                # Start Pygame game
                 start_pygame_game()
-
-                # Ask if user wants to try CLI instead
-                print("¿Quisieras intentar la interfaz CLI en su lugar? (y/n)")
-                try:
-                    retry_choice = input("Opción: ").strip().lower()
-                    if retry_choice in ['y', 'yes']:
-                        start_cli_game()
-                        break
-                    print("Regresando al menú principal...\n")
-                    continue
-                except (EOFError, KeyboardInterrupt):
-                    print("\n👋 ¡Adiós!")
-                    break
+                break
 
             if choice == '3':
                 # Exit the application
-                print("\n👋 ¡Gracias por tu interés en Backgammon!")
+                print("\n¡Gracias por tu interés en Backgammon!")
                 print("¡Vuelve pronto para jugar!")
                 break
 
     except KeyboardInterrupt:
-        print("\n\n👋 ¡Adiós!")
+        print("\n\n¡Adiós!")
     except Exception as e:  # pylint: disable=broad-exception-caught
-        print(f"\n❌ Ocurrió un error inesperado: {e}")
+        print(f"\nOcurrió un error inesperado: {e}")
         print("Por favor, intenta de nuevo o informa sobre este problema.")
         sys.exit(1)
 

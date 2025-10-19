@@ -1,3 +1,221 @@
+## Prompt 27
+
+### Modelo: GitHub Copilot (Claude 4 Sonnet)
+
+### Fecha: 2025-10-19
+
+### Prompt:
+Podrias aplicar que en el main.py se pueda ejecutar la parte de pygame ejecutando pygame.py?
+
+The user wants to integrate the Pygame interface into `main.py` so that selecting option 2 actually launches the Pygame window, instead of showing the "coming soon" placeholder message.
+
+### Respuesta:
+
+#### Análisis del Requerimiento
+
+The user requested full integration of the Pygame UI into the main game launcher. The existing `pygame.py` file contained only basic Pygame boilerplate code without proper class structure or game integration.
+
+#### Implementación Realizada
+
+**1. Created Complete PygameUI Class:**
+
+Transformed the basic Pygame setup into a proper UI class following the same interface pattern as CLI:
+
+```python
+class PygameUI:
+    """
+    Pygame-based user interface for Backgammon game.
+    
+    Attributes:
+        game: Reference to the BackgammonGame instance
+        screen: Pygame display surface
+        clock: Pygame clock for FPS control
+        running: Flag to control the game loop
+        width: Screen width in pixels
+        height: Screen height in pixels
+    """
+```
+
+**2. Implemented Core UI Methods:**
+
+- **`__init__(width, height)`**: Initialize Pygame, create window, set up colors
+- **`set_game(game)`**: Store reference to BackgammonGame instance
+- **`display_message(message)`**: Display messages to user
+- **`display_board()`**: Draw the game board with visual elements
+- **`handle_events()`**: Process Pygame events (window close, ESC key)
+- **`run_game()`**: Main game loop with proper event handling and rendering
+- **`get_player_move()`**: Placeholder for future input implementation
+- **`display_winner(winner_name)`**: Show winner information
+
+**3. Visual Elements Implemented:**
+
+```python
+# Colors defined
+self.BACKGROUND_COLOR = (139, 69, 19)  # Brown
+self.BOARD_COLOR = (210, 180, 140)  # Tan
+self.TEXT_COLOR = (255, 255, 255)  # White
+self.BLACK_COLOR = (0, 0, 0)  # Black
+
+# Display elements
+- Window title: "Backgammon Game"
+- Board rectangle with border
+- Title text: "Backgammon"
+- Status text: "Pygame UI - In Development"
+- Instructions: "Press ESC to exit"
+```
+
+**4. Updated main.py Integration:**
+
+```python
+# Added import
+from backgammon.pygame_ui.pygame import PygameUI
+
+# Updated start_pygame_game() function
+def start_pygame_game() -> None:
+    """Initialize and start the Pygame version of the game."""
+    try:
+        print("\nIniciando el juego de Backgammon con Pygame...")
+        
+        # Create Pygame interface and game
+        pygame_ui = PygameUI()
+        game = BackgammonGame()
+        pygame_ui.set_game(game)
+        game.set_ui(pygame_ui)
+        
+        # Start the game loop
+        pygame_ui.run_game()
+    except Exception as e:
+        print(f"\nOcurrió un error: {e}")
+        sys.exit(1)
+```
+
+**5. Updated Menu System:**
+
+```python
+# Updated menu to show Pygame as available
+print("2. Pygame (Interfaz Gráfica) - ✓ Disponible")
+
+# Simplified menu flow - direct execution
+if choice == '2':
+    # Start Pygame game
+    start_pygame_game()
+    break
+```
+
+#### Características Implementadas
+
+**UI Class Structure:**
+- Follows same interface pattern as CLI for consistency
+- Proper initialization with configurable window dimensions
+- Type hints and comprehensive docstrings
+- Error handling for exceptions
+
+**Game Integration:**
+- Bidirectional references: game ↔ UI
+- Uses same `set_game()` and `set_ui()` pattern as CLI
+- Ready for future game logic integration
+
+**Visual Display:**
+- 1280x720 window (configurable)
+- 60 FPS rendering
+- Brown/tan backgammon-themed color scheme
+- Clear visual hierarchy (title, board, instructions)
+
+**User Controls:**
+- Window close button (X)
+- ESC key to exit
+- Proper cleanup with `pygame.quit()`
+
+**Professional Polish:**
+- Welcome messages in Spanish
+- Clean console feedback
+- Graceful error handling
+- Proper shutdown messages
+
+#### Arquitectura y Diseño
+
+**SOLID Principles Applied:**
+- **Single Responsibility**: PygameUI handles only Pygame-specific UI operations
+- **Open/Closed**: Extensible for new visual features without modifying existing code
+- **Liskov Substitution**: Can substitute CLI with PygameUI seamlessly
+- **Interface Segregation**: Minimal, focused interface matching CLI pattern
+- **Dependency Inversion**: Depends on game abstraction, not concrete implementation
+
+**Code Organization:**
+```
+backgammon/
+├── pygame_ui/
+│   ├── __init__.py
+│   └── pygame.py          # Complete PygameUI class
+main.py                    # Updated with Pygame integration
+```
+
+#### Estado Actual
+
+**What Works:**
+- ✅ Menu selection launches Pygame window
+- ✅ Visual board display with placeholder content
+- ✅ Event handling (ESC key, window close)
+- ✅ 60 FPS rendering loop
+- ✅ Proper initialization and cleanup
+- ✅ Consistent interface with CLI
+
+**What's Placeholder:**
+- 🔨 Actual board visualization (currently shows "In Development")
+- 🔨 Click-based move input
+- 🔨 Checker rendering
+- 🔨 Dice visualization
+- 🔨 Game state updates
+
+#### Próximos Pasos
+
+**Future Development Path:**
+1. Implement board point visualization (24 points arranged correctly)
+2. Add checker rendering (circles for white/black pieces)
+3. Implement click-based move input
+4. Add dice roll visualization
+5. Create animations for piece movement
+6. Add sound effects
+7. Implement game statistics display
+
+#### Resultado Final
+
+The Pygame interface is now fully integrated and functional at a basic level:
+
+**Before:**
+- Option 2 showed "Coming Soon" placeholder
+- Required manual confirmation to try CLI instead
+- No actual Pygame window
+
+**After:**
+- Option 2 launches actual Pygame window
+- Shows visual board interface (development version)
+- ESC key or window close exits gracefully
+- Returns to console with clean shutdown message
+- Ready for incremental feature development
+
+The implementation provides a solid foundation for building out the full graphical interface while maintaining the same architectural patterns established with the CLI interface.
+
+### Archivos Modificados
+
+1. **backgammon/pygame_ui/pygame.py:**
+   - Complete rewrite from basic boilerplate to full PygameUI class
+   - Implemented initialization, game loop, event handling
+   - Added visual rendering with colors and text
+   - Proper game integration following CLI pattern
+
+2. **main.py:**
+   - Added `from backgammon.pygame_ui.pygame import PygameUI`
+   - Rewrote `start_pygame_game()` to actually launch Pygame window
+   - Updated menu display to show Pygame as available
+   - Simplified game flow for direct Pygame execution
+
+### Uso en el proyecto:
+- Pygame interface now accessible from main menu (option 2)
+- PygameUI class implements same interface pattern as CLI
+- Visual window displays with placeholder board content
+- Ready for incremental development of graphical features
+
 ## Prompt 26
 
 ### Modelo: GitHub Copilot (Claude 4 Sonnet)
