@@ -87,6 +87,15 @@ def start_pygame_game() -> None:
         pygame_ui.set_game(game)
         game.set_ui(pygame_ui)
 
+        # Setup players
+        game.setup_players("White Player", "Black Player")
+
+        # Setup the board with initial position
+        game.setup_board()
+
+        # Roll dice for demonstration (so we can see the dice renderer working)
+        game.roll_dice()
+
         # Start the game using Pygame
         print("\nIniciando el juego de Backgammon!")
         print("¡Buena suerte y diviértete!")
