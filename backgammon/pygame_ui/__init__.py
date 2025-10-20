@@ -9,6 +9,9 @@ from backgammon.pygame_ui.board_dimensions import BoardDimensions
 from backgammon.pygame_ui.point_renderer import PointRenderer
 from backgammon.pygame_ui.bar_renderer import BarRenderer
 from backgammon.pygame_ui.side_panel_renderer import SidePanelRenderer
+from backgammon.pygame_ui.checker_renderer import CheckerRenderer
+from backgammon.pygame_ui.dice_renderer import DiceRenderer
+from backgammon.pygame_ui.text_renderer import TextRenderer
 
 __all__ = [
     'PygameUI',
@@ -17,5 +20,8 @@ __all__ = [
     'BoardDimensions',
     'PointRenderer',
     'BarRenderer',
-    'SidePanelRenderer'
+    'SidePanelRenderer',
+    'CheckerRenderer',
+    'DiceRenderer',
+    'TextRenderer'
 ]

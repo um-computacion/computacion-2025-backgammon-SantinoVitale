@@ -69,8 +69,43 @@ class PygameUI:
         # Fill background
         self.screen.fill(self.BACKGROUND_COLOR)
 
-        # Render the complete board using BoardRenderer
-        self.board_renderer.render(self.screen)
+        # Prepare render data
+        board = None
+        dice_values = None
+        available_moves = None
+        player_info = None
+
+        # If we have a game instance, extract render data
+        if self.game is not None:
+            if hasattr(self.game, 'board'):
+                board = self.game.board
+
+            if hasattr(self.game, 'dice') and self.game.dice.last_roll:
+                dice_values = self.game.dice.last_roll
+                available_moves = self.game.dice.get_available_moves()
+
+            # Extract player information
+            if hasattr(self.game, 'players') and len(self.game.players) >= 2:
+                player1 = self.game.players[0]
+                player2 = self.game.players[1]
+                current_player = self.game.get_current_player()
+
+                player_info = (
+                    player1.name or "Player 1",
+                    player2.name or "Player 2",
+                    current_player.name if current_player else "Unknown",
+                    player1.checkers_off_board,
+                    player2.checkers_off_board,
+                )
+
+        # Render the complete board
+        self.board_renderer.render(
+            self.screen,
+            board=board,
+            dice_values=dice_values,
+            available_moves=available_moves,
+            player_info=player_info,
+        )
 
     def handle_events(self) -> bool:
         """
