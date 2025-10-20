@@ -16,6 +16,7 @@
 # All test files must use unittest.TestCase as base class
 # Use unittest.mock for mocking (Mock, MagicMock, patch, etc.)
 # Run tests with: python -m unittest discover backgammon
+# DO NOT USE ANY EMOJIS IN THE CODE OR PRINT STATEMENTS or i gonna kill you
 
 # Versioning Rules for CHANGELOG.md
 
