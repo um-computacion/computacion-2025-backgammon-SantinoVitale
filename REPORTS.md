@@ -15,6 +15,17 @@ TOTAL                                 600     47    92%
 ```
 ## Pylint Report
 ```text
+************* Module backgammon.pygame_ui.pygame
+backgammon/pygame_ui/pygame.py:43:8: C0103: Attribute name "BACKGROUND_COLOR" doesn't conform to snake_case naming style (invalid-name)
+backgammon/pygame_ui/pygame.py:44:8: C0103: Attribute name "BOARD_COLOR" doesn't conform to snake_case naming style (invalid-name)
+backgammon/pygame_ui/pygame.py:45:8: C0103: Attribute name "TEXT_COLOR" doesn't conform to snake_case naming style (invalid-name)
+backgammon/pygame_ui/pygame.py:46:8: C0103: Attribute name "BLACK_COLOR" doesn't conform to snake_case naming style (invalid-name)
+backgammon/pygame_ui/pygame.py:10:0: R0902: Too many instance attributes (10/7) (too-many-instance-attributes)
+backgammon/pygame_ui/pygame.py:37:8: E1101: Module 'pygame' has no 'init' member (no-member)
+backgammon/pygame_ui/pygame.py:108:29: E1101: Module 'pygame' has no 'QUIT' member (no-member)
+backgammon/pygame_ui/pygame.py:110:29: E1101: Module 'pygame' has no 'KEYDOWN' member (no-member)
+backgammon/pygame_ui/pygame.py:111:32: E1101: Module 'pygame' has no 'K_ESCAPE' member (no-member)
+backgammon/pygame_ui/pygame.py:136:8: E1101: Module 'pygame' has no 'quit' member (no-member)
 ************* Module backgammon.cli.CLI
 backgammon/cli/CLI.py:44:4: R0914: Too many local variables (18/15) (too-many-locals)
 backgammon/cli/CLI.py:44:4: R0915: Too many statements (65/50) (too-many-statements)
@@ -58,16 +69,16 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
             return 1
         return 0
 
-    def get_home_board_range(self):
+    def can_bear_off(self):
         """
-        Obtiene el rango del home board para este jugador.
+        Verifica si la ficha puede hacer bearing off desde su posición actual.
 
         Returns:
-          range: Rango de posiciones del home board
+          bool: True si puede hacer bearing off, False en caso contrario
         """ (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 9.90/10
+Your code has been rated at 9.78/10
 
 
 ```
