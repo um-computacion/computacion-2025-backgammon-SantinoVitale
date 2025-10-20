@@ -5,6 +5,76 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2025-10-20
+
+### Added
+- **CheckerRenderer**: Complete checker (game piece) rendering system
+  - Created `CheckerRenderer` class with 3D visual effects (shadows, borders, highlights)
+  - Adaptive spacing algorithm for stacking multiple checkers on points
+  - Support for rendering checkers on points, bar, and off areas
+  - Dynamic compression when more than 5 checkers on a single point
+
+- **DiceRenderer**: Dice visualization system
+  - Created `DiceRenderer` class with accurate pip positioning for values 1-6
+  - Main dice display (40x40 px) in side panel
+  - Available moves display with smaller dice (25x25 px)
+  - Rounded borders and professional appearance
+
+- **TextRenderer**: Player information and game status display
+  - Created `TextRenderer` class for text rendering
+  - Player names and borne-off checker counts
+  - Current turn indicator with visual arrow
+  - Basic game instructions overlay
+
+- **ClickDetector**: Mouse interaction foundation
+  - Created `ClickDetector` class for coordinate conversion
+  - Point detection (0-23) with complex board geometry handling
+  - Bar and off-area click detection
+  - Roll dice button detection
+  - Visual debugging with red circle indicator
+  - Console logging for click validation
+
+- **Testing Infrastructure**:
+  - Created `test_pygame_clicks.py` for interactive testing
+  - Visual feedback system for click detection
+  - Comprehensive debugging output
+
+### Changed
+- **Screen Size**: Increased from 1280x720 to 1600x900 pixels for better visibility
+- **Checker Size**: Reduced checker radius from `(point_width // 2) - 5` to `(point_width // 3) - 8`
+- **BoardRenderer**: Extended to support game state rendering
+  - Added optional `board`, `dice_values`, `available_moves`, and `player_info` parameters
+  - Created `_render_checkers_from_board()` method
+  - Integrated all new renderers (checker, dice, text)
+- **PygameUI**: Enhanced with interactive capabilities
+  - Added `ClickDetector` integration
+  - Implemented `handle_events()` with mouse click detection
+  - Created `_handle_mouse_click()` with debugging output
+  - Added visual click feedback (red circle, 60-frame display)
+  - Extended `display_board()` to extract and pass game state
+
+### Technical Details
+- **Adaptive Spacing**: `available_height / total_checkers` when > 5 checkers
+- **Click Detection Algorithm**: 
+  1. Verify board boundaries
+  2. Exclude bar and side panel
+  3. Determine board half (left/right of bar)
+  4. Determine section (top/bottom)
+  5. Calculate point index from X coordinate
+- **Rendering Pipeline**: Background → Points → Bar → Panel → Checkers → Dice → Text
+- **Performance**: 60 FPS maintained with all rendering systems active
+
+### Fixed
+- Checker overlapping issues with larger screen
+- Click detection accuracy on all 24 points
+- Checker spacing on heavily populated points
+
+### Documentation
+- Comprehensive step-by-step documentation in `prompts-desarrollo.md`
+- Detailed explanation of each rendering system
+- SOLID principles application documented
+- Testing procedures and validation
+
 ## [0.4.0] - 2025-10-20
 
 ### Added

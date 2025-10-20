@@ -12,6 +12,7 @@ from backgammon.pygame_ui.side_panel_renderer import SidePanelRenderer
 from backgammon.pygame_ui.checker_renderer import CheckerRenderer
 from backgammon.pygame_ui.dice_renderer import DiceRenderer
 from backgammon.pygame_ui.text_renderer import TextRenderer
+from backgammon.pygame_ui.click_detector import ClickDetector
 
 __all__ = [
     'PygameUI',
@@ -23,5 +24,6 @@ __all__ = [
     'SidePanelRenderer',
     'CheckerRenderer',
     'DiceRenderer',
-    'TextRenderer'
+    'TextRenderer',
+    'ClickDetector'
 ]
