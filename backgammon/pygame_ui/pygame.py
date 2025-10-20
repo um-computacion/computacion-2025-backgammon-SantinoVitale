@@ -6,6 +6,7 @@ Provides a graphical user interface using Pygame library.
 from typing import Optional
 import pygame
 from backgammon.pygame_ui.board_renderer import BoardRenderer
+from backgammon.pygame_ui.click_detector import ClickDetector
 
 
 class PygameUI:
@@ -21,13 +22,13 @@ class PygameUI:
         height: Screen height in pixels
     """
 
-    def __init__(self, width: int = 1280, height: int = 720) -> None:
+    def __init__(self, width: int = 1600, height: int = 900) -> None:
         """
         Initialize the Pygame UI.
 
         Args:
-            width: Screen width in pixels (default: 1280)
-            height: Screen height in pixels (default: 720)
+            width: Screen width in pixels (default: 1600)
+            height: Screen height in pixels (default: 900)
         """
         self.game: Optional[object] = None
         self.width: int = width
@@ -42,6 +43,15 @@ class PygameUI:
 
         # Initialize board renderer
         self.board_renderer: BoardRenderer = BoardRenderer(self.width, self.height)
+
+        # Initialize click detector
+        self.click_detector: ClickDetector = ClickDetector(
+            self.board_renderer.dimensions
+        )
+
+        # Click debugging visualization
+        self.last_click_pos: Optional[tuple] = None
+        self.click_display_frames: int = 0
 
         # Background color for screen
         self.BACKGROUND_COLOR = (50, 50, 50)  # Dark gray background
@@ -107,6 +117,14 @@ class PygameUI:
             player_info=player_info,
         )
 
+        # Draw click indicator for debugging (red circle)
+        if self.click_display_frames > 0:
+            if self.last_click_pos:
+                pygame.draw.circle(
+                    self.screen, (255, 0, 0), self.last_click_pos, 20, 3
+                )
+            self.click_display_frames -= 1
+
     def handle_events(self) -> bool:
         """
         Handle Pygame events.
@@ -120,7 +138,42 @@ class PygameUI:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     return False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:  # Left mouse button
+                    self._handle_mouse_click(event.pos)
         return True
+
+    def _handle_mouse_click(self, mouse_pos: tuple) -> None:
+        """
+        Handle mouse click events for debugging.
+
+        Args:
+            mouse_pos: Tuple of (x, y) mouse coordinates
+        """
+        # Store click for visual feedback
+        self.last_click_pos = mouse_pos
+        self.click_display_frames = 60  # Show for 1 second at 60 FPS
+
+        print("\n=== MOUSE CLICK DEBUG ===")
+        print(f"Mouse position: {mouse_pos}")
+
+        # Check what was clicked
+        clicked_position = self.click_detector.get_clicked_position(mouse_pos)
+
+        if clicked_position:
+            position_type, value = clicked_position
+            print(f"Clicked: {position_type}")
+            if position_type == "point":
+                print(f"Point number: {value}")
+            print("=" * 25)
+        else:
+            print("Clicked outside board")
+            print("=" * 25)
+
+        # Check if roll button was clicked
+        if self.click_detector.is_roll_button_clicked(mouse_pos):
+            print("ROLL DICE BUTTON CLICKED!")
+            print("=" * 25)
 
     def run_game(self) -> None:
         """Run the main game loop with Pygame interface."""
