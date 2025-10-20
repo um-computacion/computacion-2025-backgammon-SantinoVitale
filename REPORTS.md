@@ -15,17 +15,29 @@ TOTAL                                 600     47    92%
 ```
 ## Pylint Report
 ```text
+************* Module backgammon.pygame_ui.side_panel_renderer
+backgammon/pygame_ui/side_panel_renderer.py:11:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+************* Module backgammon.pygame_ui.point_renderer
+backgammon/pygame_ui/point_renderer.py:42:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+backgammon/pygame_ui/point_renderer.py:65:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
 ************* Module backgammon.pygame_ui.pygame
-backgammon/pygame_ui/pygame.py:43:8: C0103: Attribute name "BACKGROUND_COLOR" doesn't conform to snake_case naming style (invalid-name)
-backgammon/pygame_ui/pygame.py:44:8: C0103: Attribute name "BOARD_COLOR" doesn't conform to snake_case naming style (invalid-name)
-backgammon/pygame_ui/pygame.py:45:8: C0103: Attribute name "TEXT_COLOR" doesn't conform to snake_case naming style (invalid-name)
-backgammon/pygame_ui/pygame.py:46:8: C0103: Attribute name "BLACK_COLOR" doesn't conform to snake_case naming style (invalid-name)
-backgammon/pygame_ui/pygame.py:10:0: R0902: Too many instance attributes (10/7) (too-many-instance-attributes)
-backgammon/pygame_ui/pygame.py:37:8: E1101: Module 'pygame' has no 'init' member (no-member)
-backgammon/pygame_ui/pygame.py:108:29: E1101: Module 'pygame' has no 'QUIT' member (no-member)
-backgammon/pygame_ui/pygame.py:110:29: E1101: Module 'pygame' has no 'KEYDOWN' member (no-member)
-backgammon/pygame_ui/pygame.py:111:32: E1101: Module 'pygame' has no 'K_ESCAPE' member (no-member)
-backgammon/pygame_ui/pygame.py:136:8: E1101: Module 'pygame' has no 'quit' member (no-member)
+backgammon/pygame_ui/pygame.py:47:8: C0103: Attribute name "BACKGROUND_COLOR" doesn't conform to snake_case naming style (invalid-name)
+backgammon/pygame_ui/pygame.py:11:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
+backgammon/pygame_ui/pygame.py:38:8: E1101: Module 'pygame' has no 'init' member (no-member)
+backgammon/pygame_ui/pygame.py:83:29: E1101: Module 'pygame' has no 'QUIT' member (no-member)
+backgammon/pygame_ui/pygame.py:85:29: E1101: Module 'pygame' has no 'KEYDOWN' member (no-member)
+backgammon/pygame_ui/pygame.py:86:32: E1101: Module 'pygame' has no 'K_ESCAPE' member (no-member)
+backgammon/pygame_ui/pygame.py:111:8: E1101: Module 'pygame' has no 'quit' member (no-member)
+************* Module backgammon.pygame_ui.bar_renderer
+backgammon/pygame_ui/bar_renderer.py:11:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+************* Module backgammon.pygame_ui.board_dimensions
+backgammon/pygame_ui/board_dimensions.py:9:0: R0902: Too many instance attributes (13/7) (too-many-instance-attributes)
+backgammon/pygame_ui/board_dimensions.py:102:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+backgammon/pygame_ui/board_dimensions.py:124:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+************* Module backgammon.pygame_ui.board_renderer
+backgammon/pygame_ui/board_renderer.py:14:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+************* Module backgammon.pygame_ui.color_scheme
+backgammon/pygame_ui/color_scheme.py:9:0: R0903: Too few public methods (0/2) (too-few-public-methods)
 ************* Module backgammon.cli.CLI
 backgammon/cli/CLI.py:44:4: R0914: Too many local variables (18/15) (too-many-locals)
 backgammon/cli/CLI.py:44:4: R0915: Too many statements (65/50) (too-many-statements)
@@ -69,16 +81,16 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
             return 1
         return 0
 
-    def can_bear_off(self):
+    def get_home_board_range(self):
         """
-        Verifica si la ficha puede hacer bearing off desde su posición actual.
+        Obtiene el rango del home board para este jugador.
 
         Returns:
-          bool: True si puede hacer bearing off, False en caso contrario
+          range: Rango de posiciones del home board
         """ (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 9.78/10
+Your code has been rated at 9.77/10
 
 
 ```
