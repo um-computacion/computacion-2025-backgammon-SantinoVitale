@@ -5,6 +5,37 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2025-10-20
+
+### Added
+- **Professional Backgammon Board Design**: Complete visual board implementation with modular architecture
+  - Created `ColorScheme` class for centralized color management (wood textures, borders, points, bar, panel)
+  - Created `BoardDimensions` class for all layout calculations and coordinate conversions
+  - Created `PointRenderer` class for rendering 24 triangular points with alternating colors
+  - Created `BarRenderer` class for central green bar with wood texture and brass hinges
+  - Created `SidePanelRenderer` class for right panel with diagonal green/yellow stripes
+  - Created `BoardRenderer` class as main coordinator for all rendering components
+  - Created `test_board_visual.py` for standalone board visualization testing
+
+### Changed
+- **PygameUI Enhancement**: Updated to use new BoardRenderer for professional board display
+  - Integrated `BoardRenderer` into `PygameUI.__init__()`
+  - Simplified `display_board()` to call `self.board_renderer.render(self.screen)`
+  - Changed background color to dark gray (50, 50, 50) for better contrast
+  - Removed placeholder drawing code (replaced with actual board rendering)
+  - Removed emoji from print statements per project guidelines
+
+### Technical Details
+- **Board Specifications**: 1280x720 window, 20px dark brown border, 50px green central bar, 80px side panel
+- **Point Layout**: 24 triangular points alternating between light beige (220, 200, 170) and dark brown (100, 70, 40)
+- **Visual Elements**: Wood-textured background (210, 150, 90), brass hinges (180, 150, 80), diagonal stripes (green/yellow)
+- **Architecture**: SOLID principles applied with single responsibility per class, modular design for easy maintenance
+- **Rendering Order**: Background → Points → Bar → Side Panel for proper visual layering
+
+### Documentation
+- Created comprehensive prompt documentation in `documentacion/prompt28_board_design.md`
+- Detailed implementation analysis including SOLID principles, algorithm explanations, and technical specifications
+
 ## [0.3.0] - 2025-10-19
 
 ### Added
