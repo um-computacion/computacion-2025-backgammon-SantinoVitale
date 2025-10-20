@@ -5,6 +5,7 @@ Provides a graphical user interface using Pygame library.
 
 from typing import Optional
 import pygame
+from backgammon.pygame_ui.board_renderer import BoardRenderer
 
 
 class PygameUI:
@@ -39,11 +40,11 @@ class PygameUI:
         pygame.display.set_caption("Backgammon Game")
         self.clock = pygame.time.Clock()
 
-        # Colors
-        self.BACKGROUND_COLOR = (139, 69, 19)  # Brown
-        self.BOARD_COLOR = (210, 180, 140)  # Tan
-        self.TEXT_COLOR = (255, 255, 255)  # White
-        self.BLACK_COLOR = (0, 0, 0)  # Black
+        # Initialize board renderer
+        self.board_renderer: BoardRenderer = BoardRenderer(self.width, self.height)
+
+        # Background color for screen
+        self.BACKGROUND_COLOR = (50, 50, 50)  # Dark gray background
 
     def set_game(self, game: object) -> None:
         """
@@ -68,34 +69,8 @@ class PygameUI:
         # Fill background
         self.screen.fill(self.BACKGROUND_COLOR)
 
-        # Draw board rectangle
-        board_rect = pygame.Rect(50, 50, self.width - 100, self.height - 100)
-        pygame.draw.rect(self.screen, self.BOARD_COLOR, board_rect)
-        pygame.draw.rect(self.screen, self.BLACK_COLOR, board_rect, 3)
-
-        # Draw title
-        font = pygame.font.Font(None, 48)
-        title_text = font.render("Backgammon", True, self.TEXT_COLOR)
-        title_rect = title_text.get_rect(center=(self.width // 2, 30))
-        self.screen.blit(title_text, title_rect)
-
-        # Draw placeholder text
-        info_font = pygame.font.Font(None, 32)
-        info_text = info_font.render(
-            "Pygame UI - In Development", True, self.BLACK_COLOR
-        )
-        info_rect = info_text.get_rect(center=(self.width // 2, self.height // 2))
-        self.screen.blit(info_text, info_rect)
-
-        # Draw instructions
-        instruction_font = pygame.font.Font(None, 24)
-        instruction_text = instruction_font.render(
-            "Press ESC to exit", True, self.BLACK_COLOR
-        )
-        instruction_rect = instruction_text.get_rect(
-            center=(self.width // 2, self.height // 2 + 50)
-        )
-        self.screen.blit(instruction_text, instruction_rect)
+        # Render the complete board using BoardRenderer
+        self.board_renderer.render(self.screen)
 
     def handle_events(self) -> bool:
         """
@@ -134,7 +109,7 @@ class PygameUI:
 
         # Cleanup
         pygame.quit()
-        print("\n👋 Pygame window closed. Thanks for playing!")
+        print("\nPygame window closed. Thanks for playing!")
 
     def get_player_move(self) -> Optional[tuple]:
         """
@@ -152,4 +127,4 @@ class PygameUI:
         Args:
             winner_name: Name of the winning player
         """
-        print(f"🏆 Winner: {winner_name}")
+        print(f"Winner: {winner_name}")
