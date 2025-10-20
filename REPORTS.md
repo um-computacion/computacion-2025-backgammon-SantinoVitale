@@ -21,15 +21,19 @@ backgammon/pygame_ui/side_panel_renderer.py:11:0: R0903: Too few public methods 
 backgammon/pygame_ui/point_renderer.py:42:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
 backgammon/pygame_ui/point_renderer.py:65:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
 ************* Module backgammon.pygame_ui.checker_renderer
-backgammon/pygame_ui/checker_renderer.py:50:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+backgammon/pygame_ui/checker_renderer.py:83:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/pygame_ui/checker_renderer.py:51:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
+backgammon/pygame_ui/checker_renderer.py:142:4: R0913: Too many arguments (6/5) (too-many-arguments)
+backgammon/pygame_ui/checker_renderer.py:142:4: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
 ************* Module backgammon.pygame_ui.pygame
-backgammon/pygame_ui/pygame.py:47:8: C0103: Attribute name "BACKGROUND_COLOR" doesn't conform to snake_case naming style (invalid-name)
-backgammon/pygame_ui/pygame.py:11:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
-backgammon/pygame_ui/pygame.py:38:8: E1101: Module 'pygame' has no 'init' member (no-member)
-backgammon/pygame_ui/pygame.py:118:29: E1101: Module 'pygame' has no 'QUIT' member (no-member)
-backgammon/pygame_ui/pygame.py:120:29: E1101: Module 'pygame' has no 'KEYDOWN' member (no-member)
-backgammon/pygame_ui/pygame.py:121:32: E1101: Module 'pygame' has no 'K_ESCAPE' member (no-member)
-backgammon/pygame_ui/pygame.py:146:8: E1101: Module 'pygame' has no 'quit' member (no-member)
+backgammon/pygame_ui/pygame.py:57:8: C0103: Attribute name "BACKGROUND_COLOR" doesn't conform to snake_case naming style (invalid-name)
+backgammon/pygame_ui/pygame.py:12:0: R0902: Too many instance attributes (11/7) (too-many-instance-attributes)
+backgammon/pygame_ui/pygame.py:39:8: E1101: Module 'pygame' has no 'init' member (no-member)
+backgammon/pygame_ui/pygame.py:136:29: E1101: Module 'pygame' has no 'QUIT' member (no-member)
+backgammon/pygame_ui/pygame.py:138:29: E1101: Module 'pygame' has no 'KEYDOWN' member (no-member)
+backgammon/pygame_ui/pygame.py:139:32: E1101: Module 'pygame' has no 'K_ESCAPE' member (no-member)
+backgammon/pygame_ui/pygame.py:141:29: E1101: Module 'pygame' has no 'MOUSEBUTTONDOWN' member (no-member)
+backgammon/pygame_ui/pygame.py:199:8: E1101: Module 'pygame' has no 'quit' member (no-member)
 ************* Module backgammon.pygame_ui.bar_renderer
 backgammon/pygame_ui/bar_renderer.py:11:0: R0903: Too few public methods (1/2) (too-few-public-methods)
 ************* Module backgammon.pygame_ui.board_dimensions
@@ -47,6 +51,10 @@ backgammon/pygame_ui/board_renderer.py:18:0: R0902: Too many instance attributes
 backgammon/pygame_ui/board_renderer.py:71:4: R0913: Too many arguments (6/5) (too-many-arguments)
 backgammon/pygame_ui/board_renderer.py:71:4: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
 backgammon/pygame_ui/board_renderer.py:18:0: R0903: Too few public methods (1/2) (too-few-public-methods)
+************* Module backgammon.pygame_ui.click_detector
+backgammon/pygame_ui/click_detector.py:53:0: C0325: Unnecessary parens after 'not' keyword (superfluous-parens)
+backgammon/pygame_ui/click_detector.py:55:0: C0325: Unnecessary parens after 'not' keyword (superfluous-parens)
+backgammon/pygame_ui/click_detector.py:30:4: R0914: Too many local variables (20/15) (too-many-locals)
 ************* Module backgammon.pygame_ui.color_scheme
 backgammon/pygame_ui/color_scheme.py:9:0: R0903: Too few public methods (0/2) (too-few-public-methods)
 ************* Module backgammon.cli.CLI
@@ -92,16 +100,16 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
             return 1
         return 0
 
-    def get_home_board_range(self):
+    def can_bear_off(self):
         """
-        Obtiene el rango del home board para este jugador.
+        Verifica si la ficha puede hacer bearing off desde su posición actual.
 
         Returns:
-          range: Rango de posiciones del home board
+          bool: True si puede hacer bearing off, False en caso contrario
         """ (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 9.76/10
+Your code has been rated at 9.73/10
 
 
 ```
