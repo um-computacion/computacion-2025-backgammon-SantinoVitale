@@ -49,6 +49,10 @@ class PygameUI:
             self.board_renderer.dimensions
         )
 
+        # Selection state for highlighting
+        self.selected_point: Optional[int] = None
+        self.valid_move_destinations: list = []
+
         # Click debugging visualization
         self.last_click_pos: Optional[tuple] = None
         self.click_display_frames: int = 0
@@ -115,6 +119,8 @@ class PygameUI:
             dice_values=dice_values,
             available_moves=available_moves,
             player_info=player_info,
+            selected_point=self.selected_point,
+            valid_move_destinations=self.valid_move_destinations,
         )
 
         # Draw click indicator for debugging (red circle)
@@ -145,35 +151,104 @@ class PygameUI:
 
     def _handle_mouse_click(self, mouse_pos: tuple) -> None:
         """
-        Handle mouse click events for debugging.
+        Handle mouse click events for selection and moves.
 
         Args:
             mouse_pos: Tuple of (x, y) mouse coordinates
         """
-        # Store click for visual feedback
+        # Store click for visual feedback (debugging)
         self.last_click_pos = mouse_pos
         self.click_display_frames = 60  # Show for 1 second at 60 FPS
-
-        print("\n=== MOUSE CLICK DEBUG ===")
-        print(f"Mouse position: {mouse_pos}")
-
-        # Check what was clicked
-        clicked_position = self.click_detector.get_clicked_position(mouse_pos)
-
-        if clicked_position:
-            position_type, value = clicked_position
-            print(f"Clicked: {position_type}")
-            if position_type == "point":
-                print(f"Point number: {value}")
-            print("=" * 25)
-        else:
-            print("Clicked outside board")
-            print("=" * 25)
 
         # Check if roll button was clicked
         if self.click_detector.is_roll_button_clicked(mouse_pos):
             print("ROLL DICE BUTTON CLICKED!")
-            print("=" * 25)
+            # TODO: Implement dice rolling in future step
+            return
+
+        # Check what was clicked
+        clicked_position = self.click_detector.get_clicked_position(mouse_pos)
+
+        if not clicked_position:
+            # Click outside board - deselect
+            self.selected_point = None
+            self.valid_move_destinations = []
+            return
+
+        position_type, value = clicked_position
+
+        # Only handle point clicks for now
+        if position_type != "point":
+            return
+
+        clicked_point = value
+
+        # If no point is selected, select the clicked point
+        if self.selected_point is None:
+            # Check if the clicked point has checkers
+            if self.game and hasattr(self.game, 'board'):
+                checkers = self.game.board.points[clicked_point]
+                if checkers:
+                    # Select this point
+                    self.selected_point = clicked_point
+                    # Calculate valid destinations (simplified for now)
+                    # In future, this will use game logic to get valid moves
+                    self.valid_move_destinations = self._get_valid_destinations(clicked_point)
+                    print(f"Selected point {clicked_point}")
+                else:
+                    print(f"No checkers on point {clicked_point}")
+        else:
+            # A point is already selected
+            if clicked_point == self.selected_point:
+                # Clicking the same point - deselect
+                self.selected_point = None
+                self.valid_move_destinations = []
+                print("Deselected point")
+            elif clicked_point in self.valid_move_destinations:
+                # Clicked a valid destination - execute move
+                print(f"Move from {self.selected_point} to {clicked_point}")
+                # TODO: Execute move in future step
+                # Clear selection after move
+                self.selected_point = None
+                self.valid_move_destinations = []
+            else:
+                # Clicked a different point - change selection
+                if self.game and hasattr(self.game, 'board'):
+                    checkers = self.game.board.points[clicked_point]
+                    if checkers:
+                        self.selected_point = clicked_point
+                        self.valid_move_destinations = self._get_valid_destinations(clicked_point)
+                        print(f"Selected point {clicked_point}")
+                    else:
+                        # No checkers - deselect
+                        self.selected_point = None
+                        self.valid_move_destinations = []
+
+    def _get_valid_destinations(self, from_point: int) -> list:
+        """
+        Get valid destination points for a selected checker.
+        This is a simplified version for demonstration.
+
+        Args:
+            from_point: The point number where the checker is
+
+        Returns:
+            List of valid destination point numbers
+        """
+        # Simplified logic - in future this will use game rules
+        # For now, just show points within dice range
+        valid_destinations = []
+
+        if self.game and hasattr(self.game, 'dice') and self.game.dice.last_roll:
+            available_moves = self.game.dice.get_available_moves()
+            for move in available_moves:
+                # Calculate destination based on current player direction
+                # White moves from 0 to 23, Black moves from 23 to 0
+                destination = from_point + move  # Simplified: assuming white player
+                if 0 <= destination <= 23:
+                    valid_destinations.append(destination)
+
+        return valid_destinations
 
     def run_game(self) -> None:
         """Run the main game loop with Pygame interface."""
