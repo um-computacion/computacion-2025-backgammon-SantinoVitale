@@ -80,7 +80,7 @@ class CheckerRenderer:
         # Calculate adaptive spacing based on number of checkers
         # If there are many checkers, reduce spacing to fit them all
         base_spacing = self.checker_radius * 2 + 4  # 4 pixels gap between checkers
-        
+
         # Adaptive spacing: reduce spacing if there are more than 5 checkers
         if total_checkers > 5:
             # Gradually reduce spacing for tall stacks

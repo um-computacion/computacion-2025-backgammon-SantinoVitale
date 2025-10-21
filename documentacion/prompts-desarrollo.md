@@ -1,6 +1,6 @@
 ## Prompt 30
 
-### Modelo: GitHub Copilot (GPT-4)
+### Modelo: GitHub Copilot (Claude Sonnet 4.5)
 
 ### Fecha: 2025-01-18
 
@@ -275,7 +275,7 @@ def _get_valid_destinations(self, from_point: int) -> list:
 
 ## Prompt 29
 
-### Modelo: GitHub Copilot (GPT-4)
+### Modelo: GitHub Copilot (Claude Sonnet 4.5)
 
 ### Fecha: 2025-01-18
 
@@ -500,7 +500,7 @@ Esto mejora la usabilidad y elimina complejidad innecesaria.
 
 ## Prompt 28
 
-### Modelo: GitHub Copilot (GPT-4)
+### Modelo: GitHub Copilot (Claude Sonnet 4.5)
 
 ### Fecha: 2025-10-20
 
