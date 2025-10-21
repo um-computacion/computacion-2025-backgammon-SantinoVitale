@@ -5,6 +5,46 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2025-01-18
+
+### Added
+- **HighlightRenderer**: Visual feedback system for user interactions
+  - Created `HighlightRenderer` class with 6 rendering methods
+  - Golden ring highlight for selected checkers (255, 215, 0)
+  - Green circle indicators for valid move destinations (50, 205, 50)
+  - Red X indicator for invalid selections (220, 20, 60)
+  - Semi-transparent overlays for bar and off-area highlights
+  - Integrated into BoardRenderer render pipeline
+
+- **Selection State Management**: Interactive checker selection system
+  - Added `selected_point` and `valid_move_destinations` state to PygameUI
+  - Implemented comprehensive click handling logic in `_handle_mouse_click()`
+  - Support for selection, deselection, and selection changes
+  - Added `_get_valid_destinations()` helper method (simplified version)
+
+### Changed
+- **BoardRenderer.render()**: Extended signature to support highlighting
+  - Added `selected_point: Optional[int]` parameter
+  - Added `valid_move_destinations: Optional[List[int]]` parameter
+  - Highlights now render after checkers for proper visibility
+  
+- **PygameUI._handle_mouse_click()**: Complete rewrite from debug to functional
+  - Replaced console debugging with selection logic
+  - Handles 7 different click scenarios (empty point, same point, valid destination, etc.)
+  - Deselection on outside clicks
+  - Foundation for move execution (TODO in sub-step 5.3)
+
+- **PygameUI.display_board()**: Updated to pass highlighting parameters
+  - Sends `selected_point` to BoardRenderer
+  - Sends `valid_move_destinations` to BoardRenderer
+
+### Technical Details
+- **Lines of Code Added**: ~300 (including documentation)
+- **New Classes**: 1 (HighlightRenderer)
+- **Modified Files**: 4 (highlight_renderer.py, board_renderer.py, pygame.py, __init__.py)
+- **Rendering Order**: Board → Checkers → Highlights → Dice → Text
+- **SOLID Principles**: Single Responsibility, Open/Closed, Dependency Inversion maintained
+
 ## [0.5.0] - 2025-10-20
 
 ### Added

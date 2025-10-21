@@ -13,6 +13,7 @@ from backgammon.pygame_ui.checker_renderer import CheckerRenderer
 from backgammon.pygame_ui.dice_renderer import DiceRenderer
 from backgammon.pygame_ui.text_renderer import TextRenderer
 from backgammon.pygame_ui.click_detector import ClickDetector
+from backgammon.pygame_ui.highlight_renderer import HighlightRenderer
 
 __all__ = [
     'PygameUI',
@@ -25,5 +26,6 @@ __all__ = [
     'CheckerRenderer',
     'DiceRenderer',
     'TextRenderer',
-    'ClickDetector'
+    'ClickDetector',
+    'HighlightRenderer'
 ]

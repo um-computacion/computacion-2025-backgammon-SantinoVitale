@@ -13,6 +13,7 @@ from backgammon.pygame_ui.side_panel_renderer import SidePanelRenderer
 from backgammon.pygame_ui.checker_renderer import CheckerRenderer
 from backgammon.pygame_ui.dice_renderer import DiceRenderer
 from backgammon.pygame_ui.text_renderer import TextRenderer
+from backgammon.pygame_ui.highlight_renderer import HighlightRenderer
 
 
 class BoardRenderer:
@@ -52,6 +53,9 @@ class BoardRenderer:
         )
         self.dice_renderer: DiceRenderer = DiceRenderer(self.colors, self.dimensions)
         self.text_renderer: TextRenderer = TextRenderer(self.colors, self.dimensions)
+        self.highlight_renderer: HighlightRenderer = HighlightRenderer(
+            self.colors, self.dimensions
+        )
 
     def _render_board_background(self, surface: pygame.Surface) -> None:
         """
@@ -75,6 +79,8 @@ class BoardRenderer:
         dice_values: Optional[List[int]] = None,
         available_moves: Optional[List[int]] = None,
         player_info: Optional[Tuple[str, str, str, int, int]] = None,
+        selected_point: Optional[int] = None,
+        valid_move_destinations: Optional[List[int]] = None,
     ) -> None:
         """
         Render the complete Backgammon board.
@@ -85,6 +91,8 @@ class BoardRenderer:
             dice_values: Optional list of current dice values
             available_moves: Optional list of available move values
             player_info: Optional tuple of (player1_name, player2_name, current_player, p1_off, p2_off)
+            selected_point: Optional point number that is currently selected
+            valid_move_destinations: Optional list of valid destination points
         """
         # Render background
         self._render_board_background(surface)
@@ -101,6 +109,13 @@ class BoardRenderer:
         # Render checkers if board state is provided
         if board is not None:
             self._render_checkers_from_board(surface, board)
+
+        # Render highlights for selected point and valid moves
+        if selected_point is not None:
+            self.highlight_renderer.render_selected_point(surface, selected_point)
+
+        if valid_move_destinations is not None and len(valid_move_destinations) > 0:
+            self.highlight_renderer.render_valid_moves(surface, valid_move_destinations)
 
         # Render dice if provided
         if dice_values:
@@ -143,14 +158,10 @@ class BoardRenderer:
         for color in ["white", "black"]:
             bar_checkers = board.bar[color]
             for stack_index in range(len(bar_checkers)):
-                self.checker_renderer.render_bar_checker(
-                    surface, color, stack_index
-                )
+                self.checker_renderer.render_bar_checker(surface, color, stack_index)
 
         # Render checkers that are borne off
         for color in ["white", "black"]:
             off_checkers = board.off[color]
             for stack_index in range(len(off_checkers)):
-                self.checker_renderer.render_off_checker(
-                    surface, color, stack_index
-                )
+                self.checker_renderer.render_off_checker(surface, color, stack_index)
