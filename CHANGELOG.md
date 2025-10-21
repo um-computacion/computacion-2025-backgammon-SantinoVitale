@@ -5,6 +5,110 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2025-01-21
+
+### Added
+- **DiceButton Class**: Interactive button for rolling dice
+  - Created `DiceButton` class in `dice_button.py` with full UI functionality
+  - Clickable button positioned in middle section of side panel
+  - Hover effects: Color changes from green to bright green on hover
+  - Disabled state: Gray appearance when not clickable
+  - Dice icon visualization with pip patterns on button
+  - Rounded corners and border styling for modern look
+
+- **Dice Rolling Integration**: Complete turn flow management
+  - Button triggers `game.roll_dice()` when clicked
+  - Automatic button disable after rolling
+  - Automatic button re-enable when all dice consumed
+  - Turn-based state tracking with `dice_rolled` flag
+  - Console feedback for roll attempts and results
+
+- **Game State Synchronization**: Button state reflects game state
+  - Button enabled at start of turn (no dice rolled)
+  - Button disabled after rolling (dice available)
+  - Button auto-enables when available_moves becomes empty
+  - Selection cleared automatically when turn ends
+
+### Changed
+- **PygameUI Initialization**: Added dice button components
+  - Imported `DiceButton` class
+  - Initialized `self.dice_button` with color scheme and dimensions
+  - Added `self.dice_rolled` flag for turn state tracking
+
+- **PygameUI.handle_events()**: Enhanced event handling
+  - Added button hover state updates with `update_hover_state()`
+  - Mouse position tracked on every frame for hover effects
+
+- **PygameUI._handle_mouse_click()**: Dice button click detection
+  - Checks `dice_button.is_clicked()` before checking board clicks
+  - Rolls dice via `game.roll_dice()` when button clicked
+  - Sets `dice_rolled` flag and disables button after roll
+  - Provides console feedback: "🎲 ROLLING DICE..." and "✓ Dice rolled: [values]"
+
+- **PygameUI.display_board()**: Rendering and auto-enable logic
+  - Calls `dice_button.render(self.screen)` to draw button
+  - Checks if `available_moves` is empty to auto-enable button
+  - Resets `dice_rolled` flag when turn completes
+  - Clears selection state when new turn begins
+
+- **main.py**: Removed automatic dice rolling
+  - Commented out `game.roll_dice()` in `start_pygame_game()`
+  - Game now starts with no dice - user must click button
+  - This enforces proper turn flow through UI
+
+### Technical Details
+- **Button Dimensions**: 120x50 pixels, centered in middle panel section
+- **Colors**: 
+  - Normal: (50, 150, 50) green
+  - Hover: (70, 180, 70) bright green
+  - Disabled: (100, 100, 100) gray
+- **Font**: Size 32, "ROLL DICE" text
+- **State Machine**: Not rolled → Rolled → All consumed → Not rolled (cycle)
+- **Integration Points**: pygame events, game.roll_dice(), game.dice.get_available_moves()
+
+## [0.6.1] - 2025-01-21
+
+### Fixed
+- **Highlighting System Bug Fixes**: Complete resolution of visual and functional issues
+  - Fixed golden ring positioning to highlight TOP checker instead of bottom (stack_index calculation)
+  - Fixed coordinate conversion between UI (0-23) and Game notation (1-24)
+  - Reduced golden ring size for better visual fit (checker_radius + 3, thickness 3px)
+  - Added compressed spacing support for stacks with more than 5 checkers
+  - Eliminated duplicate destinations in valid moves list when rolling doubles
+  - Added early validation to prevent selecting opponent's checkers
+
+- **Move Validation**: Enhanced validation and feedback
+  - Implemented coordinate conversion in `_get_valid_destinations()`: UI→Game notation
+  - Implemented coordinate conversion in `_handle_mouse_click()`: UI→Game notation
+  - Added deduplication logic using `set()` to track seen destinations
+  - Improved user feedback for wrong-color selection attempts
+
+### Changed
+- **HighlightRenderer.render_selected_point()**: Enhanced positioning algorithm
+  - Calculates correct Y position for checkers in compressed stacks
+  - Supports both normal spacing (< 5 checkers) and compressed (≥ 5 checkers)
+  - Properly handles top/bottom point orientation
+
+- **BoardRenderer.render()**: Dynamic stack index calculation
+  - Calculates `stack_index = len(checkers) - 1` to highlight top checker
+  - Passes calculated index to HighlightRenderer
+
+- **PygameUI._get_valid_destinations()**: Optimization and bug fixes
+  - Uses `seen_destinations` set to avoid duplicate evaluation
+  - Converts coordinates before calling `game.is_valid_move()`
+  - Reduced verbose logging for cleaner console output
+  - Silently handles bearing off (TODO for future implementation)
+
+- **PygameUI._handle_mouse_click()**: Coordinate conversion
+  - Converts UI coordinates (0-23) to game notation (1-24) before move execution
+  - Format: `from_notation = self.selected_point + 1`
+
+### Technical Details
+- **Coordinate System**: UI uses 0-23 (array indices), Game uses 1-24 (human notation)
+- **Conversion Formula**: `game_notation = ui_index + 1`
+- **Duplicate Prevention**: Set-based tracking prevents re-evaluation of same destination
+- **Stack Positioning**: Compressed spacing formula: `checker_radius * 1.5` for indices ≥ 5
+
 ## [0.6.0] - 2025-01-18
 
 ### Added

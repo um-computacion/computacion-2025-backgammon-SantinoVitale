@@ -93,8 +93,8 @@ def start_pygame_game() -> None:
         # Setup the board with initial position
         game.setup_board()
 
-        # Roll dice for demonstration (so we can see the dice renderer working)
-        game.roll_dice()
+        # DON'T roll dice automatically - let user click the button
+        # game.roll_dice()  # REMOVED: User will click button to roll
 
         # Start the game using Pygame
         print("\nIniciando el juego de Backgammon!")
