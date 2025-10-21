@@ -189,14 +189,23 @@ class PygameUI:
             if self.game and hasattr(self.game, 'board'):
                 checkers = self.game.board.points[clicked_point]
                 if checkers:
+                    # Check if these are the current player's checkers
+                    current_player = self.game.get_current_player()
+                    if current_player and checkers[0].color != current_player.color:
+                        print(f"✗ Cannot select point {clicked_point} - these are {checkers[0].color} checkers")
+                        print(f"  Current turn: {current_player.color}")
+                        return
+
                     # Select this point
                     self.selected_point = clicked_point
                     # Calculate valid destinations (simplified for now)
                     # In future, this will use game logic to get valid moves
                     self.valid_move_destinations = self._get_valid_destinations(clicked_point)
-                    print(f"Selected point {clicked_point}")
+                    print(f"✓ Selected point {clicked_point}")
+                    print(f"  Checkers on point: {len(checkers)} {checkers[0].color if checkers else 'none'}")
+                    print(f"  Valid destinations: {self.valid_move_destinations}")
                 else:
-                    print(f"No checkers on point {clicked_point}")
+                    print(f"✗ No checkers on point {clicked_point}")
         else:
             # A point is already selected
             if clicked_point == self.selected_point:
@@ -206,11 +215,30 @@ class PygameUI:
                 print("Deselected point")
             elif clicked_point in self.valid_move_destinations:
                 # Clicked a valid destination - execute move
-                print(f"Move from {self.selected_point} to {clicked_point}")
-                # TODO: Execute move in future step
-                # Clear selection after move
-                self.selected_point = None
-                self.valid_move_destinations = []
+                print(f"Attempting move from {self.selected_point} to {clicked_point}")
+                
+                # Execute the move through the game logic
+                if self.game and hasattr(self.game, 'make_move'):
+                    # Convert from UI indexing (0-23) to game notation (1-24)
+                    from_notation = self.selected_point + 1
+                    to_notation = clicked_point + 1
+                    
+                    print(f"  Game notation: {from_notation} → {to_notation}")
+                    success = self.game.make_move(from_notation, to_notation)
+                    
+                    if success:
+                        print(f"✓ Move successful: {self.selected_point} → {clicked_point}")
+                        # Clear selection after successful move
+                        self.selected_point = None
+                        self.valid_move_destinations = []
+                    else:
+                        print(f"✗ Move failed: {self.selected_point} → {clicked_point}")
+                        # Keep selection for retry
+                else:
+                    print("Game instance not available for move execution")
+                    # Clear selection
+                    self.selected_point = None
+                    self.valid_move_destinations = []
             else:
                 # Clicked a different point - change selection
                 if self.game and hasattr(self.game, 'board'):
@@ -226,27 +254,80 @@ class PygameUI:
 
     def _get_valid_destinations(self, from_point: int) -> list:
         """
-        Get valid destination points for a selected checker.
-        This is a simplified version for demonstration.
+        Get valid destination points for a selected checker using game logic.
 
         Args:
-            from_point: The point number where the checker is
+            from_point: The point number where the checker is (0-23)
 
         Returns:
             List of valid destination point numbers
         """
-        # Simplified logic - in future this will use game rules
-        # For now, just show points within dice range
         valid_destinations = []
 
-        if self.game and hasattr(self.game, 'dice') and self.game.dice.last_roll:
-            available_moves = self.game.dice.get_available_moves()
-            for move in available_moves:
-                # Calculate destination based on current player direction
-                # White moves from 0 to 23, Black moves from 23 to 0
-                destination = from_point + move  # Simplified: assuming white player
-                if 0 <= destination <= 23:
+        if not self.game or not hasattr(self.game, 'dice'):
+            print("  ✗ No game or dice available")
+            return valid_destinations
+
+        # Check if there are dice available
+        if not self.game.dice.last_roll:
+            print("  ✗ No dice have been rolled yet")
+            return valid_destinations
+
+        # Get available dice values
+        available_moves = self.game.dice.get_available_moves()
+        
+        if not available_moves:
+            print("  ✗ No available moves from dice")
+            return valid_destinations
+
+        # Get current player color
+        current_player = self.game.get_current_player()
+        if not current_player:
+            print("  ✗ No current player")
+            return valid_destinations
+
+        player_color = current_player.color
+
+        # Check if the clicked point has checkers of the current player
+        if not hasattr(self.game, 'board'):
+            print("  ✗ No board available")
+            return valid_destinations
+
+        checkers = self.game.board.points[from_point]
+        if not checkers or checkers[0].color != player_color:
+            print("  ✗ Point has wrong color checkers")
+            return valid_destinations
+
+        # Try each available dice value (use set to avoid duplicates)
+        seen_destinations = set()
+        
+        for move in available_moves:
+            # Calculate destination based on player direction
+            # White moves from high to low (23 → 0), Black moves from low to high (0 → 23)
+            if player_color == "white":
+                destination = from_point - move
+            else:  # black
+                destination = from_point + move
+
+            # Skip if we've already checked this destination
+            if destination in seen_destinations:
+                continue
+            
+            seen_destinations.add(destination)
+
+            # Validate the move using game logic
+            if 0 <= destination <= 23:
+                # Convert to 1-24 notation for BackgammonGame.is_valid_move()
+                from_notation = from_point + 1
+                to_notation = destination + 1
+                
+                # Check if the move is valid according to game rules
+                if self.game.is_valid_move(from_notation, to_notation):
                     valid_destinations.append(destination)
+                # else: move blocked by opponent
+            else:
+                # TODO: Handle bearing off (destination < 0 for white, > 23 for black)
+                pass  # Silently skip out of bounds for now
 
         return valid_destinations
 

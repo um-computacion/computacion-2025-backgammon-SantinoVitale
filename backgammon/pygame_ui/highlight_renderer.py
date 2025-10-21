@@ -82,29 +82,37 @@ class HighlightRenderer:
         checker_radius = (self.dimensions.point_width // 2) - 8
 
         # Calculate Y position for the specific checker
-        checker_spacing = checker_radius * 2 + 4
-        if is_top:
-            center_y = base_y + checker_radius + (stack_index * checker_spacing)
+        # For stacks > 5, use compressed spacing
+        if stack_index < 5:
+            checker_spacing = checker_radius * 2 + 4
         else:
-            center_y = base_y - checker_radius - (stack_index * checker_spacing)
+            checker_spacing = checker_radius * 1.5  # Compressed spacing
 
-        # Draw golden ring around selected checker
-        ring_thickness = 4
+        if is_top:
+            if stack_index < 5:
+                center_y = base_y + checker_radius + (stack_index * checker_spacing)
+            else:
+                # First 5 with normal spacing, rest compressed
+                normal_height = 5 * (checker_radius * 2 + 4)
+                compressed_height = (stack_index - 5) * checker_spacing
+                center_y = base_y + checker_radius + normal_height + compressed_height
+        else:
+            if stack_index < 5:
+                center_y = base_y - checker_radius - (stack_index * checker_spacing)
+            else:
+                # First 5 with normal spacing, rest compressed
+                normal_height = 5 * (checker_radius * 2 + 4)
+                compressed_height = (stack_index - 5) * checker_spacing
+                center_y = base_y - checker_radius - normal_height - compressed_height
+
+        # Draw golden ring around selected checker (snug fit)
+        ring_thickness = 3
         pygame.draw.circle(
             surface,
             self.SELECTED_COLOR,
             (center_x, center_y),
-            checker_radius + 5,
+            checker_radius + 3,  # Just slightly larger than checker
             ring_thickness,
-        )
-
-        # Draw pulsing inner circle for emphasis
-        pygame.draw.circle(
-            surface,
-            self.SELECTED_COLOR,
-            (center_x, center_y),
-            checker_radius - 5,
-            2,
         )
 
     def render_valid_move_point(

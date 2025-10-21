@@ -5,6 +5,43 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2025-01-18
+
+### Added
+- **Move Execution System**: Complete mouse-based move execution
+  - Integrated click detection with `BackgammonGame.make_move()` for real move execution
+  - Full validation through `BackgammonGame.is_valid_move()` with game rules
+  - Support for both white and black player movement directions
+  - Automatic dice consumption after successful moves
+  - Visual feedback with success/failure messages
+
+- **Enhanced Move Validation**: Intelligent destination calculation
+  - Direction-aware movement (white: high→low, black: low→high)
+  - Current player color verification
+  - Checker ownership validation
+  - Integration with game state for rule enforcement
+
+### Changed
+- **PygameUI._handle_mouse_click()**: Move execution implementation
+  - Replaced TODO placeholder with actual move execution logic
+  - Calls `game.make_move()` when clicking valid destination
+  - Provides console feedback for successful/failed moves
+  - Maintains selection state on move failure for retry
+
+- **PygameUI._get_valid_destinations()**: Complete rewrite with game logic
+  - Replaced simplified version with full game rule integration
+  - Uses `game.is_valid_move()` for accurate validation
+  - Respects player colors and movement directions
+  - Validates checker ownership before calculating destinations
+  - Returns only legally valid moves per Backgammon rules
+
+### Technical Details
+- **Integration**: Full connection between UI and game logic
+- **Validation**: Multi-layer validation (UI → Game → Board)
+- **Feedback**: Console logging for move attempts and results
+- **Error Handling**: Graceful handling of invalid moves
+- **State Management**: Proper selection clearing after moves
+
 ## [0.5.1] - 2025-01-18
 
 ### Added
