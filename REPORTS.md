@@ -27,35 +27,28 @@ backgammon/pygame_ui/highlight_renderer.py:6:0: W0611: Unused Optional imported 
 ************* Module backgammon.pygame_ui.point_renderer
 backgammon/pygame_ui/point_renderer.py:42:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
 backgammon/pygame_ui/point_renderer.py:65:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+************* Module backgammon.pygame_ui.dice_button
+backgammon/pygame_ui/dice_button.py:123:15: W0718: Catching too general exception Exception (broad-exception-caught)
 ************* Module backgammon.pygame_ui.checker_renderer
-backgammon/pygame_ui/checker_renderer.py:83:0: C0303: Trailing whitespace (trailing-whitespace)
 backgammon/pygame_ui/checker_renderer.py:51:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
 backgammon/pygame_ui/checker_renderer.py:142:4: R0913: Too many arguments (6/5) (too-many-arguments)
 backgammon/pygame_ui/checker_renderer.py:142:4: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
 ************* Module backgammon.pygame_ui.pygame
-backgammon/pygame_ui/pygame.py:195:0: C0301: Line too long (112/100) (line-too-long)
-backgammon/pygame_ui/pygame.py:205:0: C0301: Line too long (110/100) (line-too-long)
-backgammon/pygame_ui/pygame.py:219:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/pygame.py:225:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/pygame.py:228:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/pygame.py:278:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/pygame.py:303:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/pygame.py:315:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/pygame.py:323:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/pygame.py:166:13: W0511: TODO: Implement dice rolling in future step (fixme)
-backgammon/pygame_ui/pygame.py:329:17: W0511: TODO: Handle bearing off (destination < 0 for white, > 23 for black) (fixme)
-backgammon/pygame_ui/pygame.py:61:8: C0103: Attribute name "BACKGROUND_COLOR" doesn't conform to snake_case naming style (invalid-name)
-backgammon/pygame_ui/pygame.py:12:0: R0902: Too many instance attributes (13/7) (too-many-instance-attributes)
-backgammon/pygame_ui/pygame.py:39:8: E1101: Module 'pygame' has no 'init' member (no-member)
-backgammon/pygame_ui/pygame.py:142:29: E1101: Module 'pygame' has no 'QUIT' member (no-member)
-backgammon/pygame_ui/pygame.py:144:29: E1101: Module 'pygame' has no 'KEYDOWN' member (no-member)
-backgammon/pygame_ui/pygame.py:145:32: E1101: Module 'pygame' has no 'K_ESCAPE' member (no-member)
-backgammon/pygame_ui/pygame.py:147:29: E1101: Module 'pygame' has no 'MOUSEBUTTONDOWN' member (no-member)
-backgammon/pygame_ui/pygame.py:152:4: R0912: Too many branches (17/12) (too-many-branches)
-backgammon/pygame_ui/pygame.py:152:4: R0915: Too many statements (57/50) (too-many-statements)
-backgammon/pygame_ui/pygame.py:255:4: R0911: Too many return statements (7/6) (too-many-return-statements)
-backgammon/pygame_ui/pygame.py:255:4: R0912: Too many branches (13/12) (too-many-branches)
-backgammon/pygame_ui/pygame.py:355:8: E1101: Module 'pygame' has no 'quit' member (no-member)
+backgammon/pygame_ui/pygame.py:229:0: C0301: Line too long (109/100) (line-too-long)
+backgammon/pygame_ui/pygame.py:243:0: C0301: Line too long (107/100) (line-too-long)
+backgammon/pygame_ui/pygame.py:372:17: W0511: TODO: Handle bearing off (destination < 0 for white, > 23 for black) (fixme)
+backgammon/pygame_ui/pygame.py:70:8: C0103: Attribute name "BACKGROUND_COLOR" doesn't conform to snake_case naming style (invalid-name)
+backgammon/pygame_ui/pygame.py:13:0: R0902: Too many instance attributes (15/7) (too-many-instance-attributes)
+backgammon/pygame_ui/pygame.py:40:8: E1101: Module 'pygame' has no 'init' member (no-member)
+backgammon/pygame_ui/pygame.py:166:29: E1101: Module 'pygame' has no 'QUIT' member (no-member)
+backgammon/pygame_ui/pygame.py:168:29: E1101: Module 'pygame' has no 'KEYDOWN' member (no-member)
+backgammon/pygame_ui/pygame.py:169:32: E1101: Module 'pygame' has no 'K_ESCAPE' member (no-member)
+backgammon/pygame_ui/pygame.py:171:29: E1101: Module 'pygame' has no 'MOUSEBUTTONDOWN' member (no-member)
+backgammon/pygame_ui/pygame.py:176:4: R0912: Too many branches (21/12) (too-many-branches)
+backgammon/pygame_ui/pygame.py:176:4: R0915: Too many statements (67/50) (too-many-statements)
+backgammon/pygame_ui/pygame.py:298:4: R0911: Too many return statements (7/6) (too-many-return-statements)
+backgammon/pygame_ui/pygame.py:298:4: R0912: Too many branches (13/12) (too-many-branches)
+backgammon/pygame_ui/pygame.py:398:8: E1101: Module 'pygame' has no 'quit' member (no-member)
 ************* Module backgammon.pygame_ui.bar_renderer
 backgammon/pygame_ui/bar_renderer.py:11:0: R0903: Too few public methods (1/2) (too-few-public-methods)
 ************* Module backgammon.pygame_ui.board_dimensions
@@ -131,7 +124,7 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
         """ (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 9.65/10
+Your code has been rated at 9.69/10
 
 
 ```
