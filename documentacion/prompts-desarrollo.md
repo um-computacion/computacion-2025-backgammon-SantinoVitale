@@ -1,3 +1,280 @@
+## Prompt 32
+
+### Modelo: GitHub Copilot (Claude Sonnet 4.5)
+
+### Fecha: 2025-01-25
+
+### Prompt:
+En la imagen que adjunto se pueden notar los siguientes errores:
+Los movimientos si estan acorde a los dados pero estos se pueden repetir las cantidades que quieran logrando que nunca se termine el turno
+El anillo amarillo que es el que en teoria indica cual estás haciendo click no está a corde a donde realmente estas haciendo clic y ni siquiera al cheker correspondiente.
+Nunca pasa de turno a las negras.
+
+### Respuesta:
+
+#### Contexto
+El usuario reportó tres errores críticos en el sistema de juego Pygame observados en la interfaz visual:
+1. **Movimientos infinitos**: Los movimientos válidos no consumían los dados, permitiendo repetirlos indefinidamente
+2. **Posición incorrecta del anillo amarillo**: El highlight visual no coincidía con la ficha seleccionada
+3. **Turnos no alternaban**: El juego nunca cambiaba del jugador blanco al negro
+
+**Análisis de problemas identificados:**
+1. En `BackgammonGame.make_move()`: faltaba `dice.use_move()` después de movimientos exitosos
+2. En `HighlightRenderer.render_selected_point()`: lógica de posicionamiento diferente a `CheckerRenderer`
+3. En `BoardInteraction._execute_move()`: faltaba detección de fin de turno y cambio automático
+
+---
+
+#### Implementación de Correcciones
+
+**1. Fix Dice Consumption (BackgammonGame.py)**
+
+Archivo: `backgammon/core/BackgammonGame.py`
+
+**Cambio aplicado:**
+```python
+# Antes del fix
+def make_move(self, from_pos, to_pos):
+    # ... lógica de movimiento ...
+    if success:
+        self.move_history.append((from_pos, to_pos, current_player.color))
+        self.move_count += 1
+    return success
+
+# Después del fix
+def make_move(self, from_pos, to_pos):
+    # Calculate move distance BEFORE executing the move
+    move_distance = self._calculate_move_distance(from_pos, to_pos)
+    
+    # ... lógica de movimiento ...
+    
+    if success:
+        # Consume the die value that was used for this move
+        self.dice.use_move(move_distance)
+        
+        self.move_history.append((from_pos, to_pos, current_player.color))
+        self.move_count += 1
+    return success
+```
+
+**Explicación:**
+- Se calcula la distancia del movimiento ANTES de ejecutarlo
+- Después de un movimiento exitoso, se consume el dado correspondiente con `dice.use_move()`
+- Esto previene la repetición infinita de movimientos
+
+---
+
+**2. Fix Checker Highlight Position (visual_renderer.py)**
+
+Archivo: `backgammon/pygame_ui/renderers/visual_renderer.py`
+
+**Cambio aplicado:**
+```python
+# Antes del fix
+def render_selected_point(self, surface, point_number, stack_index=0):
+    # Lógica complicada con diferentes fórmulas para < 5 y >= 5 checkers
+    if stack_index < 5:
+        checker_spacing = checker_radius * 2 + 4
+    else:
+        checker_spacing = checker_radius * 1.5
+    
+    if is_top:
+        if stack_index < 5:
+            center_y = base_y + checker_radius + (stack_index * checker_spacing)
+        else:
+            normal_height = 5 * (checker_radius * 2 + 4)
+            compressed_height = (stack_index - 5) * checker_spacing
+            center_y = base_y + checker_radius + normal_height + compressed_height
+    # ... similar para bottom
+
+# Después del fix
+def render_selected_point(self, surface, point_number, stack_index=0, total_checkers=1):
+    # Usa EXACTAMENTE la misma lógica que CheckerRenderer
+    point_x = self.dimensions.get_point_x(point_number)
+    center_x = point_x + (self.dimensions.point_width // 2)
+    
+    is_top = point_number <= 11
+    base_y = self.dimensions.get_point_base_y(is_top)
+    
+    checker_radius = (self.dimensions.point_width // 2) - 8
+    base_spacing = checker_radius * 2 + 4
+    
+    # Same logic as CheckerRenderer._calculate_checker_position
+    if total_checkers > 5:
+        max_height = self.dimensions.point_height - checker_radius
+        available_height = max_height - checker_radius
+        checker_spacing = min(base_spacing, available_height // total_checkers)
+    else:
+        checker_spacing = base_spacing
+    
+    if is_top:
+        center_y = base_y + checker_radius + (stack_index * checker_spacing)
+    else:
+        center_y = base_y - checker_radius - (stack_index * checker_spacing)
+```
+
+**Explicación:**
+- Antes usaba lógica diferente que no coincidía con la posición real de las fichas
+- Ahora usa exactamente la misma fórmula que `CheckerRenderer._calculate_checker_position()`
+- Agregado parámetro `total_checkers` para calcular el spacing correcto
+
+Archivo: `backgammon/pygame_ui/renderers/board_renderer.py`
+
+```python
+# Actualización de la llamada
+if selected_point is not None and board is not None:
+    checkers_on_point = board.points[selected_point]
+    total_checkers = len(checkers_on_point)
+    stack_index = total_checkers - 1 if total_checkers > 0 else 0
+    self.highlight_renderer.render_selected_point(
+        surface, selected_point, stack_index, total_checkers
+    )
+```
+
+---
+
+**3. Automatic Turn Switching (board_interaction.py)**
+
+Archivo: `backgammon/pygame_ui/board_interaction.py`
+
+**Cambio aplicado:**
+```python
+# Antes del fix
+def _execute_move(self, to_point):
+    # ... lógica de movimiento ...
+    if success:
+        print(f"Move successful: {self.selected_point} -> {to_point}")
+        self._deselect_point()
+    # NO HAY VERIFICACIÓN DE FIN DE TURNO
+
+# Después del fix
+def _execute_move(self, to_point):
+    # ... lógica de movimiento ...
+    if success:
+        print(f"Move successful: {self.selected_point} -> {to_point}")
+        self._deselect_point()
+        
+        # Check if turn should end after this move
+        self._check_turn_completion()
+    else:
+        print(f"Move failed: {self.selected_point} -> {to_point}")
+
+def _check_turn_completion(self):
+    """
+    Check if the current turn is complete and switch turns if necessary.
+    Turn ends when:
+    - All dice have been used
+    - No more valid moves are available
+    """
+    if not self.game:
+        return
+        
+    # Check if all dice have been consumed
+    available_moves = self.game.dice.get_available_moves()
+    if not available_moves:
+        print("All dice consumed - ending turn")
+        self.game.complete_turn()
+        self.reset_turn_state()
+        return
+        
+    # Check if there are any valid moves remaining
+    has_moves = self.game.has_valid_moves()
+    if not has_moves:
+        print("No more valid moves available - ending turn")
+        self.game.complete_turn()
+        self.reset_turn_state()
+        return
+        
+    print(f"Turn continues - {len(available_moves)} dice remaining")
+```
+
+**Explicación:**
+- Agregado método `_check_turn_completion()` que verifica:
+  1. Si todos los dados fueron consumidos → termina turno
+  2. Si no hay movimientos válidos restantes → termina turno
+- Llama a `game.complete_turn()` que resetea dados y cambia jugador
+- Llama a `reset_turn_state()` para limpiar estado de UI
+- Proporciona feedback en consola sobre el estado del turno
+
+---
+
+#### Cambios en CHANGELOG.md
+
+Versión: **0.7.3** (PATCH increment - bug fixes)
+
+**Justificación de versioning:**
+- PATCH increment (0.7.2 → 0.7.3): Corrección de bugs sin cambiar funcionalidades
+- Tres bugs críticos corregidos que afectaban gameplay
+- No hay cambios en API ni nuevas features
+
+**Entrada en CHANGELOG:**
+```markdown
+## [0.7.3] - 2025-01-25
+
+### Fixed
+- **Dice Consumption Bug**: Fixed critical issue where moves were not consuming dice values
+- **Checker Highlight Position**: Fixed yellow ring highlighting wrong checker position
+- **Automatic Turn Switching**: Implemented automatic turn ending when dice exhausted or no moves available
+```
+
+---
+
+#### Testing Recomendado
+
+**Casos de prueba para verificar fixes:**
+
+1. **Test Dice Consumption:**
+   - Tirar dados (ej: 3, 5)
+   - Hacer movimiento de 3 espacios
+   - Verificar que solo queda el dado de 5 disponible
+   - Hacer movimiento de 5 espacios
+   - Verificar que no quedan dados y el turno termina
+
+2. **Test Highlight Position:**
+   - Colocar múltiples fichas en un punto (>5 fichas)
+   - Hacer clic en el punto
+   - Verificar que el anillo amarillo rodea la ficha superior
+
+3. **Test Turn Switching:**
+   - Jugar turno completo consumiendo todos los dados
+   - Verificar que cambia a jugador negro
+   - Verificar que el indicador de turno muestra "Black Player"
+   - Hacer movimiento con jugador negro
+   - Verificar que los dados se consumen correctamente
+
+---
+
+#### Archivos Modificados
+
+1. `backgammon/core/BackgammonGame.py` - Agregado consumo de dados
+2. `backgammon/pygame_ui/renderers/visual_renderer.py` - Corregida posición de highlight
+3. `backgammon/pygame_ui/renderers/board_renderer.py` - Actualizada llamada con total_checkers
+4. `backgammon/pygame_ui/board_interaction.py` - Agregado detección de fin de turno
+5. `CHANGELOG.md` - Documentados los fixes
+
+---
+
+#### Notas de Implementación
+
+**Principios aplicados:**
+- **Bug fixing sistemático**: Análisis → Diagnóstico → Fix → Validación
+- **Code consistency**: HighlightRenderer usa misma lógica que CheckerRenderer
+- **Separation of concerns**: Cada fix en su componente apropiado
+- **User feedback**: Console logging para debugging y verificación
+
+**Siguientes pasos sugeridos:**
+1. Ejecutar testing manual de los tres fixes
+2. Considerar agregar tests unitarios para prevenir regresiones
+3. Verificar que bearing off y bar entry también funcionan correctamente
+4. Optimizar feedback visual para usuario (menos console logging, más UI feedback)
+
+**Lecciones aprendidas:**
+- Importancia de consumir recursos (dados) inmediatamente después de usarlos
+- Consistencia en algoritmos de posicionamiento entre componentes
+- Necesidad de game state management explícito (turn completion logic)
+
+---
+
 ## Prompt 31
 
 ### Modelo: GitHub Copilot (Claude Sonnet 4.5)

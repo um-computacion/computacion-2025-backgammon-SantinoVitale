@@ -118,9 +118,10 @@ class BoardRenderer:
         if selected_point is not None and board is not None:
             # Get the number of checkers on the selected point to highlight the top one
             checkers_on_point = board.points[selected_point]
-            stack_index = len(checkers_on_point) - 1 if checkers_on_point else 0
+            total_checkers = len(checkers_on_point)
+            stack_index = total_checkers - 1 if total_checkers > 0 else 0
             self.highlight_renderer.render_selected_point(
-                surface, selected_point, stack_index
+                surface, selected_point, stack_index, total_checkers
             )
 
         if valid_move_destinations is not None and len(valid_move_destinations) > 0:
