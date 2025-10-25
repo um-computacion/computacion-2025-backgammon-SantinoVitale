@@ -100,9 +100,10 @@ backgammon/core/BackgammonGame.py:237:12: R1705: Unnecessary "else" after "retur
 backgammon/core/BackgammonGame.py:198:4: R0911: Too many return statements (9/6) (too-many-return-statements)
 backgammon/core/BackgammonGame.py:260:4: R0911: Too many return statements (8/6) (too-many-return-statements)
 ************* Module backgammon.core.Board
-backgammon/core/Board.py:328:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
-backgammon/core/Board.py:314:4: R0912: Too many branches (17/12) (too-many-branches)
-backgammon/core/Board.py:328:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+backgammon/core/Board.py:37:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/core/Board.py:331:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+backgammon/core/Board.py:317:4: R0912: Too many branches (17/12) (too-many-branches)
+backgammon/core/Board.py:331:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
 ************* Module backgammon.test.test__BackgammonGame
 backgammon/test/test__BackgammonGame.py:1:0: C0103: Module name "test__BackgammonGame" doesn't conform to snake_case naming style (invalid-name)
 ************* Module backgammon.test.test__Player
