@@ -473,6 +473,7 @@ class HighlightRenderer:
     Attributes:
         colors: ColorScheme instance for color definitions
         dimensions: BoardDimensions instance for layout calculations
+        checker_radius: Radius of checker pieces (must match CheckerRenderer)
     """
 
     def __init__(self, colors: ColorScheme, dimensions: BoardDimensions) -> None:
@@ -485,6 +486,9 @@ class HighlightRenderer:
         """
         self.colors: ColorScheme = colors
         self.dimensions: BoardDimensions = dimensions
+        
+        # Use same checker_radius calculation as CheckerRenderer
+        self.checker_radius: int = (self.dimensions.point_width // 2) - 8
 
         self.SELECTED_COLOR: Tuple[int, int, int] = (255, 215, 0)
         self.VALID_MOVE_COLOR: Tuple[int, int, int] = (50, 205, 50)
@@ -531,28 +535,28 @@ class HighlightRenderer:
         is_top = point_number <= 11
         base_y = self.dimensions.get_point_base_y(is_top)
 
-        checker_radius = (self.dimensions.point_width // 2) - 8
-        base_spacing = checker_radius * 2 + 4
+        # Use same spacing calculation as CheckerRenderer
+        base_spacing = self.checker_radius * 2 + 4
 
         # Use same logic as CheckerRenderer._calculate_checker_position
         if total_checkers > 5:
-            max_height = self.dimensions.point_height - checker_radius
-            available_height = max_height - checker_radius
+            max_height = self.dimensions.point_height - self.checker_radius
+            available_height = max_height - self.checker_radius
             checker_spacing = min(base_spacing, available_height // total_checkers)
         else:
             checker_spacing = base_spacing
 
         if is_top:
-            center_y = base_y + checker_radius + (stack_index * checker_spacing)
+            center_y = base_y + self.checker_radius + (stack_index * checker_spacing)
         else:
-            center_y = base_y - checker_radius - (stack_index * checker_spacing)
+            center_y = base_y - self.checker_radius - (stack_index * checker_spacing)
 
         ring_thickness = 3
         pygame.draw.circle(
             surface,
             self.SELECTED_COLOR,
             (center_x, center_y),
-            checker_radius + 3,
+            self.checker_radius + 3,
             ring_thickness,
         )
 

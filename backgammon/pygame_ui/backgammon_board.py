@@ -50,6 +50,7 @@ class BackgammonBoard:
         self._create_dice_button()
 
         self.game: Optional[object] = None
+        self.last_player_index: int = -1
 
     def _create_dice_button(self) -> None:
         """Create the dice roll button."""
@@ -74,6 +75,9 @@ class BackgammonBoard:
         """
         self.game = game
         self.interaction.set_game(game)
+        # Initialize last_player_index with current player
+        if hasattr(game, 'current_player_index'):
+            self.last_player_index = game.current_player_index
 
     def handle_mouse_click(self, mouse_pos: Tuple[int, int]) -> None:
         """
@@ -169,12 +173,24 @@ class BackgammonBoard:
 
     def _update_button_state(self, available_moves: Optional[list]) -> None:
         """
-        Update dice button state based on available moves.
-
+        Update dice button state based on game state.
+        Enables button when turn changes or dice need to be rolled.
+        
         Args:
             available_moves: List of available dice moves or None
         """
-        if available_moves is not None and len(available_moves) == 0:
-            if self.interaction.dice_rolled:
-                self.interaction.reset_turn_state()
-                self.dice_button.set_enabled(True)
+        if not self.game:
+            return
+            
+        # Check if player has changed (turn switched)
+        current_player_index = self.game.current_player_index
+        if current_player_index != self.last_player_index:
+            print(f"Turn changed from player {self.last_player_index} to player {current_player_index}")
+            self.last_player_index = current_player_index
+            self.interaction.reset_turn_state()
+            self.dice_button.set_enabled(True)
+            return
+        
+        # If no moves available after rolling, keep button disabled until turn changes
+        if available_moves is not None and len(available_moves) == 0 and self.interaction.dice_rolled:
+            self.dice_button.set_enabled(False)
