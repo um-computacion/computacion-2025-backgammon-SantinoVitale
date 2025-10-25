@@ -1,0 +1,197 @@
+"""
+Board interaction handler for Backgammon game.
+Manages mouse interactions, selection state, and move validation.
+"""
+
+from typing import Optional, List
+from backgammon.pygame_ui.click_detector import ClickDetector
+
+
+class BoardInteraction:
+    """
+    Handles all mouse interactions with the game board.
+
+    This class manages:
+    - Checker selection and deselection
+    - Valid move calculation
+    - Move execution through game logic
+    - Visual feedback state (highlighting)
+
+    Attributes:
+        click_detector: ClickDetector instance for coordinate conversion
+        game: Reference to BackgammonGame instance
+        selected_point: Currently selected point (0-23) or None
+        valid_move_destinations: List of valid destination points
+        dice_rolled: Flag tracking if dice have been rolled this turn
+    """
+
+    def __init__(self, click_detector: ClickDetector) -> None:
+        """
+        Initialize the BoardInteraction handler.
+
+        Args:
+            click_detector: ClickDetector instance for coordinate conversion
+        """
+        self.click_detector: ClickDetector = click_detector
+        self.game: Optional[object] = None
+        self.selected_point: Optional[int] = None
+        self.valid_move_destinations: List[int] = []
+        self.dice_rolled: bool = False
+
+    def set_game(self, game: object) -> None:
+        """
+        Set the game instance.
+
+        Args:
+            game: BackgammonGame instance
+        """
+        self.game = game
+
+    def handle_point_click(self, clicked_point: int) -> None:
+        """
+        Handle click on a board point.
+
+        Args:
+            clicked_point: Point number that was clicked (0-23)
+        """
+        if self.selected_point is None:
+            self._try_select_point(clicked_point)
+        else:
+            if clicked_point == self.selected_point:
+                self._deselect_point()
+            elif clicked_point in self.valid_move_destinations:
+                self._execute_move(clicked_point)
+            else:
+                self._try_select_point(clicked_point)
+
+    def _try_select_point(self, point: int) -> None:
+        """
+        Try to select a point with checkers.
+
+        Args:
+            point: Point number to select
+        """
+        if not self.game or not hasattr(self.game, "board"):
+            return
+
+        checkers = self.game.board.points[point]
+        if not checkers:
+            print(f"No checkers on point {point}")
+            return
+
+        current_player = self.game.get_current_player()
+        if not current_player:
+            return
+
+        if checkers[0].color != current_player.color:
+            print(f"Cannot select point {point} - these are {checkers[0].color} checkers")
+            print(f"Current turn: {current_player.color}")
+            return
+
+        self.selected_point = point
+        self.valid_move_destinations = self._calculate_valid_destinations(point)
+        print(f"Selected point {point}")
+        print(f"Checkers on point: {len(checkers)} {checkers[0].color}")
+        print(f"Valid destinations: {self.valid_move_destinations}")
+
+    def _deselect_point(self) -> None:
+        """Deselect the currently selected point."""
+        self.selected_point = None
+        self.valid_move_destinations = []
+        print("Deselected point")
+
+    def _execute_move(self, to_point: int) -> None:
+        """
+        Execute a move from selected point to destination.
+
+        Args:
+            to_point: Destination point number
+        """
+        if self.selected_point is None:
+            return
+
+        print(f"Attempting move from {self.selected_point} to {to_point}")
+
+        if not self.game or not hasattr(self.game, "make_move"):
+            print("Game instance not available for move execution")
+            self._deselect_point()
+            return
+
+        from_notation = self.selected_point + 1
+        to_notation = to_point + 1
+
+        print(f"Game notation: {from_notation} -> {to_notation}")
+        success = self.game.make_move(from_notation, to_notation)
+
+        if success:
+            print(f"Move successful: {self.selected_point} -> {to_point}")
+            self._deselect_point()
+        else:
+            print(f"Move failed: {self.selected_point} -> {to_point}")
+
+    def _calculate_valid_destinations(self, from_point: int) -> List[int]:
+        """
+        Calculate valid destination points for a selected checker.
+
+        Args:
+            from_point: The point number where the checker is (0-23)
+
+        Returns:
+            List of valid destination point numbers
+        """
+        valid_destinations = []
+
+        if not self.game or not hasattr(self.game, "dice"):
+            return valid_destinations
+
+        if not self.game.dice.last_roll:
+            return valid_destinations
+
+        available_moves = self.game.dice.get_available_moves()
+        if not available_moves:
+            return valid_destinations
+
+        current_player = self.game.get_current_player()
+        if not current_player:
+            return valid_destinations
+
+        player_color = current_player.color
+
+        if not hasattr(self.game, "board"):
+            return valid_destinations
+
+        checkers = self.game.board.points[from_point]
+        if not checkers or checkers[0].color != player_color:
+            return valid_destinations
+
+        seen_destinations = set()
+
+        for move in available_moves:
+            if player_color == "white":
+                destination = from_point - move
+            else:
+                destination = from_point + move
+
+            if destination in seen_destinations:
+                continue
+
+            seen_destinations.add(destination)
+
+            if 0 <= destination <= 23:
+                from_notation = from_point + 1
+                to_notation = destination + 1
+
+                if self.game.is_valid_move(from_notation, to_notation):
+                    valid_destinations.append(destination)
+
+        return valid_destinations
+
+    def clear_selection(self) -> None:
+        """Clear current selection state."""
+        self.selected_point = None
+        self.valid_move_destinations = []
+
+    def reset_turn_state(self) -> None:
+        """Reset state for a new turn."""
+        self.dice_rolled = False
+        self.clear_selection()

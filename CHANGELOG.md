@@ -5,6 +5,115 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.2] - 2025-01-25
+
+### Changed
+- **Renderer Consolidation**: Simplified pygame_ui/renderers structure to reduce file count
+  - Consolidated 7 renderer files into 2 larger modules while maintaining class separation
+  - Created `visual_renderer.py`: Combines PointRenderer, CheckerRenderer, DiceRenderer, HighlightRenderer, TextRenderer (810 lines)
+  - Created `decorative_renderer.py`: Combines BarRenderer and SidePanelRenderer (230 lines)
+  - Reduced total file count from 17 to 10 files (41% reduction)
+  - Simplified import statements in board_renderer.py
+  - Improved code navigation without sacrificing SOLID principles
+  - Each class maintains single responsibility, only files are consolidated
+
+### Removed
+- Eliminated 7 individual renderer files: point_renderer.py, checker_renderer.py, dice_renderer.py, highlight_renderer.py, text_renderer.py, bar_renderer.py, side_panel_renderer.py
+- Replaced with 2 consolidated modules for better organization
+
+### Justification
+- Previous structure applied SRP too strictly, resulting in over-engineering
+- New structure balances organization with simplicity
+- More aligned with academic project scope
+- Maintains all functionality and class separation
+- Better "junior-friendly" architecture
+
+## [0.7.1] - 2025-01-25
+
+### Changed
+- **Major Pygame UI Refactoring**: Complete architectural reorganization for better maintainability
+  - Restructured pygame_ui module following SOLID principles and separation of concerns
+  - Created dedicated component classes for clear responsibility separation
+  - Improved code organization with logical file structure
+  - Enhanced modularity and testability
+
+- **New Component Architecture**:
+  - `pygame_ui.py`: Main entry point (refactored from pygame.py)
+    - Simplified to focus on window management and main game loop
+    - Delegates all board operations to BackgammonBoard coordinator
+    - Cleaner event handling with better separation
+  - `backgammon_board.py`: Board coordinator class (NEW)
+    - Central coordinator for all board-related operations
+    - Manages rendering, interactions, and UI components
+    - Provides clean interface between game logic and UI
+  - `board_interaction.py`: Mouse interaction handler (NEW)
+    - Extracted all mouse click handling logic
+    - Manages selection state and move validation
+    - Encapsulates move execution through game logic
+  - `button.py`: Generic button component (NEW)
+    - Reusable button class replacing dice_button.py
+    - Supports hover states, enable/disable functionality
+    - Configurable text, position, and styling
+
+- **Renderers Organization**:
+  - Created `renderers/` subfolder for all rendering classes
+  - Moved 8 renderer files: board_renderer, checker_renderer, dice_renderer, 
+    highlight_renderer, point_renderer, bar_renderer, side_panel_renderer, text_renderer
+  - Added `renderers/__init__.py` for clean imports
+  - Updated all import statements across the module
+
+- **Import Updates**:
+  - Updated main.py: `from backgammon.pygame_ui.pygame_ui import PygameUI`
+  - Updated pygame_ui/__init__.py: Exports main components only
+  - Fixed internal imports in board_renderer.py and backgammon_board.py
+  - Maintained backward compatibility through __init__.py exports
+
+### Removed
+- Deleted obsolete files:
+  - `pygame.py` (replaced by pygame_ui.py)
+  - `dice_button.py` (replaced by generic button.py)
+
+### Technical Details
+- **File Structure Before**:
+  ```
+  pygame_ui/
+    ├── pygame.py (413 lines - monolithic)
+    ├── dice_button.py
+    ├── board_renderer.py
+    ├── checker_renderer.py
+    └── ... (8 other renderer files)
+  ```
+
+- **File Structure After**:
+  ```
+  pygame_ui/
+    ├── pygame_ui.py (130 lines - focused)
+    ├── backgammon_board.py (195 lines - coordinator)
+    ├── board_interaction.py (213 lines - interaction logic)
+    ├── button.py (105 lines - reusable component)
+    ├── board_dimensions.py
+    ├── color_scheme.py
+    ├── click_detector.py
+    └── renderers/
+        ├── __init__.py
+        ├── board_renderer.py
+        ├── checker_renderer.py
+        ├── dice_renderer.py
+        ├── highlight_renderer.py
+        ├── point_renderer.py
+        ├── bar_renderer.py
+        ├── side_panel_renderer.py
+        └── text_renderer.py
+  ```
+
+- **Benefits**:
+  - Single Responsibility: Each class has one clear purpose
+  - Open/Closed: Easy to extend without modifying existing code
+  - Dependency Inversion: Components depend on abstractions
+  - Better testability: Smaller, focused classes easier to test
+  - Improved readability: Logical file organization
+  - Easier maintenance: Changes isolated to specific components
+
 ## [0.7.0] - 2025-01-21
 
 ### Added
