@@ -85,6 +85,7 @@ class BoardRenderer:
         player_info: Optional[Tuple[str, str, str, int, int]] = None,
         selected_point: Optional[int] = None,
         valid_move_destinations: Optional[List[Union[int, str]]] = None,
+        selected_bar: bool = False,
     ) -> None:
         """
         Render the complete Backgammon board.
@@ -97,6 +98,7 @@ class BoardRenderer:
             player_info: Optional tuple of (player1_name, player2_name, current_player, p1_off, p2_off)
             selected_point: Optional point number that is currently selected
             valid_move_destinations: Optional list of valid destination points or "off" for bearing off
+            selected_bar: Boolean indicating if the bar is currently selected
         """
         # Render background
         self._render_board_background(surface)
@@ -123,6 +125,10 @@ class BoardRenderer:
             self.highlight_renderer.render_selected_point(
                 surface, selected_point, stack_index, total_checkers
             )
+
+        # Render highlight for selected bar
+        if selected_bar and board is not None:
+            self.highlight_renderer.render_selected_bar(surface, board)
 
         if valid_move_destinations is not None and len(valid_move_destinations) > 0:
             self.highlight_renderer.render_valid_moves(surface, valid_move_destinations)

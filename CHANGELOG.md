@@ -5,6 +5,44 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.8] - 2025-01-25
+
+### Added
+- **Bar Checker Selection and Movement**: Implemented complete functionality for moving captured checkers from bar back to board
+  - Added `selected_bar` boolean flag in `BoardInteraction` to track bar selection state
+  - Implemented `handle_bar_click()` method to handle clicks on bar area
+  - Added `_execute_move_from_bar()` method to execute moves from bar to board points
+  - Added `_calculate_valid_destinations_from_bar()` method to calculate entry points based on dice
+  - Implemented `render_selected_bar()` method in `HighlightRenderer` for visual feedback
+  - Extended `BoardRenderer.render()` to accept and display `selected_bar` parameter
+  - Updated `BackgammonBoard.handle_mouse_click()` to route bar clicks to interaction handler
+  - Added mandatory bar move rule: players cannot move other checkers when they have pieces on bar
+
+### Changed
+- **Movement Priority System**: Enforced Backgammon rule that bar checkers must be moved first
+  - `_try_select_point()` now checks for checkers on bar before allowing point selection
+  - Clear error messages inform player when bar checkers must be moved: "Cannot select point - you must move checkers from bar first"
+  - System validates bar state before any regular checker selection
+
+- **Entry Point Calculation**: Direction-aware entry logic for both players
+  - White players enter from point 24 (conceptual): entry points 24-dice_value (19-23 range)
+  - Black players enter from point -1 (conceptual): entry points dice_value-1 (0-5 range)
+  - Proper validation through `game.is_valid_move("bar", destination)`
+
+### Technical Details
+- **Bar Click Detection**: `ClickDetector.is_bar_clicked()` already existed and returns ("bar", 0)
+- **Visual Feedback**: Golden ring highlight on bar area when selected using `SELECTED_COLOR = (255, 215, 0)`
+- **Move Validation Flow**: Click bar → calculate valid entries → click valid point → execute bar entry → update board
+- **State Management**: `selected_bar` flag cleared on deselection, successful move, or turn change
+- **Coordinate System**: Bar entry destinations use same 0-23 indexing, converted to 1-24 for game notation
+
+### Fixed
+- **Captured Checker Movement**: Players can now successfully return captured checkers to the board
+  - Bar selection now highlights and shows valid entry points based on dice rolls
+  - Entry moves properly validated against opponent occupation (blots can be hit)
+  - Dice consumption works correctly for bar entry moves
+  - Turn progression continues normally after bar entries
+
 ## [0.7.7] - 2025-01-25
 
 ### Fixed
