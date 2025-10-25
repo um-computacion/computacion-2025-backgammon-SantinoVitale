@@ -3,7 +3,7 @@ Board interaction handler for Backgammon game.
 Manages mouse interactions, selection state, and move validation.
 """
 
-from typing import Optional, List
+from typing import Optional, List, Union
 from backgammon.pygame_ui.click_detector import ClickDetector
 
 
@@ -21,7 +21,7 @@ class BoardInteraction:
         click_detector: ClickDetector instance for coordinate conversion
         game: Reference to BackgammonGame instance
         selected_point: Currently selected point (0-23) or None
-        valid_move_destinations: List of valid destination points
+        valid_move_destinations: List of valid destination points or "off" for bearing off
         dice_rolled: Flag tracking if dice have been rolled this turn
     """
 
@@ -35,7 +35,7 @@ class BoardInteraction:
         self.click_detector: ClickDetector = click_detector
         self.game: Optional[object] = None
         self.selected_point: Optional[int] = None
-        self.valid_move_destinations: List[int] = []
+        self.valid_move_destinations: List[Union[int, str]] = []
         self.dice_rolled: bool = False
 
     def set_game(self, game: object) -> None:
@@ -63,6 +63,20 @@ class BoardInteraction:
                 self._execute_move(clicked_point)
             else:
                 self._try_select_point(clicked_point)
+
+    def handle_off_area_click(self) -> None:
+        """
+        Handle click on the off area (bearing off destination).
+        """
+        if self.selected_point is None:
+            print("No checker selected for bearing off")
+            return
+        
+        if "off" in self.valid_move_destinations:
+            self._execute_move_to_off()
+        else:
+            print("Bearing off is not a valid move from this position")
+            self._deselect_point()
 
     def _try_select_point(self, point: int) -> None:
         """
@@ -132,6 +146,34 @@ class BoardInteraction:
         else:
             print(f"Move failed: {self.selected_point} -> {to_point}")
 
+    def _execute_move_to_off(self) -> None:
+        """
+        Execute a bearing off move from selected point to off area.
+        """
+        if self.selected_point is None:
+            return
+
+        print(f"Attempting to bear off from {self.selected_point}")
+
+        if not self.game or not hasattr(self.game, "make_move"):
+            print("Game instance not available for move execution")
+            self._deselect_point()
+            return
+
+        from_notation = self.selected_point + 1
+
+        print(f"Game notation: {from_notation} -> off")
+        success = self.game.make_move(from_notation, "off")
+
+        if success:
+            print(f"Bear off successful from point {self.selected_point}")
+            self._deselect_point()
+            
+            # Check if turn should end after this move
+            self._check_turn_completion()
+        else:
+            print(f"Bear off failed from point {self.selected_point}")
+
     def _check_turn_completion(self) -> None:
         """
         Check if the current turn is complete and switch turns if necessary.
@@ -163,7 +205,7 @@ class BoardInteraction:
             
         print(f"Turn continues - {len(available_moves)} dice remaining")
 
-    def _calculate_valid_destinations(self, from_point: int) -> List[int]:
+    def _calculate_valid_destinations(self, from_point: int) -> List[Union[int, str]]:
         """
         Calculate valid destination points for a selected checker.
 
@@ -171,7 +213,7 @@ class BoardInteraction:
             from_point: The point number where the checker is (0-23)
 
         Returns:
-            List of valid destination point numbers
+            List of valid destination point numbers or "off" for bearing off
         """
         valid_destinations = []
 
@@ -205,6 +247,16 @@ class BoardInteraction:
                 destination = from_point - move
             else:
                 destination = from_point + move
+
+            # Check for bearing off
+            if (player_color == "white" and destination < 0) or (player_color == "black" and destination > 23):
+                # Check if bearing off is valid
+                from_notation = from_point + 1
+                if self.game.is_valid_move(from_notation, "off"):
+                    if "off" not in seen_destinations:
+                        valid_destinations.append("off")
+                        seen_destinations.add("off")
+                continue
 
             if destination in seen_destinations:
                 continue

@@ -100,6 +100,8 @@ class BackgammonBoard:
 
         if position_type == "point":
             self.interaction.handle_point_click(value)
+        elif position_type == "off":
+            self.interaction.handle_off_area_click()
 
     def _handle_dice_button_click(self) -> None:
         """Handle dice button click."""
