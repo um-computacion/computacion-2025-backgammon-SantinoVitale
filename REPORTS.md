@@ -4,7 +4,7 @@
 Name                                Stmts   Miss  Cover   Missing
 -----------------------------------------------------------------
 backgammon/core/BackgammonGame.py     221     25    89%   167-168, 175-176, 224, 243, 258, 278, 283-287, 291-295, 305, 315, 474-476, 500-501, 546
-backgammon/core/Board.py              150     14    91%   120, 143, 150, 182, 186, 193-194, 214, 217, 220, 306, 336, 430, 444
+backgammon/core/Board.py              150     14    91%   123, 146, 153, 185, 189, 196-197, 217, 220, 223, 309, 339, 433, 447
 backgammon/core/Checker.py             78      5    94%   125, 135, 141, 151, 157
 backgammon/core/Dice.py                50      1    98%   69
 backgammon/core/Player.py              97      1    99%   284
@@ -117,9 +117,10 @@ backgammon/core/BackgammonGame.py:237:12: R1705: Unnecessary "else" after "retur
 backgammon/core/BackgammonGame.py:198:4: R0911: Too many return statements (9/6) (too-many-return-statements)
 backgammon/core/BackgammonGame.py:260:4: R0911: Too many return statements (8/6) (too-many-return-statements)
 ************* Module backgammon.core.Board
-backgammon/core/Board.py:328:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
-backgammon/core/Board.py:314:4: R0912: Too many branches (17/12) (too-many-branches)
-backgammon/core/Board.py:328:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+backgammon/core/Board.py:37:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/core/Board.py:331:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+backgammon/core/Board.py:317:4: R0912: Too many branches (17/12) (too-many-branches)
+backgammon/core/Board.py:331:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
 ************* Module backgammon.test.test__BackgammonGame
 backgammon/test/test__BackgammonGame.py:1:0: C0103: Module name "test__BackgammonGame" doesn't conform to snake_case naming style (invalid-name)
 ************* Module backgammon.test.test__Player
