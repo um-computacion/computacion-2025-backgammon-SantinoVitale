@@ -3,7 +3,7 @@ Board renderer for Backgammon board.
 Responsible for rendering the main board structure and coordinating other renderers.
 """
 
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Union
 import pygame
 from backgammon.pygame_ui.color_scheme import ColorScheme
 from backgammon.pygame_ui.board_dimensions import BoardDimensions
@@ -84,7 +84,7 @@ class BoardRenderer:
         available_moves: Optional[List[int]] = None,
         player_info: Optional[Tuple[str, str, str, int, int]] = None,
         selected_point: Optional[int] = None,
-        valid_move_destinations: Optional[List[int]] = None,
+        valid_move_destinations: Optional[List[Union[int, str]]] = None,
     ) -> None:
         """
         Render the complete Backgammon board.
@@ -96,7 +96,7 @@ class BoardRenderer:
             available_moves: Optional list of available move values
             player_info: Optional tuple of (player1_name, player2_name, current_player, p1_off, p2_off)
             selected_point: Optional point number that is currently selected
-            valid_move_destinations: Optional list of valid destination points
+            valid_move_destinations: Optional list of valid destination points or "off" for bearing off
         """
         # Render background
         self._render_board_background(surface)

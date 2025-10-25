@@ -487,8 +487,8 @@ class HighlightRenderer:
         self.colors: ColorScheme = colors
         self.dimensions: BoardDimensions = dimensions
         
-        # Use same checker_radius calculation as CheckerRenderer
-        self.checker_radius: int = (self.dimensions.point_width // 2) - 8
+        # Use EXACT same checker_radius calculation as CheckerRenderer
+        self.checker_radius: int = (self.dimensions.point_width // 3) - 8
 
         self.SELECTED_COLOR: Tuple[int, int, int] = (255, 215, 0)
         self.VALID_MOVE_COLOR: Tuple[int, int, int] = (50, 205, 50)

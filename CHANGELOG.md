@@ -5,6 +5,46 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.5] - 2025-01-25
+
+### Fixed
+- **Checker Selection Highlight**: Fixed yellow ring positioning and sizing mismatch with checkers
+  - Corrected `checker_radius` calculation in `HighlightRenderer` from `(point_width // 2) - 8` to `(point_width // 3) - 8`
+  - Now matches exact calculation used in `CheckerRenderer`
+  - Ring perfectly aligns with checker hitbox in all configurations
+
+### Added
+- **Bearing Off via Off-Area Click**: Implemented visual feedback and click handling for bearing off checkers
+  - Added "off" as valid destination string in `valid_move_destinations` list
+  - Implemented `handle_off_area_click()` method in `BoardInteraction` class
+  - Implemented `_execute_move_to_off()` method to handle bearing off moves
+  - Updated `_calculate_valid_destinations()` to detect and add "off" when bearing off is possible
+  - Off-area now highlights in green when bearing off is valid move
+  - Players can now click the side panel off-area to bear off checkers
+  - Updated type hints to `List[Union[int, str]]` for mixed destination types
+
+### Changed
+- **BoardInteraction**: Enhanced move destination calculation
+  - `_calculate_valid_destinations()` now returns `List[Union[int, str]]` instead of `List[int]`
+  - Added logic to check for bearing off when destination would be off-board
+  - Validates bearing off moves with `game.is_valid_move(from_notation, "off")`
+  - Added `Union` import from typing module
+
+- **BackgammonBoard**: Extended click handling
+  - `handle_mouse_click()` now handles "off" position type
+  - Routes off-area clicks to `interaction.handle_off_area_click()`
+
+- **BoardRenderer**: Updated type signatures
+  - `render()` method now accepts `valid_move_destinations: Optional[List[Union[int, str]]]`
+  - Updated docstring to reflect bearing off destinations
+  - Added `Union` import from typing module
+
+### Technical Details
+- **Highlight Accuracy**: Both renderers now use `(point_width // 3) - 8` for checker radius calculation
+- **Bearing Off Flow**: Selection → validate "off" in destinations → click off-area → execute move → deselect
+- **Click Detection**: `ClickDetector.is_off_area_clicked()` detects middle section of side panel
+- **Visual Feedback**: `HighlightRenderer.render_off_area_highlight()` shows green overlay on valid bearing off
+
 ## [0.7.4] - 2025-01-25
 
 ### Fixed
