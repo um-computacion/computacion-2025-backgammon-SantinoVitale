@@ -6,7 +6,7 @@ Provides user interface selection and game initialization.
 import sys
 from backgammon.core.BackgammonGame import BackgammonGame
 from backgammon.cli.CLI import CLI
-from backgammon.pygame_ui.pygame import PygameUI
+from backgammon.pygame_ui.pygame_ui import PygameUI
 
 
 def display_welcome_message() -> None:
