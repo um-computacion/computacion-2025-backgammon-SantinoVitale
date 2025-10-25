@@ -102,7 +102,7 @@ class BoardDimensions:
         if is_top:
             return inner_y
         else:
-            return self.board_y + self.board_height - self.border_thickness
+            return inner_y + self.board_height - (2 * self.border_thickness)
 
     def get_point_x(self, point_number: int) -> int:
         """

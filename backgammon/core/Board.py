@@ -31,30 +31,33 @@ class Board:
         # Limpiar tablero
         self.reset()
 
-        # Posición inicial estándar del Backgammon
-        # Punto 0 (1 en notación humana): 2 fichas blancas
-        self.points[0] = [Checker("white"), Checker("white")]
+        # Posición inicial estándar del Backgammon (invertida para match visual layout)
+        # Las blancas se mueven de puntos altos (23) a puntos bajos (0)
+        # Las negras se mueven de puntos bajos (0) a puntos altos (23)
+        
+        # Punto 23 (24 visual - abajo derecha): 2 fichas blancas
+        self.points[23] = [Checker("white"), Checker("white")]
 
-        # Punto 5 (6 en notación humana): 5 fichas negras
-        self.points[5] = [Checker("black") for _ in range(5)]
+        # Punto 18 (19 visual - abajo derecha): 5 fichas negras
+        self.points[18] = [Checker("black") for _ in range(5)]
 
-        # Punto 7 (8 en notación humana): 3 fichas negras
-        self.points[7] = [Checker("black") for _ in range(3)]
+        # Punto 16 (17 visual - abajo izquierda): 3 fichas negras
+        self.points[16] = [Checker("black") for _ in range(3)]
 
-        # Punto 11 (12 en notación humana): 5 fichas blancas
-        self.points[11] = [Checker("white") for _ in range(5)]
+        # Punto 12 (13 visual - abajo izquierda): 5 fichas blancas
+        self.points[12] = [Checker("white") for _ in range(5)]
 
-        # Punto 12 (13 en notación humana): 5 fichas negras
-        self.points[12] = [Checker("black") for _ in range(5)]
+        # Punto 11 (12 visual - arriba izquierda): 5 fichas negras
+        self.points[11] = [Checker("black") for _ in range(5)]
 
-        # Punto 16 (17 en notación humana): 3 fichas blancas
-        self.points[16] = [Checker("white") for _ in range(3)]
+        # Punto 7 (8 visual - arriba izquierda): 3 fichas blancas
+        self.points[7] = [Checker("white") for _ in range(3)]
 
-        # Punto 18 (19 en notación humana): 5 fichas blancas
-        self.points[18] = [Checker("white") for _ in range(5)]
+        # Punto 5 (6 visual - arriba derecha): 5 fichas blancas
+        self.points[5] = [Checker("white") for _ in range(5)]
 
-        # Punto 23 (24 en notación humana): 2 fichas negras
-        self.points[23] = [Checker("black"), Checker("black")]
+        # Punto 0 (1 visual - arriba derecha): 2 fichas negras
+        self.points[0] = [Checker("black"), Checker("black")]
 
     def get_point_count(self, point_index):
         """

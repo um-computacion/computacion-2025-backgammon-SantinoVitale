@@ -5,6 +5,33 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.7] - 2025-01-25
+
+### Fixed
+- **Board Initial Setup**: Corrected board initial configuration to match standard Backgammon movement directions
+  - Inverted piece positions in `Board.setup_initial_position()` method
+  - White checkers now start in points 23, 12, 7, 5 (bottom half, moving toward point 0)
+  - Black checkers now start in points 0, 11, 16, 18 (top half, moving toward point 23)
+  - White checkers now visually move counterclockwise (bottom-left to top-right direction)
+  - Black checkers now visually move clockwise (top-right to bottom-left direction)
+  - Matches standard Backgammon board layout and movement patterns
+  - No changes to rendering, click detection, or game logic - only initial setup modified
+
+### Technical Details
+- **Single File Change**: Only modified `backgammon/core/Board.py`
+- **Visual Layout Preserved**: UI rendering system unchanged
+  - Points 0-5: top right (right to left)
+  - Points 6-11: top left (right to left)
+  - Points 12-17: bottom left (left to right)
+  - Points 18-23: bottom right (left to right)
+- **Movement Logic Preserved**: Game logic for piece movement unchanged
+  - White pieces: `point_index - die_value` (high to low points)
+  - Black pieces: `point_index + die_value` (low to high points)
+- **Alternative Approach Rejected**: Considered but rejected full visual inversion system
+  - Rejected adding `logical_to_visual_point()` / `visual_to_logical_point()` mapping
+  - Would require changes in 5+ files (BoardDimensions, PointRenderer, CheckerRenderer, ClickDetector)
+  - Current solution simpler, less error-prone, and easier to maintain
+
 ## [0.7.6] - 2025-01-25
 
 ### Changed
