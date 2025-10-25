@@ -5,6 +5,27 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.6] - 2025-01-25
+
+### Changed
+- **Bearing Off Visualization**: Improved visual feedback for bearing off (moving checkers off the board)
+  - Updated `HighlightRenderer.render_off_area_highlight()` to show clear circular indicators
+  - Replaced full rectangle overlay with specific green circles for each player's off area
+  - White player off indicator positioned in top section of side panel
+  - Black player off indicator positioned in bottom section of side panel
+  - Circles use same visual style as valid move point indicators (green fill with dark green border)
+  - Radius of 30 pixels ensures clear visibility and easy click target
+  - Maintains consistency with existing `render_valid_move_point()` design pattern
+
+### Technical Details
+- **Visual Consistency**: Off-area highlights now use same color scheme as point highlights
+  - Fill color: `VALID_MOVE_COLOR = (50, 205, 50)`
+  - Border color: `(0, 100, 0)` with 3px thickness
+- **Layout Calculation**: Centers indicators within panel sections
+  - White off area: `panel_y + (section_height // 2)`
+  - Black off area: `panel_y + section_height * 2 + (section_height // 2)`
+- **No Logic Changes**: Only visual presentation improved, existing bearing off functionality unchanged
+
 ## [0.7.5] - 2025-01-25
 
 ### Fixed

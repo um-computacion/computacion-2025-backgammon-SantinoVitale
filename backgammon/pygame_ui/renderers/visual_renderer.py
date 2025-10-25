@@ -600,6 +600,7 @@ class HighlightRenderer:
     def render_off_area_highlight(self, surface: pygame.Surface) -> None:
         """
         Render a highlight on the off area (bearing off destination).
+        Shows visual indicators similar to valid move points.
 
         Args:
             surface: Pygame surface to draw on
@@ -607,18 +608,45 @@ class HighlightRenderer:
         panel_rect = self.dimensions.get_side_panel_rect()
 
         section_height = panel_rect[3] // 3
-        middle_rect = (
-            panel_rect[0],
-            panel_rect[1] + section_height,
-            panel_rect[2],
-            section_height,
+        center_x = panel_rect[0] + (panel_rect[2] // 2)
+        
+        # White player off area (top section)
+        white_center_y = panel_rect[1] + (section_height // 2)
+        
+        # Black player off area (bottom section)
+        black_center_y = panel_rect[1] + section_height * 2 + (section_height // 2)
+        
+        # Render indicators for both off areas
+        radius = 30
+        
+        # Draw pulsating circles to indicate valid bearing off location
+        pygame.draw.circle(
+            surface, 
+            self.VALID_MOVE_COLOR, 
+            (center_x, white_center_y), 
+            radius
         )
-
-        overlay = pygame.Surface((middle_rect[2], middle_rect[3]), pygame.SRCALPHA)
-        overlay.fill((*self.VALID_MOVE_COLOR, 80))
-        surface.blit(overlay, (middle_rect[0], middle_rect[1]))
-
-        pygame.draw.rect(surface, self.VALID_MOVE_COLOR, middle_rect, 4)
+        pygame.draw.circle(
+            surface, 
+            (0, 100, 0), 
+            (center_x, white_center_y), 
+            radius, 
+            3
+        )
+        
+        pygame.draw.circle(
+            surface, 
+            self.VALID_MOVE_COLOR, 
+            (center_x, black_center_y), 
+            radius
+        )
+        pygame.draw.circle(
+            surface, 
+            (0, 100, 0), 
+            (center_x, black_center_y), 
+            radius, 
+            3
+        )
 
     def render_valid_moves(
         self,
