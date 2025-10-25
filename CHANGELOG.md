@@ -5,6 +5,46 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.3] - 2025-01-25
+
+### Fixed
+- **Dice Consumption Bug**: Fixed critical issue where moves were not consuming dice values
+  - Added `dice.use_move(move_distance)` call in `BackgammonGame.make_move()` after successful moves
+  - Dice values are now properly consumed when moves are executed
+  - Prevents infinite move repetition during a turn
+
+- **Checker Highlight Position**: Fixed yellow ring highlighting wrong checker position
+  - Corrected `HighlightRenderer.render_selected_point()` to use same positioning logic as `CheckerRenderer`
+  - Updated method signature to accept `total_checkers` parameter for accurate spacing calculation
+  - Ring now highlights the top checker of the stack instead of incorrect position
+  - Fixed rendering for stacks with more than 5 checkers (compressed spacing)
+
+- **Automatic Turn Switching**: Implemented automatic turn ending when dice are exhausted or no moves available
+  - Added `_check_turn_completion()` method in `BoardInteraction` to detect turn completion conditions
+  - Automatically calls `game.complete_turn()` and switches players when:
+    - All dice values have been consumed
+    - No valid moves remain for current player
+  - Game now properly alternates between white and black players
+
+### Changed
+- **BoardInteraction**: Enhanced move execution workflow
+  - `_execute_move()` now calls `_check_turn_completion()` after successful moves
+  - Added console feedback for turn progression and remaining dice
+  - Improved game state synchronization between UI and game logic
+
+- **HighlightRenderer**: Updated positioning algorithm
+  - `render_selected_point()` now uses same spacing calculation as checkers
+  - Dynamic spacing based on total checkers on point (compressed for >5 checkers)
+  - Eliminated position mismatch between highlight ring and actual checker location
+
+- **BoardRenderer**: Updated highlight rendering call
+  - Now passes `total_checkers` to `render_selected_point()` for accurate positioning
+
+### Technical Details
+- **Dice Consumption**: Move distance calculated before board update, then used to consume appropriate die
+- **Positioning Algorithm**: Uses `checker_spacing = min(base_spacing, available_height / total_checkers)` for stacks >5
+- **Turn Management**: Checks both `dice.get_available_moves()` and `game.has_valid_moves()` for completion
+
 ## [0.7.2] - 2025-01-25
 
 ### Changed

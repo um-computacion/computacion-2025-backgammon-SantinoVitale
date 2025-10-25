@@ -126,8 +126,39 @@ class BoardInteraction:
         if success:
             print(f"Move successful: {self.selected_point} -> {to_point}")
             self._deselect_point()
+            
+            # Check if turn should end after this move
+            self._check_turn_completion()
         else:
             print(f"Move failed: {self.selected_point} -> {to_point}")
+
+    def _check_turn_completion(self) -> None:
+        """
+        Check if the current turn is complete and switch turns if necessary.
+        Turn ends when:
+        - All dice have been used
+        - No more valid moves are available
+        """
+        if not self.game:
+            return
+            
+        # Check if all dice have been consumed
+        available_moves = self.game.dice.get_available_moves()
+        if not available_moves:
+            print("All dice consumed - ending turn")
+            self.game.complete_turn()
+            self.reset_turn_state()
+            return
+            
+        # Check if there are any valid moves remaining
+        has_moves = self.game.has_valid_moves()
+        if not has_moves:
+            print("No more valid moves available - ending turn")
+            self.game.complete_turn()
+            self.reset_turn_state()
+            return
+            
+        print(f"Turn continues - {len(available_moves)} dice remaining")
 
     def _calculate_valid_destinations(self, from_point: int) -> List[int]:
         """

@@ -152,6 +152,9 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
         """
         current_player = self.get_current_player()
 
+        # Calculate move distance BEFORE executing the move
+        move_distance = self._calculate_move_distance(from_pos, to_pos)
+
         # Handle different types of moves
         success = False
 
@@ -184,6 +187,9 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
                 )
 
         if success:
+            # Consume the die value that was used for this move
+            self.dice.use_move(move_distance)
+            
             self.move_history.append((from_pos, to_pos, current_player.color))
             self.move_count += 1
 

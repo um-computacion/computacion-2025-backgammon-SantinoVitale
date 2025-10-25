@@ -514,7 +514,7 @@ class HighlightRenderer:
         return (center_x, center_y)
 
     def render_selected_point(
-        self, surface: pygame.Surface, point_number: int, stack_index: int = 0
+        self, surface: pygame.Surface, point_number: int, stack_index: int = 0, total_checkers: int = 1
     ) -> None:
         """
         Render a highlight around a selected checker.
@@ -523,6 +523,7 @@ class HighlightRenderer:
             surface: Pygame surface to draw on
             point_number: Point number (0-23)
             stack_index: Index of the selected checker in the stack
+            total_checkers: Total number of checkers on this point
         """
         point_x = self.dimensions.get_point_x(point_number)
         center_x = point_x + (self.dimensions.point_width // 2)
@@ -531,26 +532,20 @@ class HighlightRenderer:
         base_y = self.dimensions.get_point_base_y(is_top)
 
         checker_radius = (self.dimensions.point_width // 2) - 8
+        base_spacing = checker_radius * 2 + 4
 
-        if stack_index < 5:
-            checker_spacing = checker_radius * 2 + 4
+        # Use same logic as CheckerRenderer._calculate_checker_position
+        if total_checkers > 5:
+            max_height = self.dimensions.point_height - checker_radius
+            available_height = max_height - checker_radius
+            checker_spacing = min(base_spacing, available_height // total_checkers)
         else:
-            checker_spacing = checker_radius * 1.5
+            checker_spacing = base_spacing
 
         if is_top:
-            if stack_index < 5:
-                center_y = base_y + checker_radius + (stack_index * checker_spacing)
-            else:
-                normal_height = 5 * (checker_radius * 2 + 4)
-                compressed_height = (stack_index - 5) * checker_spacing
-                center_y = base_y + checker_radius + normal_height + compressed_height
+            center_y = base_y + checker_radius + (stack_index * checker_spacing)
         else:
-            if stack_index < 5:
-                center_y = base_y - checker_radius - (stack_index * checker_spacing)
-            else:
-                normal_height = 5 * (checker_radius * 2 + 4)
-                compressed_height = (stack_index - 5) * checker_spacing
-                center_y = base_y - checker_radius - normal_height - compressed_height
+            center_y = base_y - checker_radius - (stack_index * checker_spacing)
 
         ring_thickness = 3
         pygame.draw.circle(
