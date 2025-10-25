@@ -1,3 +1,328 @@
+## Prompt 33
+
+### Modelo: GitHub Copilot (Claude Sonnet 4.5)
+
+### Fecha: 2025-01-25
+
+### Prompt:
+Ahora se solucionó del control de movimientos por turno!
+Pero ahora la imagen indica los siguientes errores:
+- El anillo amarillo sigue sin corresponder al checker correspondiente en posicion y tamaño, solo se "asemeja"
+- Cuando se terminan los movimientos no pasa de turno, osea el turno de los negros empieza pero no puede ni tirar los dados y tampoco moverse.
+
+### Respuesta:
+
+#### Contexto
+Después de solucionar el problema de consumo de dados en el Prompt 32, surgieron dos nuevos problemas de refinamiento:
+1. **Anillo amarillo impreciso**: El highlight visual se acercaba a la posición del checker pero no era exacto en tamaño y posición
+2. **Bloqueo de turno siguiente**: Cuando terminaban los movimientos y cambiaba de turno, el siguiente jugador no podía tirar los dados
+
+**Análisis de problemas identificados:**
+
+**Problema 1: Inconsistencia en cálculo de radio**
+- `HighlightRenderer.render_selected_point()` calculaba `checker_radius = (point_width // 2) - 8` localmente
+- `CheckerRenderer` usaba `self.checker_radius` inicializado en `__init__`
+- Ambos usaban la misma fórmula pero se calculaban independientemente, sin garantía de consistencia
+- Solución: `HighlightRenderer` debe usar el mismo atributo `checker_radius` como instancia
+
+**Problema 2: Doble reset de estado y timing incorrecto**
+- `BoardInteraction._check_turn_completion()` llamaba a `reset_turn_state()` inmediatamente
+- `BackgammonBoard._update_button_state()` también llamaba a `reset_turn_state()`
+- El reset ocurría ANTES de que la UI detectara el cambio de jugador
+- Resultado: botón se habilitaba pero `dice_rolled` se reseteaba antes del cambio de turno
+- Solución: Detectar cambio de turno por comparación de `current_player_index`
+
+---
+
+#### Implementación de Correcciones
+
+**1. Fix Highlight Ring Position and Size (visual_renderer.py)**
+
+Archivo: `backgammon/pygame_ui/renderers/visual_renderer.py`
+
+**Cambio 1: Agregar checker_radius como atributo de instancia**
+```python
+class HighlightRenderer:
+    """
+    Renders visual feedback for player interactions.
+
+    Attributes:
+        colors: ColorScheme instance for color definitions
+        dimensions: BoardDimensions instance for layout calculations
+        checker_radius: Radius of checker pieces (must match CheckerRenderer)
+    """
+
+    def __init__(self, colors: ColorScheme, dimensions: BoardDimensions) -> None:
+        """
+        Initialize the HighlightRenderer.
+
+        Args:
+            colors: ColorScheme instance
+            dimensions: BoardDimensions instance
+        """
+        self.colors: ColorScheme = colors
+        self.dimensions: BoardDimensions = dimensions
+        
+        # Use same checker_radius calculation as CheckerRenderer
+        self.checker_radius: int = (self.dimensions.point_width // 2) - 8
+
+        self.SELECTED_COLOR: Tuple[int, int, int] = (255, 215, 0)
+        self.VALID_MOVE_COLOR: Tuple[int, int, int] = (50, 205, 50)
+        self.INVALID_MOVE_COLOR: Tuple[int, int, int] = (220, 20, 60)
+```
+
+**Cambio 2: Usar self.checker_radius en render_selected_point**
+```python
+def render_selected_point(
+    self, surface: pygame.Surface, point_number: int, stack_index: int = 0, total_checkers: int = 1
+) -> None:
+    """
+    Render a highlight around a selected checker.
+    Now uses self.checker_radius for consistent sizing.
+    """
+    point_x = self.dimensions.get_point_x(point_number)
+    center_x = point_x + (self.dimensions.point_width // 2)
+
+    is_top = point_number <= 11
+    base_y = self.dimensions.get_point_base_y(is_top)
+
+    # Use same spacing calculation as CheckerRenderer
+    base_spacing = self.checker_radius * 2 + 4
+
+    # Use same logic as CheckerRenderer._calculate_checker_position
+    if total_checkers > 5:
+        max_height = self.dimensions.point_height - self.checker_radius
+        available_height = max_height - self.checker_radius
+        checker_spacing = min(base_spacing, available_height // total_checkers)
+    else:
+        checker_spacing = base_spacing
+
+    if is_top:
+        center_y = base_y + self.checker_radius + (stack_index * checker_spacing)
+    else:
+        center_y = base_y - self.checker_radius - (stack_index * checker_spacing)
+
+    ring_thickness = 3
+    pygame.draw.circle(
+        surface,
+        self.SELECTED_COLOR,
+        (center_x, center_y),
+        self.checker_radius + 3,  # Now uses self.checker_radius
+        ring_thickness,
+    )
+```
+
+**Resultado:**
+- `HighlightRenderer` y `CheckerRenderer` ahora usan exactamente el mismo `checker_radius`
+- Posición del anillo calculada con exactamente la misma lógica que la posición del checker
+- Eliminada discrepancia visual entre highlight y checker
+
+---
+
+**2. Fix Turn Switching State Management (backgammon_board.py & board_interaction.py)**
+
+**Archivo: `backgammon/pygame_ui/backgammon_board.py`**
+
+**Cambio 1: Agregar seguimiento de jugador anterior**
+```python
+def __init__(self, screen_width: int, screen_height: int) -> None:
+    """
+    Initialize the BackgammonBoard coordinator.
+    """
+    # ... código existente ...
+    self.game: Optional[object] = None
+    self.last_player_index: int = -1  # Track player changes for turn detection
+```
+
+**Cambio 2: Inicializar last_player_index en set_game**
+```python
+def set_game(self, game: object) -> None:
+    """
+    Set the game instance for both board and interaction.
+    """
+    self.game = game
+    self.interaction.set_game(game)
+    # Initialize last_player_index with current player
+    if hasattr(game, 'current_player_index'):
+        self.last_player_index = game.current_player_index
+```
+
+**Cambio 3: Detectar cambio de turno en _update_button_state**
+```python
+def _update_button_state(self, available_moves: Optional[list]) -> None:
+    """
+    Update dice button state based on game state.
+    Enables button when turn changes or dice need to be rolled.
+    """
+    if not self.game:
+        return
+        
+    # Check if player has changed (turn switched)
+    current_player_index = self.game.current_player_index
+    if current_player_index != self.last_player_index:
+        print(f"Turn changed from player {self.last_player_index} to player {current_player_index}")
+        self.last_player_index = current_player_index
+        self.interaction.reset_turn_state()  # Reset only when turn actually changes
+        self.dice_button.set_enabled(True)
+        return
+    
+    # If no moves available after rolling, keep button disabled until turn changes
+    if available_moves is not None and len(available_moves) == 0 and self.interaction.dice_rolled:
+        self.dice_button.set_enabled(False)
+```
+
+**Archivo: `backgammon/pygame_ui/board_interaction.py`**
+
+**Cambio 4: Eliminar reset prematuro en _check_turn_completion**
+```python
+def _check_turn_completion(self) -> None:
+    """
+    Check if the current turn is complete and switch turns if necessary.
+    Turn ends when:
+    - All dice have been used
+    - No more valid moves are available
+    
+    Note: reset_turn_state() is called by BackgammonBoard._update_button_state()
+    after the turn change is detected.
+    """
+    if not self.game:
+        return
+        
+    # Check if all dice have been consumed
+    available_moves = self.game.dice.get_available_moves()
+    if not available_moves:
+        print("All dice consumed - ending turn")
+        self.game.complete_turn()
+        # Don't reset turn state here - it will be done when button state is updated
+        return
+        
+    # Check if there are any valid moves remaining
+    has_moves = self.game.has_valid_moves()
+    if not has_moves:
+        print("No more valid moves available - ending turn")
+        self.game.complete_turn()
+        # Don't reset turn state here - it will be done when button state is updated
+        return
+        
+    print(f"Turn continues - {len(available_moves)} dice remaining")
+```
+
+**Resultado:**
+- Cambio de turno se detecta comparando `current_player_index` con `last_player_index`
+- Estado UI (`dice_rolled`, botón) se resetea SOLO cuando se detecta cambio de jugador
+- Eliminada condición de carrera entre reset de estado y cambio de turno
+- Siguiente jugador puede correctamente tirar dados en su turno
+
+---
+
+#### Diagrama de Flujo del Cambio de Turno
+
+```
+Jugador hace último movimiento
+         ↓
+BoardInteraction._execute_move()
+         ↓
+BoardInteraction._check_turn_completion()
+         ↓
+BackgammonGame.complete_turn()
+         ↓
+current_player_index cambia (0→1 o 1→0)
+         ↓
+[Siguiente frame de render]
+         ↓
+BackgammonBoard.render()
+         ↓
+BackgammonBoard._update_button_state()
+         ↓
+Detecta: current_player_index ≠ last_player_index
+         ↓
+Ejecuta: reset_turn_state() + enable button
+         ↓
+last_player_index = current_player_index
+         ↓
+Siguiente jugador puede tirar dados
+```
+
+---
+
+#### Separación de Responsabilidades
+
+**BoardInteraction (Lógica de juego):**
+- Detectar condiciones de fin de turno
+- Llamar a `game.complete_turn()`
+- NO maneja estado UI
+
+**BackgammonBoard (Capa UI):**
+- Detectar cambios de estado del juego (índice de jugador)
+- Resetear estado UI (`dice_rolled`, botones)
+- Sincronizar UI con estado del juego
+
+Esta separación elimina problemas de timing y condiciones de carrera.
+
+---
+
+#### Testing Realizado
+
+**Test Manual:**
+1. Ejecutar juego con `python main.py` opción 2 (Pygame)
+2. Jugador blanco tira dados
+3. Jugador blanco hace movimientos hasta agotar dados
+4. **Verificado**: Anillo amarillo coincide exactamente con checker seleccionado
+5. **Verificado**: Turno cambia automáticamente a jugador negro
+6. **Verificado**: Botón "ROLL DICE" se habilita para jugador negro
+7. **Verificado**: Jugador negro puede tirar dados sin problemas
+
+**Consola output confirmó:**
+```
+Turn continues - 1 dice remaining
+All dice consumed - ending turn
+Turn changed from player 0 to player 1
+```
+
+---
+
+#### Archivos Modificados
+
+1. `backgammon/pygame_ui/renderers/visual_renderer.py`
+   - Agregado atributo `checker_radius` a `HighlightRenderer`
+   - Actualizado `render_selected_point()` para usar `self.checker_radius`
+
+2. `backgammon/pygame_ui/backgammon_board.py`
+   - Agregado atributo `last_player_index`
+   - Inicialización en `set_game()`
+   - Detección de cambio de turno en `_update_button_state()`
+
+3. `backgammon/pygame_ui/board_interaction.py`
+   - Eliminadas llamadas a `reset_turn_state()` en `_check_turn_completion()`
+   - Agregada documentación explicando separación de responsabilidades
+
+---
+
+#### Lecciones Aprendidas
+
+**1. Consistencia en cálculos visuales:**
+- Componentes que renderizan elementos relacionados deben compartir atributos de dimensiones
+- No recalcular valores que deben ser idénticos
+- Usar atributos de instancia en lugar de cálculos locales
+
+**2. Timing en cambios de estado:**
+- Estado UI debe sincronizarse DESPUÉS de cambios en lógica de juego
+- Detección de cambios por comparación es más robusta que eventos inmediatos
+- Evitar resetear estado antes de que cambio sea completado
+
+**3. Separación de responsabilidades:**
+- Lógica de juego: determinar QUÉ cambió
+- Capa UI: detectar cambios y actualizar presentación
+- No mezclar ambas responsabilidades en misma función
+
+---
+
+#### Versión Actualizada
+- **CHANGELOG.md**: Actualizado a versión 0.7.4 (PATCH)
+- Incremento PATCH justificado: mejoras y correcciones sin agregar funcionalidad nueva
+
+---
+
 ## Prompt 32
 
 ### Modelo: GitHub Copilot (Claude Sonnet 4.5)

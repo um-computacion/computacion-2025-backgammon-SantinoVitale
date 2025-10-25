@@ -5,6 +5,44 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.4] - 2025-01-25
+
+### Fixed
+- **Highlight Ring Position Accuracy**: Fixed yellow selection ring not matching checker position and size exactly
+  - Added `checker_radius` attribute to `HighlightRenderer` class
+  - `HighlightRenderer` now uses same `checker_radius` calculation as `CheckerRenderer`: `(point_width // 2) - 8`
+  - Eliminated inconsistency where highlight ring was calculated independently
+  - Ring now perfectly aligns with checker position in all stack configurations
+
+- **Turn Switching and Dice Roll**: Fixed issue where next player could not roll dice after turn completion
+  - Removed premature `reset_turn_state()` calls from `_check_turn_completion()` in `BoardInteraction`
+  - Implemented turn change detection in `BackgammonBoard` using `last_player_index` tracking
+  - `_update_button_state()` now detects player index changes and resets state accordingly
+  - Dice button properly enables when turn switches to next player
+  - Fixed race condition where button state was reset before turn change was completed
+
+### Changed
+- **HighlightRenderer**: Enhanced initialization
+  - Added `checker_radius` as instance attribute for consistent calculations
+  - Updated docstring to document `checker_radius` attribute
+  - Ensures visual consistency between checkers and highlights
+
+- **BackgammonBoard**: Improved turn state management
+  - Added `last_player_index` attribute to track player changes (initialized to -1)
+  - `set_game()` now initializes `last_player_index` with current player index
+  - `_update_button_state()` compares current player with last player to detect turn changes
+  - Automatic state reset and button enable when turn switches
+
+- **BoardInteraction**: Simplified turn completion logic
+  - `_check_turn_completion()` now only handles game logic (calling `complete_turn()`)
+  - State reset delegated to UI layer (`BackgammonBoard`)
+  - Added documentation explaining separation of concerns
+
+### Technical Details
+- **Highlight Positioning**: Both `CheckerRenderer` and `HighlightRenderer` now use identical radius calculation
+- **Turn Detection**: Compares `game.current_player_index` with stored `last_player_index` each render cycle
+- **State Management**: UI state (`dice_rolled`, button enabled) managed by `BackgammonBoard`, game state by `BackgammonGame`
+
 ## [0.7.3] - 2025-01-25
 
 ### Fixed

@@ -138,6 +138,9 @@ class BoardInteraction:
         Turn ends when:
         - All dice have been used
         - No more valid moves are available
+        
+        Note: reset_turn_state() is called by BackgammonBoard._update_button_state()
+        after the turn change is detected.
         """
         if not self.game:
             return
@@ -147,7 +150,7 @@ class BoardInteraction:
         if not available_moves:
             print("All dice consumed - ending turn")
             self.game.complete_turn()
-            self.reset_turn_state()
+            # Don't reset turn state here - it will be done when button state is updated
             return
             
         # Check if there are any valid moves remaining
@@ -155,7 +158,7 @@ class BoardInteraction:
         if not has_moves:
             print("No more valid moves available - ending turn")
             self.game.complete_turn()
-            self.reset_turn_state()
+            # Don't reset turn state here - it will be done when button state is updated
             return
             
         print(f"Turn continues - {len(available_moves)} dice remaining")
