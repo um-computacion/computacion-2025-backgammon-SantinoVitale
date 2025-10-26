@@ -50,9 +50,9 @@ class ClickDetector:
         inner_width = self.dimensions.board_width - (2 * border)
         inner_height = self.dimensions.board_height - (2 * border)
 
-        if not (inner_x <= mouse_x <= inner_x + inner_width):
+        if not inner_x <= mouse_x <= inner_x + inner_width:
             return None
-        if not (inner_y <= mouse_y <= inner_y + inner_height):
+        if not inner_y <= mouse_y <= inner_y + inner_height:
             return None
 
         # Check if click is in the bar area (exclude it)

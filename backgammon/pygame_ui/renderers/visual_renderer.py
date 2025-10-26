@@ -41,8 +41,7 @@ class PointRenderer:
         """
         if point_number % 2 == 0:
             return self.colors.DARK_BROWN_POINT
-        else:
-            return self.colors.LIGHT_BEIGE
+        return self.colors.LIGHT_BEIGE
 
     def _calculate_triangle_points(self, point_number: int) -> List[Tuple[int, int]]:
         """
@@ -68,13 +67,12 @@ class PointRenderer:
                 (x + width, base_y),
                 (x + width // 2, tip_y),
             ]
-        else:
-            tip_y = base_y - height
-            return [
-                (x, base_y),
-                (x + width, base_y),
-                (x + width // 2, tip_y),
-            ]
+        tip_y = base_y - height
+        return [
+            (x, base_y),
+            (x + width, base_y),
+            (x + width // 2, tip_y),
+        ]
 
     def render_point(self, surface: pygame.Surface, point_number: int) -> None:
         """
@@ -134,10 +132,9 @@ class CheckerRenderer:
         """
         if color == "white":
             return (240, 240, 240)
-        elif color == "black":
+        if color == "black":
             return (20, 20, 20)
-        else:
-            return (128, 128, 128)
+        return (128, 128, 128)
 
     def _calculate_checker_position(
         self, point_number: int, stack_index: int, total_checkers: int = 1
@@ -492,9 +489,9 @@ class HighlightRenderer:
         # Use EXACT same checker_radius calculation as CheckerRenderer
         self.checker_radius: int = (self.dimensions.point_width // 3) - 8
 
-        self.SELECTED_COLOR: Tuple[int, int, int] = (255, 215, 0)
-        self.VALID_MOVE_COLOR: Tuple[int, int, int] = (50, 205, 50)
-        self.INVALID_MOVE_COLOR: Tuple[int, int, int] = (220, 20, 60)
+        self.selected_color: Tuple[int, int, int] = (255, 215, 0)
+        self.valid_move_color: Tuple[int, int, int] = (50, 205, 50)
+        self.invalid_move_color: Tuple[int, int, int] = (220, 20, 60)
 
     def _get_point_center(self, point_number: int) -> Tuple[int, int]:
         """
@@ -560,7 +557,7 @@ class HighlightRenderer:
         ring_thickness = 3
         pygame.draw.circle(
             surface,
-            self.SELECTED_COLOR,
+            self.selected_color,
             (center_x, center_y),
             self.checker_radius + 3,
             ring_thickness,
@@ -579,7 +576,7 @@ class HighlightRenderer:
         center_x, center_y = self._get_point_center(point_number)
 
         radius = self.dimensions.point_width // 3
-        pygame.draw.circle(surface, self.VALID_MOVE_COLOR, (center_x, center_y), radius)
+        pygame.draw.circle(surface, self.valid_move_color, (center_x, center_y), radius)
         pygame.draw.circle(surface, (0, 100, 0), (center_x, center_y), radius, 3)
 
     def render_bar_highlight(
@@ -593,7 +590,7 @@ class HighlightRenderer:
             is_selected: If True, render selection highlight
         """
         bar_rect = self.dimensions.get_bar_rect()
-        color = self.SELECTED_COLOR if is_selected else self.VALID_MOVE_COLOR
+        color = self.selected_color if is_selected else self.valid_move_color
 
         overlay = pygame.Surface((bar_rect[2], bar_rect[3]), pygame.SRCALPHA)
         overlay.fill((*color, 80))
@@ -635,12 +632,12 @@ class HighlightRenderer:
 
         # Draw pulsating circles to indicate valid bearing off location
         pygame.draw.circle(
-            surface, self.VALID_MOVE_COLOR, (center_x, white_center_y), radius
+            surface, self.valid_move_color, (center_x, white_center_y), radius
         )
         pygame.draw.circle(surface, (0, 100, 0), (center_x, white_center_y), radius, 3)
 
         pygame.draw.circle(
-            surface, self.VALID_MOVE_COLOR, (center_x, black_center_y), radius
+            surface, self.valid_move_color, (center_x, black_center_y), radius
         )
         pygame.draw.circle(surface, (0, 100, 0), (center_x, black_center_y), radius, 3)
 
@@ -677,14 +674,14 @@ class HighlightRenderer:
         size = 20
         pygame.draw.line(
             surface,
-            self.INVALID_MOVE_COLOR,
+            self.invalid_move_color,
             (center_x - size, center_y - size),
             (center_x + size, center_y + size),
             4,
         )
         pygame.draw.line(
             surface,
-            self.INVALID_MOVE_COLOR,
+            self.invalid_move_color,
             (center_x + size, center_y - size),
             (center_x - size, center_y + size),
             4,

@@ -34,7 +34,7 @@ class Board:
         # Posición inicial estándar del Backgammon (invertida para match visual layout)
         # Las blancas se mueven de puntos altos (23) a puntos bajos (0)
         # Las negras se mueven de puntos bajos (0) a puntos altos (23)
-        
+
         # Punto 23 (24 visual - abajo derecha): 2 fichas blancas
         self.points[23] = [Checker("white"), Checker("white")]
 
