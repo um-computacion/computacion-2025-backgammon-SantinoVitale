@@ -16,10 +16,7 @@ TOTAL                                 602     46    92%
 ## Pylint Report
 ```text
 ************* Module backgammon.pygame_ui.backgammon_board
-backgammon/pygame_ui/backgammon_board.py:186:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/backgammon_board.py:190:0: C0301: Line too long (104/100) (line-too-long)
-backgammon/pygame_ui/backgammon_board.py:195:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/backgammon_board.py:197:0: C0301: Line too long (102/100) (line-too-long)
+backgammon/pygame_ui/backgammon_board.py:201:0: C0301: Line too long (101/100) (line-too-long)
 backgammon/pygame_ui/backgammon_board.py:16:0: R0902: Too many instance attributes (8/7) (too-many-instance-attributes)
 ************* Module backgammon.pygame_ui.button
 backgammon/pygame_ui/button.py:26:4: R0913: Too many arguments (6/5) (too-many-arguments)
@@ -38,15 +35,8 @@ backgammon/pygame_ui/pygame_ui.py:92:32: E1101: Module 'pygame' has no 'K_ESCAPE
 backgammon/pygame_ui/pygame_ui.py:94:29: E1101: Module 'pygame' has no 'MOUSEBUTTONDOWN' member (no-member)
 backgammon/pygame_ui/pygame_ui.py:111:8: E1101: Module 'pygame' has no 'quit' member (no-member)
 ************* Module backgammon.pygame_ui.board_interaction
-backgammon/pygame_ui/board_interaction.py:74:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/board_interaction.py:143:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/board_interaction.py:171:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/board_interaction.py:189:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/board_interaction.py:197:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/board_interaction.py:205:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/board_interaction.py:252:0: C0301: Line too long (111/100) (line-too-long)
-backgammon/pygame_ui/board_interaction.py:208:4: R0911: Too many return statements (7/6) (too-many-return-statements)
-backgammon/pygame_ui/board_interaction.py:208:4: R0912: Too many branches (15/12) (too-many-branches)
+backgammon/pygame_ui/board_interaction.py:278:4: R0911: Too many return statements (7/6) (too-many-return-statements)
+backgammon/pygame_ui/board_interaction.py:278:4: R0912: Too many branches (15/12) (too-many-branches)
 ************* Module backgammon.pygame_ui.click_detector
 backgammon/pygame_ui/click_detector.py:53:0: C0325: Unnecessary parens after 'not' keyword (superfluous-parens)
 backgammon/pygame_ui/click_detector.py:55:0: C0325: Unnecessary parens after 'not' keyword (superfluous-parens)
@@ -54,47 +44,27 @@ backgammon/pygame_ui/click_detector.py:30:4: R0914: Too many local variables (20
 ************* Module backgammon.pygame_ui.color_scheme
 backgammon/pygame_ui/color_scheme.py:9:0: R0903: Too few public methods (0/2) (too-few-public-methods)
 ************* Module backgammon.pygame_ui.renderers.visual_renderer
-backgammon/pygame_ui/renderers/visual_renderer.py:489:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:521:0: C0301: Line too long (103/100) (line-too-long)
-backgammon/pygame_ui/renderers/visual_renderer.py:612:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:615:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:618:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:621:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:624:20: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:625:34: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:626:39: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:630:20: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:631:24: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:632:39: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:633:19: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:636:0: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:638:20: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:639:34: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:640:39: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:644:20: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:645:24: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:646:39: C0303: Trailing whitespace (trailing-whitespace)
-backgammon/pygame_ui/renderers/visual_renderer.py:647:19: C0303: Trailing whitespace (trailing-whitespace)
 backgammon/pygame_ui/renderers/visual_renderer.py:42:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
 backgammon/pygame_ui/renderers/visual_renderer.py:64:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
 backgammon/pygame_ui/renderers/visual_renderer.py:135:8: R1705: Unnecessary "elif" after "return", remove the leading "el" from "elif" (no-else-return)
 backgammon/pygame_ui/renderers/visual_renderer.py:214:4: R0913: Too many arguments (6/5) (too-many-arguments)
 backgammon/pygame_ui/renderers/visual_renderer.py:214:4: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
-backgammon/pygame_ui/renderers/visual_renderer.py:493:8: C0103: Attribute name "SELECTED_COLOR" doesn't conform to snake_case naming style (invalid-name)
-backgammon/pygame_ui/renderers/visual_renderer.py:494:8: C0103: Attribute name "VALID_MOVE_COLOR" doesn't conform to snake_case naming style (invalid-name)
-backgammon/pygame_ui/renderers/visual_renderer.py:495:8: C0103: Attribute name "INVALID_MOVE_COLOR" doesn't conform to snake_case naming style (invalid-name)
-backgammon/pygame_ui/renderers/visual_renderer.py:594:61: E1101: Module 'pygame' has no 'SRCALPHA' member (no-member)
-backgammon/pygame_ui/renderers/visual_renderer.py:726:4: R0913: Too many arguments (7/5) (too-many-arguments)
-backgammon/pygame_ui/renderers/visual_renderer.py:726:4: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
-backgammon/pygame_ui/renderers/visual_renderer.py:756:4: R0913: Too many arguments (7/5) (too-many-arguments)
-backgammon/pygame_ui/renderers/visual_renderer.py:756:4: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
+backgammon/pygame_ui/renderers/visual_renderer.py:495:8: C0103: Attribute name "SELECTED_COLOR" doesn't conform to snake_case naming style (invalid-name)
+backgammon/pygame_ui/renderers/visual_renderer.py:496:8: C0103: Attribute name "VALID_MOVE_COLOR" doesn't conform to snake_case naming style (invalid-name)
+backgammon/pygame_ui/renderers/visual_renderer.py:497:8: C0103: Attribute name "INVALID_MOVE_COLOR" doesn't conform to snake_case naming style (invalid-name)
+backgammon/pygame_ui/renderers/visual_renderer.py:598:61: E1101: Module 'pygame' has no 'SRCALPHA' member (no-member)
+backgammon/pygame_ui/renderers/visual_renderer.py:604:59: W0613: Unused argument 'board' (unused-argument)
+backgammon/pygame_ui/renderers/visual_renderer.py:722:4: R0913: Too many arguments (7/5) (too-many-arguments)
+backgammon/pygame_ui/renderers/visual_renderer.py:722:4: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
+backgammon/pygame_ui/renderers/visual_renderer.py:752:4: R0913: Too many arguments (7/5) (too-many-arguments)
+backgammon/pygame_ui/renderers/visual_renderer.py:752:4: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
 ************* Module backgammon.pygame_ui.renderers.board_renderer
-backgammon/pygame_ui/renderers/board_renderer.py:97:0: C0301: Line too long (103/100) (line-too-long)
-backgammon/pygame_ui/renderers/board_renderer.py:99:0: C0301: Line too long (103/100) (line-too-long)
+backgammon/pygame_ui/renderers/board_renderer.py:98:0: C0301: Line too long (103/100) (line-too-long)
+backgammon/pygame_ui/renderers/board_renderer.py:100:0: C0301: Line too long (103/100) (line-too-long)
 backgammon/pygame_ui/renderers/board_renderer.py:23:0: R0902: Too many instance attributes (9/7) (too-many-instance-attributes)
-backgammon/pygame_ui/renderers/board_renderer.py:79:4: R0913: Too many arguments (8/5) (too-many-arguments)
-backgammon/pygame_ui/renderers/board_renderer.py:79:4: R0917: Too many positional arguments (8/5) (too-many-positional-arguments)
-backgammon/pygame_ui/renderers/board_renderer.py:79:4: R0914: Too many local variables (16/15) (too-many-locals)
+backgammon/pygame_ui/renderers/board_renderer.py:79:4: R0913: Too many arguments (9/5) (too-many-arguments)
+backgammon/pygame_ui/renderers/board_renderer.py:79:4: R0917: Too many positional arguments (9/5) (too-many-positional-arguments)
+backgammon/pygame_ui/renderers/board_renderer.py:79:4: R0914: Too many local variables (17/15) (too-many-locals)
 backgammon/pygame_ui/renderers/board_renderer.py:23:0: R0903: Too few public methods (1/2) (too-few-public-methods)
 ************* Module backgammon.pygame_ui.renderers.decorative_renderer
 backgammon/pygame_ui/renderers/decorative_renderer.py:11:0: R0903: Too few public methods (1/2) (too-few-public-methods)
@@ -153,7 +123,7 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
         """ (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 9.61/10
+Your code has been rated at 9.71/10
 
 
 ```
