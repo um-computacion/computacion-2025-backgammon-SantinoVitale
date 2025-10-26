@@ -48,7 +48,7 @@ class PygameUI:
 
         self.board: BackgammonBoard = BackgammonBoard(self.width, self.height)
 
-        self.BACKGROUND_COLOR = (50, 50, 50)
+        self.background_color = (50, 50, 50)
 
     def set_game(self, game: object) -> None:
         """
@@ -71,7 +71,7 @@ class PygameUI:
 
     def display_board(self) -> None:
         """Display the game board state."""
-        self.screen.fill(self.BACKGROUND_COLOR)
+        self.screen.fill(self.background_color)
         self.board.render(self.screen)
         pygame.display.flip()
 

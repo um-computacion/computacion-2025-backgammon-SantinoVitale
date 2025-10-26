@@ -189,7 +189,7 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
         if success:
             # Consume the die value that was used for this move
             self.dice.use_move(move_distance)
-            
+
             self.move_history.append((from_pos, to_pos, current_player.color))
             self.move_count += 1
 
@@ -216,30 +216,25 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
                 # White moves from higher to lower numbers (24→1)
                 if from_pos > to_pos:
                     return from_pos - to_pos
-                else:
-                    return 0  # Invalid direction for white
-            else:
-                # Black moves from lower to higher numbers (1→24)
-                if to_pos > from_pos:
-                    return to_pos - from_pos
-                else:
-                    return 0  # Invalid direction for black
-        elif from_pos == "bar" and isinstance(to_pos, int):
+                return 0  # Invalid direction for white
+            # Black moves from lower to higher numbers (1→24)
+            if to_pos > from_pos:
+                return to_pos - from_pos
+            return 0  # Invalid direction for black
+        if from_pos == "bar" and isinstance(to_pos, int):
             # For bar moves, distance is based on entry point
             if current_player.color == "white":
                 # White enters from point 25 (conceptually) to to_pos
                 return 25 - to_pos
-            else:
-                # Black enters from point 0 (conceptually) to to_pos
-                return to_pos
-        elif isinstance(from_pos, int) and to_pos == "off":
+            # Black enters from point 0 (conceptually) to to_pos
+            return to_pos
+        if isinstance(from_pos, int) and to_pos == "off":
             # For bearing off, distance is from point to off
             if current_player.color == "white":
                 # White bears off from from_pos to 0
                 return from_pos
-            else:
-                # Black bears off from from_pos to 25
-                return 25 - from_pos
+            # Black bears off from from_pos to 25
+            return 25 - from_pos
         return 0
 
     def calculate_move_distance(

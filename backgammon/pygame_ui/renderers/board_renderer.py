@@ -95,9 +95,11 @@ class BoardRenderer:
             board: Optional Board instance to render checkers from
             dice_values: Optional list of current dice values
             available_moves: Optional list of available move values
-            player_info: Optional tuple of (player1_name, player2_name, current_player, p1_off, p2_off)
+            player_info: Optional tuple of (player1_name, player2_name,
+                current_player, p1_off, p2_off)
             selected_point: Optional point number that is currently selected
-            valid_move_destinations: Optional list of valid destination points or "off" for bearing off
+            valid_move_destinations: Optional list of valid destination points
+                or "off" for bearing off
             selected_bar: Boolean indicating if the bar is currently selected
         """
         # Render background

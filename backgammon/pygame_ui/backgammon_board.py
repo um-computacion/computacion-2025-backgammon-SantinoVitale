@@ -198,7 +198,8 @@ class BackgammonBoard:
         current_player_index = self.game.current_player_index
         if current_player_index != self.last_player_index:
             print(
-                f"Turn changed from player {self.last_player_index} to player {current_player_index}"
+                f"Turn changed from player {self.last_player_index}"
+                f" to player {current_player_index}"
             )
             self.last_player_index = current_player_index
             self.interaction.reset_turn_state()

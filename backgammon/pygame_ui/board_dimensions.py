@@ -101,8 +101,7 @@ class BoardDimensions:
         inner_y = self.board_y + self.border_thickness
         if is_top:
             return inner_y
-        else:
-            return inner_y + self.board_height - (2 * self.border_thickness)
+        return inner_y + self.board_height - (2 * self.border_thickness)
 
     def get_point_x(self, point_number: int) -> int:
         """
@@ -125,18 +124,18 @@ class BoardDimensions:
             # Top right quadrant
             offset = (5 - point_number) * self.point_width
             return start_x + self.half_width + self.bar_width + offset
-        elif 6 <= point_number <= 11:
+        if 6 <= point_number <= 11:
             # Top left quadrant
             offset = (11 - point_number) * self.point_width
             return start_x + offset
-        elif 12 <= point_number <= 17:
+        if 12 <= point_number <= 17:
             # Bottom left quadrant
             offset = (point_number - 12) * self.point_width
             return start_x + offset
-        else:  # 18 <= point_number <= 23
-            # Bottom right quadrant
-            offset = (point_number - 18) * self.point_width
-            return start_x + self.half_width + self.bar_width + offset
+        # 18 <= point_number <= 23
+        # Bottom right quadrant
+        offset = (point_number - 18) * self.point_width
+        return start_x + self.half_width + self.bar_width + offset
 
     def get_bar_rect(self) -> Tuple[int, int, int, int]:
         """
