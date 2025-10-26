@@ -458,7 +458,9 @@ class DiceRenderer:
         original_size = self.dice_size
         self.dice_size = 25
 
-        total_width = len(available_moves) * self.dice_size + (len(available_moves) - 1) * 5
+        total_width = (
+            len(available_moves) * self.dice_size + (len(available_moves) - 1) * 5
+        )
         start_x = center_x - (total_width // 2)
 
         self.render_dice(surface, available_moves, (start_x, start_y))
@@ -486,7 +488,7 @@ class HighlightRenderer:
         """
         self.colors: ColorScheme = colors
         self.dimensions: BoardDimensions = dimensions
-        
+
         # Use EXACT same checker_radius calculation as CheckerRenderer
         self.checker_radius: int = (self.dimensions.point_width // 3) - 8
 
@@ -518,7 +520,11 @@ class HighlightRenderer:
         return (center_x, center_y)
 
     def render_selected_point(
-        self, surface: pygame.Surface, point_number: int, stack_index: int = 0, total_checkers: int = 1
+        self,
+        surface: pygame.Surface,
+        point_number: int,
+        stack_index: int = 0,
+        total_checkers: int = 1,
     ) -> None:
         """
         Render a highlight around a selected checker.
@@ -574,9 +580,7 @@ class HighlightRenderer:
 
         radius = self.dimensions.point_width // 3
         pygame.draw.circle(surface, self.VALID_MOVE_COLOR, (center_x, center_y), radius)
-        pygame.draw.circle(
-            surface, (0, 100, 0), (center_x, center_y), radius, 3
-        )
+        pygame.draw.circle(surface, (0, 100, 0), (center_x, center_y), radius, 3)
 
     def render_bar_highlight(
         self, surface: pygame.Surface, is_selected: bool = False
@@ -597,6 +601,16 @@ class HighlightRenderer:
 
         pygame.draw.rect(surface, color, bar_rect, 4)
 
+    def render_selected_bar(self, surface: pygame.Surface, board: object) -> None:
+        """
+        Render a highlight for selected bar with checker highlight.
+
+        Args:
+            surface: Pygame surface to draw on
+            board: Board instance to check checker colors
+        """
+        self.render_bar_highlight(surface, is_selected=True)
+
     def render_off_area_highlight(self, surface: pygame.Surface) -> None:
         """
         Render a highlight on the off area (bearing off destination).
@@ -609,44 +623,26 @@ class HighlightRenderer:
 
         section_height = panel_rect[3] // 3
         center_x = panel_rect[0] + (panel_rect[2] // 2)
-        
+
         # White player off area (top section)
         white_center_y = panel_rect[1] + (section_height // 2)
-        
+
         # Black player off area (bottom section)
         black_center_y = panel_rect[1] + section_height * 2 + (section_height // 2)
-        
+
         # Render indicators for both off areas
         radius = 30
-        
+
         # Draw pulsating circles to indicate valid bearing off location
         pygame.draw.circle(
-            surface, 
-            self.VALID_MOVE_COLOR, 
-            (center_x, white_center_y), 
-            radius
+            surface, self.VALID_MOVE_COLOR, (center_x, white_center_y), radius
         )
+        pygame.draw.circle(surface, (0, 100, 0), (center_x, white_center_y), radius, 3)
+
         pygame.draw.circle(
-            surface, 
-            (0, 100, 0), 
-            (center_x, white_center_y), 
-            radius, 
-            3
+            surface, self.VALID_MOVE_COLOR, (center_x, black_center_y), radius
         )
-        
-        pygame.draw.circle(
-            surface, 
-            self.VALID_MOVE_COLOR, 
-            (center_x, black_center_y), 
-            radius
-        )
-        pygame.draw.circle(
-            surface, 
-            (0, 100, 0), 
-            (center_x, black_center_y), 
-            radius, 
-            3
-        )
+        pygame.draw.circle(surface, (0, 100, 0), (center_x, black_center_y), radius, 3)
 
     def render_valid_moves(
         self,
@@ -781,7 +777,9 @@ class TextRenderer:
         text_y = bottom_section_y + 20
         line_spacing = 30
 
-        player1_color = (255, 255, 255) if current_player_name == player1_name else (150, 150, 150)
+        player1_color = (
+            (255, 255, 255) if current_player_name == player1_name else (150, 150, 150)
+        )
         self._render_text(
             surface,
             f"{player1_name}",
@@ -797,7 +795,9 @@ class TextRenderer:
             player1_color,
         )
 
-        player2_color = (255, 255, 255) if current_player_name == player2_name else (150, 150, 150)
+        player2_color = (
+            (255, 255, 255) if current_player_name == player2_name else (150, 150, 150)
+        )
         self._render_text(
             surface,
             f"{player2_name}",
@@ -856,7 +856,10 @@ class TextRenderer:
         )
 
     def render_message(
-        self, surface: pygame.Surface, message: str, color: Optional[Tuple[int, int, int]] = None
+        self,
+        surface: pygame.Surface,
+        message: str,
+        color: Optional[Tuple[int, int, int]] = None,
     ) -> None:
         """
         Render a temporary message in the center of the screen.

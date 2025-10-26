@@ -59,7 +59,9 @@ class BackgammonBoard:
         button_height = 50
         button_x = panel_rect[0] + (panel_rect[2] - button_width) // 2
         section_height = panel_rect[3] // 3
-        button_y = panel_rect[1] + section_height + (section_height - button_height) // 2
+        button_y = (
+            panel_rect[1] + section_height + (section_height - button_height) // 2
+        )
 
         button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
         self.dice_button: Button = Button(
@@ -76,7 +78,7 @@ class BackgammonBoard:
         self.game = game
         self.interaction.set_game(game)
         # Initialize last_player_index with current player
-        if hasattr(game, 'current_player_index'):
+        if hasattr(game, "current_player_index"):
             self.last_player_index = game.current_player_index
 
     def handle_mouse_click(self, mouse_pos: Tuple[int, int]) -> None:
@@ -100,6 +102,8 @@ class BackgammonBoard:
 
         if position_type == "point":
             self.interaction.handle_point_click(value)
+        elif position_type == "bar":
+            self.interaction.handle_bar_click()
         elif position_type == "off":
             self.interaction.handle_off_area_click()
 
@@ -137,6 +141,7 @@ class BackgammonBoard:
         dice_values = None
         available_moves = None
         player_info = None
+        selected_bar = False
 
         if self.game is not None:
             if hasattr(self.game, "board"):
@@ -159,6 +164,10 @@ class BackgammonBoard:
                     player2.checkers_off_board,
                 )
 
+            # Get selected_bar flag
+            if hasattr(self.interaction, "selected_bar"):
+                selected_bar = self.interaction.selected_bar
+
         self.board_renderer.render(
             surface,
             board=board,
@@ -167,6 +176,7 @@ class BackgammonBoard:
             player_info=player_info,
             selected_point=self.interaction.selected_point,
             valid_move_destinations=self.interaction.valid_move_destinations,
+            selected_bar=selected_bar,
         )
 
         self.dice_button.render(surface)
@@ -177,22 +187,28 @@ class BackgammonBoard:
         """
         Update dice button state based on game state.
         Enables button when turn changes or dice need to be rolled.
-        
+
         Args:
             available_moves: List of available dice moves or None
         """
         if not self.game:
             return
-            
+
         # Check if player has changed (turn switched)
         current_player_index = self.game.current_player_index
         if current_player_index != self.last_player_index:
-            print(f"Turn changed from player {self.last_player_index} to player {current_player_index}")
+            print(
+                f"Turn changed from player {self.last_player_index} to player {current_player_index}"
+            )
             self.last_player_index = current_player_index
             self.interaction.reset_turn_state()
             self.dice_button.set_enabled(True)
             return
-        
+
         # If no moves available after rolling, keep button disabled until turn changes
-        if available_moves is not None and len(available_moves) == 0 and self.interaction.dice_rolled:
+        if (
+            available_moves is not None
+            and len(available_moves) == 0
+            and self.interaction.dice_rolled
+        ):
             self.dice_button.set_enabled(False)
