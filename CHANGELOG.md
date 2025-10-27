@@ -5,6 +5,36 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.4] - 2025-01-27
+
+### Added
+- **Complete JUSTIFICACION.md Documentation**: Comprehensive technical justification document for academic project
+  - Section 1: General design summary with 3-layer architecture (Core, UI, Testing)
+  - Section 2: Justification of 20+ classes organized by responsibility (concise format)
+  - Section 3: Justification of key attributes across main classes
+  - Section 4: 12 relevant design decisions with version references (v0.8.0, v0.7.2)
+  - Section 5: Exception handling and error management strategies
+  - Section 6: Testing strategies and coverage details (460 tests, 92% coverage)
+  - Section 7: SOLID principles references with concrete code examples
+  - Section 8: UML diagrams annex (6 ASCII diagrams: Class, Sequence, State, Components)
+
+### Changed
+- **Documentation Style**: Refined from verbose to concise format per user feedback
+  - Class justifications reduced from ~150 lines to ~50 lines
+  - Maintained essential information with improved readability
+  - Bullet-point format for better scannability
+
+### Fixed
+- **Document Structure**: Removed duplicate empty heading section
+  - Cleaned up leftover "Cumplimiento de Principios SOLID y Buenas Prácticas" duplicate
+  - Ensured professional document structure
+
+### Documentation
+- **Prompt Documentation**: Added comprehensive prompt record to `prompts-documentacion.md`
+  - 9 iterative prompt exchanges documented
+  - Analysis process and code review methodology recorded
+  - Final document characteristics and usage status documented
+
 ## [0.8.3] - 2025-01-27
 
 ### Removed
