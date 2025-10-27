@@ -5,7 +5,7 @@ Provides user interface selection and game initialization.
 
 import sys
 from backgammon.core.BackgammonGame import BackgammonGame
-from backgammon.cli.CLI import CLI
+from backgammon.cli.BackgammonCLI import BackgammonCLI  # Updated to use new SOLID architecture
 from backgammon.pygame_ui.pygame_ui import PygameUI
 
 
@@ -50,19 +50,13 @@ def start_cli_game() -> None:
     """Initialize and start the CLI version of the game."""
     try:
         print("\nIniciando el juego de Backgammon en CLI...")
-
-        # Create CLI interface and game
-        cli = CLI()
-        game = BackgammonGame()
-        cli.set_game(game)
-        game.set_ui(cli)
-
-        # Start the game using CLI
-        print("\nIniciando el juego de Backgammon!")
-        print("¡Buena suerte y diviértete!")
         print("=" * 50)
 
+        # Create BackgammonCLI (new SOLID architecture)
+        cli = BackgammonCLI()
+
         # Start the game loop through CLI
+        # The CLI will handle player name input internally
         cli.run_game()
 
     except (EOFError, KeyboardInterrupt):
