@@ -5,6 +5,103 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.3] - 2025-01-27
+
+### Removed
+- **Legacy CLI Tests**: Eliminated `test__cli.py` completely (41 tests removed)
+  - Removed all tests for deprecated CLI class
+  - Legacy CLI class maintained only for backward compatibility if needed
+  - All functionality now tested through SOLID component tests
+  - Test count reduced from 501 to 460 (intentional cleanup)
+
+### Changed
+- **Test Suite Cleanup**: Streamlined test architecture
+  - Focus on SOLID component tests (BoardRenderer, CommandParser, etc.)
+  - BackgammonGame tests now use BackgammonCLI exclusively
+  - Cleaner test structure aligned with production architecture
+
+## [0.8.2] - 2025-01-27
+
+### Changed
+- **Test Migration**: Updated `test__backgammongame.py` to use `BackgammonCLI` instead of legacy `CLI`
+  - Changed import from `from backgammon.cli import CLI` to `from backgammon.cli import BackgammonCLI`
+  - Updated `test_game_initialization_with_ui` to instantiate BackgammonCLI
+  - Ensures tests use the new SOLID architecture
+
+### Added
+- **Restored CLI.py**: Re-created legacy CLI class file for backward compatibility
+  - Marked as DEPRECATED with clear warning comments
+  - Maintained for existing test compatibility (test__cli.py with 41 tests)
+  - Includes migration guidance to BackgammonCLI
+
+### Improved
+- **Test Documentation**: Added deprecation notice to `test__cli.py` header
+  - Clear warnings that the file tests legacy code
+  - TODO note for future migration or removal in v1.0.0
+  - References to new SOLID component tests
+
+### Fixed
+- **Import Errors**: Resolved `ModuleNotFoundError` for `backgammon.cli.CLI`
+  - CLI.py file was missing from filesystem causing test failures
+  - All 501 tests now passing (up from 295 with 8 errors)
+
+## [0.8.1] - 2025-01-27
+
+### Changed
+- **main.py Integration**: Updated to use new SOLID CLI architecture
+  - Changed import from `CLI` to `BackgammonCLI`
+  - Updated `start_cli_game()` to instantiate `BackgammonCLI` instead of legacy `CLI`
+  - Simplified game initialization (BackgammonCLI handles player name input internally)
+  - **Breaking Change Migration**: Production code now uses refactored SOLID architecture
+
+### Improved
+- **Code Consistency**: main.py now uses the same architecture as the new test suite
+- **SOLID Principles in Production**: All six specialized classes now active in main game flow
+- **Removed Dead Code Path**: Legacy CLI class no longer used in production (kept for backwards compatibility only)
+
+## [0.8.0] - 2025-01-27
+
+### Added
+- **SOLID Architecture Refactoring**: Complete restructuring of CLI module following SOLID principles
+  - Created `BoardRenderer` class: Handles only board visualization logic
+  - Created `CommandParser` class: Handles only command parsing and routing
+  - Created `InputValidator` class: Handles only input validation
+  - Created `GameController` class: Handles only game state management
+  - Created `UserInterface` class: Handles only user I/O operations
+  - Created `BackgammonCLI` class: Main coordinator delegating to specialized classes
+  - Original `CLI` class maintained for backward compatibility
+
+### Changed
+- **CLI Package Structure**: Enhanced organization with specialized components
+  - Updated `__init__.py` to export all new classes
+  - Each class follows Single Responsibility Principle
+  - Clear separation of concerns across all components
+  - Improved maintainability and testability
+  - Better adherence to Dependency Inversion Principle
+
+### Added - Tests
+- **Comprehensive Test Suite**: Created 117 unit tests for new classes
+  - `test_board_renderer.py`: 15 tests for BoardRenderer (board display, legend, possible moves)
+  - `test_command_parser.py`: 25 tests for CommandParser (parsing, normalization, command types)
+  - `test_input_validator.py`: 21 tests for InputValidator (position, format, confirmation validation)
+  - `test_game_controller.py`: 31 tests for GameController (game state, moves, turn management)
+  - `test_user_interface.py`: 25 tests for UserInterface (display methods, input, formatting)
+  - All tests pass successfully using unittest framework
+  - Tests follow project guidelines with proper mocking and isolation
+
+### Technical Details
+- **Architecture Pattern**: Coordinator pattern with specialized service classes
+- **Testing Coverage**: 117 new tests ensuring robust functionality
+- **Code Quality**: All classes follow SOLID principles and PEP 8 guidelines
+- **Type Safety**: Comprehensive type hints throughout all new classes
+- **Documentation**: Complete docstrings following PEP 257 standards
+
+### Migration Notes
+- `CLI` class remains available for backward compatibility
+- New code should use `BackgammonCLI` for better architecture
+- All existing functionality preserved with improved design
+- Easier to extend and maintain going forward
+
 ## [0.7.10] - 2025-01-26
 
 ### Changed

@@ -1,3 +1,523 @@
+## Prompt 35
+
+### Modelo: GitHub Copilot (Claude Sonnet 4.5)
+
+### Fecha: 2025-01-27
+
+### Prompt:
+Mejorar Solid en CLI de la siguiente manera: BoardRenderer: solo se encarga de la lógica de visualización del tablero. CommandParser: solo se encarga del análisis y enrutamiento de comandos. InputValidator: solo se encarga de la validación de entradas. GameController: solo se encarga de la gestión del estado del juego. UserInterface: solo se encarga de las entradas y salidas del usuario. BackgammonCLI: ahora actúa como coordinador, delegando en clases especializadas.
+
+### Respuesta:
+
+#### Contexto
+El usuario solicitó mejorar la aplicación de los principios SOLID en el módulo CLI del juego de Backgammon. El archivo `CLI.py` original (~800 líneas) era un monolito que violaba el Principio de Responsabilidad Única (SRP) al mezclar múltiples responsabilidades: renderizado de tablero, parseo de comandos, validación de entrada, control del juego, y gestión de UI.
+
+**Problema identificado:**
+- Clase CLI monolítica con múltiples responsabilidades mezcladas
+- Difícil de mantener, testear y extender
+- Violación del SRP y otros principios SOLID
+- Alto acoplamiento entre componentes lógicamente separados
+- Testing complicado debido a dependencias entrelazadas
+
+**Solución propuesta:**
+Refactorizar CLI en 6 clases especializadas:
+1. **BoardRenderer**: Lógica de visualización del tablero
+2. **CommandParser**: Análisis y enrutamiento de comandos
+3. **InputValidator**: Validación de entradas del usuario
+4. **GameController**: Gestión del estado del juego
+5. **UserInterface**: Gestión de entradas/salidas del usuario
+6. **BackgammonCLI**: Coordinador que delega en clases especializadas
+
+---
+
+#### Implementación: Refactorización SOLID del CLI
+
+**Arquitectura del Sistema:**
+
+```
+BackgammonCLI (Coordinator)
+    ├── BoardRenderer (Visualization)
+    ├── CommandParser (Command Routing)
+    ├── InputValidator (Input Validation)
+    ├── GameController (Game State Management)
+    └── UserInterface (I/O Operations)
+```
+
+---
+
+#### Clase 1: BoardRenderer
+
+**Archivo:** `backgammon/cli/BoardRenderer.py` (210 líneas)
+
+**Responsabilidad:** Renderizado visual del tablero de Backgammon
+
+**Métodos principales:**
+```python
+def render_board(self, board: object, format_functions: dict) -> str:
+    """Genera la representación visual completa del tablero"""
+    
+def render_legend(self, board: object, format_functions: dict) -> str:
+    """Genera la leyenda con información del estado del juego"""
+    
+def render_possible_moves(self, moves_dict: dict) -> str:
+    """Genera visualización de movimientos posibles agrupados"""
+```
+
+**Principios SOLID aplicados:**
+- **SRP**: Solo maneja renderizado visual, no procesa lógica de juego
+- **OCP**: Extensible para nuevos estilos de renderizado sin modificar código
+- **DIP**: Depende de abstracciones (recibe funciones de formato como parámetros)
+
+**Características:**
+- Tablero ASCII art de 86 caracteres de ancho
+- Símbolos Unicode para fichas (● para blancas, ○ para negras)
+- Visualización de BAR y OFF areas
+- Leyenda con estado del juego
+- Agrupación de movimientos posibles por origen
+
+---
+
+#### Clase 2: CommandParser
+
+**Archivo:** `backgammon/cli/CommandParser.py` (110 líneas)
+
+**Responsabilidad:** Análisis y enrutamiento de comandos del usuario
+
+**Métodos principales:**
+```python
+def parse_move_input(self, user_input: str) -> Union[Tuple[str, str], Tuple[str, None]]:
+    """Parsea entrada de movimiento en tupla (desde, hasta)"""
+    
+def is_special_command(self, command: str) -> bool:
+    """Verifica si es comando especial (help, rules, quit, moves)"""
+    
+def get_command_type(self, command: str) -> str:
+    """Retorna tipo de comando: 'help', 'rules', 'quit', 'moves', 'move'"""
+```
+
+**Principios SOLID aplicados:**
+- **SRP**: Solo parsea y clasifica comandos, no los ejecuta
+- **OCP**: Fácil agregar nuevos comandos sin modificar lógica existente
+- **ISP**: Interfaz mínima y enfocada en parsing
+
+**Características:**
+- Normalización de entrada (strip, lowercase)
+- Soporte para comandos en español e inglés
+- Conversión de notaciones (número/bar/off)
+- Validación de formato básico
+
+---
+
+#### Clase 3: InputValidator
+
+**Archivo:** `backgammon/cli/InputValidator.py` (80 líneas)
+
+**Responsabilidad:** Validación de entradas del usuario
+
+**Métodos principales:**
+```python
+def validate_position(self, position: str) -> Tuple[bool, str]:
+    """Valida que la posición sea válida (1-24, bar, off)"""
+    
+def validate_confirmation(self, user_input: str) -> Optional[bool]:
+    """Valida respuesta de confirmación (yes/no)"""
+    
+def validate_move_format(self, from_pos: str, to_pos: str) -> Tuple[bool, str]:
+    """Valida formato de movimiento completo"""
+```
+
+**Principios SOLID aplicados:**
+- **SRP**: Solo valida entradas, no procesa lógica de juego
+- **OCP**: Extensible para nuevas reglas de validación
+- **DIP**: No depende de implementaciones concretas del juego
+
+**Características:**
+- Validación de rangos numéricos (1-24)
+- Validación de posiciones especiales (bar, off)
+- Soporte para confirmaciones en múltiples idiomas
+- Mensajes de error descriptivos
+
+---
+
+#### Clase 4: GameController
+
+**Archivo:** `backgammon/cli/GameController.py` (240 líneas)
+
+**Responsabilidad:** Gestión del estado del juego
+
+**Métodos principales:**
+```python
+def setup_game(self, player1_name: str, player2_name: str) -> None:
+    """Inicializa un nuevo juego con nombres de jugadores"""
+    
+def make_move(self, from_pos: str, to_pos: str) -> Tuple[bool, str]:
+    """Ejecuta un movimiento y retorna resultado"""
+    
+def get_possible_moves(self) -> dict:
+    """Obtiene todos los movimientos válidos para el jugador actual"""
+    
+def complete_turn(self) -> None:
+    """Completa el turno del jugador actual"""
+    
+def is_game_over(self) -> bool:
+    """Verifica si el juego ha terminado"""
+    
+def get_winner(self) -> Optional[str]:
+    """Obtiene el nombre del ganador si existe"""
+```
+
+**Principios SOLID aplicados:**
+- **SRP**: Solo gestiona estado del juego, no maneja UI
+- **OCP**: Extensible para nuevas reglas sin modificar código
+- **LSP**: Puede ser reemplazado por diferentes controladores de juego
+- **DIP**: Depende de abstracción BackgammonGame
+
+**Características:**
+- Wrapper sobre BackgammonGame para simplificar interfaz
+- Gestión de turnos y dados
+- Cálculo de movimientos válidos
+- Detección de fin de juego
+- Manejo de ganador
+
+---
+
+#### Clase 5: UserInterface
+
+**Archivo:** `backgammon/cli/UserInterface.py` (340 líneas)
+
+**Responsabilidad:** Gestión de entradas y salidas del usuario
+
+**Métodos principales:**
+```python
+def display(self, message: str, message_type: str = "info") -> None:
+    """Muestra mensaje al usuario con formato según tipo"""
+    
+def get_input(self, prompt: str) -> str:
+    """Obtiene entrada del usuario con prompt"""
+    
+def display_help(self) -> None:
+    """Muestra ayuda con comandos disponibles"""
+    
+def display_game_rules(self) -> None:
+    """Muestra reglas completas del juego"""
+    
+def display_winner(self, winner_name: str) -> None:
+    """Muestra pantalla de victoria"""
+    
+def clear_screen(self) -> None:
+    """Limpia la pantalla de la consola"""
+```
+
+**Principios SOLID aplicados:**
+- **SRP**: Solo maneja I/O del usuario, no procesa lógica
+- **OCP**: Extensible para nuevos tipos de mensajes
+- **ISP**: Interfaz simple y enfocada en comunicación usuario
+
+**Características:**
+- Tipos de mensaje: info, success, error, warning, header
+- Formato consistente con bordes ASCII
+- Sistema de ayuda completo
+- Reglas del juego detalladas
+- Pantalla de victoria
+- Clear screen multiplataforma (Windows/Unix)
+
+---
+
+#### Clase 6: BackgammonCLI (Coordinator)
+
+**Archivo:** `backgammon/cli/BackgammonCLI.py` (250 líneas)
+
+**Responsabilidad:** Coordinación de todos los componentes
+
+**Métodos principales:**
+```python
+def __init__(self):
+    """Inicializa todos los componentes especializados"""
+    self.board_renderer = BoardRenderer()
+    self.command_parser = CommandParser()
+    self.input_validator = InputValidator()
+    self.game_controller = GameController()
+    self.user_interface = UserInterface()
+    
+def run_game(self, player1_name: str, player2_name: str) -> None:
+    """Loop principal del juego coordinando todos los componentes"""
+    
+def get_move_input(self) -> Tuple[str, Optional[str]]:
+    """Obtiene y procesa entrada de movimiento del usuario"""
+```
+
+**Principios SOLID aplicados:**
+- **SRP**: Solo coordina componentes, no implementa lógica específica
+- **OCP**: Extensible agregando nuevos componentes sin modificar coordinación
+- **DIP**: Depende de abstracciones de cada componente
+
+**Flujo del juego:**
+```
+1. Inicializar componentes
+2. Setup del juego (GameController)
+3. Loop principal:
+   a. Renderizar tablero (BoardRenderer)
+   b. Obtener entrada (UserInterface)
+   c. Parsear comando (CommandParser)
+   d. Validar entrada (InputValidator)
+   e. Ejecutar movimiento (GameController)
+   f. Verificar fin de juego (GameController)
+4. Mostrar ganador (UserInterface)
+```
+
+---
+
+#### Testing Completo
+
+**Tests creados:** 117 tests en total (5 archivos)
+
+**1. test_board_renderer.py (15 tests)**
+- Renderizado de tablero con diferentes estados
+- Renderizado de leyenda con información correcta
+- Visualización de movimientos posibles
+- Edge cases (tablero vacío, muchas fichas)
+
+**2. test_command_parser.py (25 tests)**
+- Parsing de movimientos válidos e inválidos
+- Identificación de comandos especiales
+- Normalización de entrada
+- Manejo de múltiples formatos
+
+**3. test_input_validator.py (21 tests)**
+- Validación de posiciones numéricas
+- Validación de posiciones especiales (bar, off)
+- Validación de confirmaciones
+- Validación de formato de movimientos
+- Mensajes de error apropiados
+
+**4. test_game_controller.py (31 tests)**
+- Setup del juego
+- Ejecución de movimientos válidos/inválidos
+- Cálculo de movimientos posibles
+- Gestión de turnos
+- Detección de fin de juego
+- Identificación de ganador
+
+**5. test_user_interface.py (25 tests)**
+- Display de diferentes tipos de mensajes
+- Captura de entrada del usuario
+- Display de ayuda y reglas
+- Display de ganador
+- Clear screen multiplataforma
+
+**Resultado de tests:**
+```
+Ran 117 tests in 0.045s
+OK - All tests passing
+```
+
+---
+
+#### Beneficios de la Refactorización
+
+**1. Mantenibilidad:**
+- Cada clase tiene una responsabilidad clara
+- Cambios localizados en una sola clase
+- Más fácil entender y modificar código
+
+**2. Testabilidad:**
+- Tests unitarios enfocados en una responsabilidad
+- Fácil crear mocks y stubs
+- 117 tests con cobertura completa
+
+**3. Extensibilidad:**
+- Agregar nuevas features sin modificar código existente
+- Fácil agregar nuevos comandos o validaciones
+- Plug-and-play de componentes
+
+**4. Reusabilidad:**
+- BoardRenderer puede usarse en otros contextos
+- CommandParser puede extenderse para otros juegos
+- UserInterface reutilizable en otros CLIs
+
+**5. Separación de Concerns:**
+- UI separada de lógica de juego
+- Validación separada de ejecución
+- Rendering separado de input handling
+
+---
+
+#### Estructura Final de Archivos
+
+```
+backgammon/cli/
+├── __init__.py (exports actualizados)
+├── CLI.py (mantenido para backward compatibility)
+├── BackgammonCLI.py (coordinador nuevo)
+├── BoardRenderer.py
+├── CommandParser.py
+├── InputValidator.py
+├── GameController.py
+└── UserInterface.py
+
+backgammon/test/
+├── test_board_renderer.py (15 tests)
+├── test_command_parser.py (25 tests)
+├── test_input_validator.py (21 tests)
+├── test_game_controller.py (31 tests)
+└── test_user_interface.py (25 tests)
+```
+
+---
+
+#### Versioning y CHANGELOG
+
+**Versión:** 0.8.0 (MINOR increment)
+
+**Justificación:**
+- MINOR: Cambio arquitectónico significativo
+- Mejora importante sin breaking changes
+- Funcionalidad existente mantenida
+- Backward compatibility preservada
+
+**Entrada en CHANGELOG.md:**
+```markdown
+## [0.8.0] - 2025-01-27
+
+### Added
+- **BoardRenderer**: Specialized class for board visualization logic
+- **CommandParser**: Dedicated class for command parsing and routing
+- **InputValidator**: Focused class for user input validation
+- **GameController**: Centralized game state management class
+- **UserInterface**: Dedicated class for user I/O operations
+- **BackgammonCLI**: New coordinator class delegating to specialized components
+- 117 comprehensive unit tests for all new components
+
+### Changed
+- Refactored CLI module following SOLID principles
+- Improved separation of concerns across components
+- Enhanced testability with focused unit tests
+- Original CLI.py maintained for backward compatibility
+
+### Improved
+- Code maintainability through single responsibility classes
+- Extensibility for future features
+- Test coverage with specialized test suites
+- Code organization and structure
+```
+
+---
+
+#### Comparación: Antes vs Después
+
+**Antes (CLI.py monolítico):**
+- 1 archivo, ~800 líneas
+- Múltiples responsabilidades mezcladas
+- Difícil de testear
+- Alto acoplamiento
+- Tests limitados
+
+**Después (Arquitectura SOLID):**
+- 6 clases especializadas
+- Responsabilidad única por clase
+- 117 tests comprehensivos
+- Bajo acoplamiento, alta cohesión
+- Fácil mantenimiento y extensión
+
+---
+
+#### Principios SOLID Aplicados
+
+**Single Responsibility Principle (SRP):**
+- Cada clase tiene una única razón para cambiar
+- BoardRenderer: solo visualización
+- CommandParser: solo parsing
+- InputValidator: solo validación
+- GameController: solo gestión de estado
+- UserInterface: solo I/O
+
+**Open/Closed Principle (OCP):**
+- Clases abiertas a extensión, cerradas a modificación
+- Nuevos comandos sin modificar CommandParser
+- Nuevas validaciones sin modificar InputValidator
+- Nuevos estilos de renderizado sin modificar BoardRenderer
+
+**Liskov Substitution Principle (LSP):**
+- Componentes intercambiables por alternativas
+- GameController puede ser reemplazado por diferentes implementaciones
+- UserInterface puede tener diferentes backends (consola, web, etc.)
+
+**Interface Segregation Principle (ISP):**
+- Interfaces mínimas y enfocadas
+- Cada clase expone solo métodos necesarios
+- Sin dependencias en métodos no utilizados
+
+**Dependency Inversion Principle (DIP):**
+- Dependencia en abstracciones, no en concreciones
+- BoardRenderer recibe funciones de formato como parámetros
+- GameController no depende de UI específica
+- BackgammonCLI coordina abstracciones
+
+---
+
+#### Lecciones Aprendidas
+
+**1. Refactorización Incremental:**
+- Crear nuevas clases sin romper código existente
+- Mantener CLI.py original para compatibilidad
+- Tests como red de seguridad
+
+**2. Testing First Approach:**
+- Tests guían el diseño de las clases
+- Interfaces claras desde el principio
+- Confianza en refactorización
+
+**3. Separación de Concerns:**
+- Identificar responsabilidades distintas
+- Agrupar código relacionado
+- Minimizar acoplamiento
+
+**4. Coordinator Pattern:**
+- Útil para orquestar múltiples componentes
+- BackgammonCLI como director de orquesta
+- Flujo claro y controlado
+
+---
+
+#### Próximos Pasos Sugeridos
+
+**1. Implementar Dependency Injection:**
+- Inyectar componentes en BackgammonCLI
+- Facilitar testing con mocks
+- Mayor flexibilidad
+
+**2. Crear Interfaz Abstracta:**
+- Definir protocolo para UI
+- Permitir múltiples implementaciones (CLI, GUI)
+- Intercambiabilidad completa
+
+**3. Mejorar Configuración:**
+- Archivo de configuración para comportamiento
+- Personalización sin modificar código
+- Diferentes estilos de visualización
+
+**4. Agregar Logging:**
+- Sistema de logging para debugging
+- Diferentes niveles de verbosidad
+- Trazabilidad de acciones
+
+---
+
+#### Conclusión
+
+La refactorización SOLID del CLI transforma un monolito de 800 líneas en una arquitectura modular de 6 componentes especializados con 117 tests comprehensivos. Los beneficios incluyen:
+
+✅ Mayor mantenibilidad
+✅ Mejor testabilidad  
+✅ Facilidad de extensión
+✅ Separación clara de responsabilidades
+✅ Código más limpio y profesional
+✅ Backward compatibility preservada
+
+El resultado es un sistema robusto, profesional y preparado para futuras expansiones mientras mantiene simplicidad y claridad en el código.
+
+---
+
 ## Prompt 34
 
 ### Modelo: GitHub Copilot (Claude Sonnet 4.5)

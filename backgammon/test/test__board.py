@@ -4,11 +4,14 @@ Test module for Board class.
 This module contains unit tests for the Board class which represents
 the backgammon game board and handles checker movements.
 """
+
 import unittest
 from unittest.mock import Mock
 from backgammon.core import Board, Checker
+
 # pylint: disable=C0116  # many simple test methods without individual docstrings
 # pylint: disable=C0103  # module name follows test naming convention
+
 
 class TestBoard(unittest.TestCase):
     """Test cases for the Board class."""

@@ -8,7 +8,7 @@ the main game logic and state for the backgammon game.
 import unittest
 from unittest.mock import MagicMock, Mock
 from backgammon.core import BackgammonGame, Player
-from backgammon.cli import CLI
+from backgammon.cli import BackgammonCLI  # Updated to use new SOLID architecture
 
 # pylint: disable=C0116  # many simple test methods without individual docstrings
 # pylint: disable=C0103  # module name follows test naming convention
@@ -31,7 +31,7 @@ class TestBackgammonGame(unittest.TestCase):
 
     def test_game_initialization_with_ui(self):
         """Test game initialization with UI interface"""
-        cli = CLI()
+        cli = BackgammonCLI()
         cli_game = BackgammonGame(cli)
 
         self.assertIsNotNone(cli_game.ui)
@@ -538,7 +538,9 @@ class TestBackgammonGame(unittest.TestCase):
     def test_calculate_move_distance_from_bar_white(self):
         """Test calculate move distance from bar for white"""
         self.game.setup_players()
-        distance = self.game._calculate_move_distance("bar", 20)  # pylint: disable=W0212
+        distance = self.game._calculate_move_distance(
+            "bar", 20
+        )  # pylint: disable=W0212
         self.assertEqual(distance, 5)
 
     def test_calculate_move_distance_from_bar_black(self):
@@ -558,7 +560,9 @@ class TestBackgammonGame(unittest.TestCase):
         """Test calculate move distance to off for black"""
         self.game.setup_players()
         self.game.current_player_index = 1
-        distance = self.game._calculate_move_distance(20, "off")  # pylint: disable=W0212
+        distance = self.game._calculate_move_distance(
+            20, "off"
+        )  # pylint: disable=W0212
         self.assertEqual(distance, 5)
 
     def test_validate_move_coordinates_invalid_to_pos_type(self):
