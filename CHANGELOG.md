@@ -5,6 +5,26 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.6] - 2025-10-30
+
+### Added
+- **BackgammonCLI Additional Tests**: Expanded test coverage for BackgammonCLI coordinator
+  - Added 15 new comprehensive tests for `run_game()` method
+  - Tests for dice rolling and turn skipping scenarios
+  - Tests for successful and failed move execution
+  - Tests for all command types: help, moves, rules, quit (confirmed and not confirmed)
+  - Tests for exception handling during moves (ValueError, TypeError, AttributeError)
+  - Tests for general exception handling in game loop
+  - Tests for all moves used scenario
+  - Tests for keyboard interrupt with and without confirmation
+
+### Changed
+- **Test Coverage Improvement**: Increased BackgammonCLI test coverage from ~75% to 100%
+  - Total BackgammonCLI tests: 33 (increased from 18)
+  - Complete coverage of all branches in run_game() method
+  - Complete coverage of error handling paths
+  - Complete coverage of command processing logic
+
 ## [0.8.5] - 2025-10-30
 
 ### Removed

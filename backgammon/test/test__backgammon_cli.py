@@ -354,6 +354,519 @@ class TestBackgammonCLIRunGame(unittest.TestCase):
         mock_display_welcome.assert_called_once()
         self.cli.ui.confirm_action.assert_called_once()
 
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_welcome")
+    @patch(
+        "backgammon.cli.BackgammonCLI.UserInterface.get_player_name",
+        side_effect=["Player1", "Player2"],
+    )
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_message")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.clear_screen")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_current_player")
+    def test_run_game_keyboard_interrupt_no_confirmation(
+        self,
+        _mock_display_player,
+        _mock_clear,
+        _mock_display_msg,
+        _mock_get_name,
+        mock_display_welcome,
+    ):
+        """Test running game with keyboard interrupt but no quit confirmation."""
+        self.cli.game_controller.setup_game = Mock()
+        self.cli.game_controller.is_game_over = Mock(side_effect=[False, False, True])
+        self.cli.display_board = Mock(side_effect=[KeyboardInterrupt(), None])
+        self.cli.ui.confirm_action = Mock(return_value=False)
+        self.cli.game_controller.get_winner = Mock(return_value=Mock(name="Player1"))
+        self.cli.ui.display_winner = Mock()
+
+        self.cli.run_game()
+
+        mock_display_welcome.assert_called_once()
+
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_welcome")
+    @patch(
+        "backgammon.cli.BackgammonCLI.UserInterface.get_player_name",
+        side_effect=["Player1", "Player2"],
+    )
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_message")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.clear_screen")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_current_player")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_dice_roll")
+    def test_run_game_roll_dice(
+        self,
+        _mock_display_dice,
+        _mock_display_player,
+        _mock_clear,
+        _mock_display_msg,
+        _mock_get_name,
+        mock_display_welcome,
+    ):
+        """Test running game with dice roll."""
+        self.cli.game_controller.setup_game = Mock()
+        self.cli.game_controller.is_game_over = Mock(side_effect=[False, True])
+        self.cli.display_board = Mock()
+        self.cli.game_controller.get_current_player = Mock(return_value=Mock())
+        self.cli.game_controller.get_available_moves = Mock(side_effect=[[], [4]])
+        self.cli.game_controller.roll_dice = Mock(return_value=[3, 1])
+        self.cli.game_controller.has_valid_moves = Mock(return_value=False)
+        self.cli.game_controller.complete_turn = Mock()
+        self.cli.game_controller.get_winner = Mock(return_value=Mock(name="Player1"))
+        self.cli.ui.display_winner = Mock()
+
+        self.cli.run_game()
+
+        self.cli.game_controller.roll_dice.assert_called_once()
+        self.cli.game_controller.complete_turn.assert_called_once()
+
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_welcome")
+    @patch(
+        "backgammon.cli.BackgammonCLI.UserInterface.get_player_name",
+        side_effect=["Player1", "Player2"],
+    )
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_message")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.clear_screen")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_current_player")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_available_moves")
+    def test_run_game_with_successful_move(
+        self,
+        _mock_display_moves,
+        _mock_display_player,
+        _mock_clear,
+        _mock_display_msg,
+        _mock_get_name,
+        mock_display_welcome,
+    ):
+        """Test running game with successful move."""
+        self.cli.game_controller.setup_game = Mock()
+        self.cli.game_controller.is_game_over = Mock(side_effect=[False, True])
+        self.cli.display_board = Mock()
+        self.cli.game_controller.get_current_player = Mock(return_value=Mock())
+        self.cli.game_controller.get_available_moves = Mock(
+            side_effect=[[4], [4], []]
+        )
+        self.cli.game_controller.has_valid_moves = Mock(return_value=True)
+        self.cli.game_controller.has_moves_remaining = Mock(
+            side_effect=[True, False]
+        )
+        self.cli.get_move_input = Mock(return_value=(12, 8))
+        self.cli.command_parser.get_command_type = Mock(return_value=None)
+        self.cli.game_controller.make_move = Mock(return_value=True)
+        self.cli.game_controller.calculate_move_distance = Mock(return_value=4)
+        self.cli.game_controller.use_dice_move = Mock()
+        self.cli.game_controller.can_continue_turn = Mock(return_value=False)
+        self.cli.game_controller.complete_turn = Mock()
+        self.cli.game_controller.get_winner = Mock(return_value=Mock(name="Player1"))
+        self.cli.ui.display_winner = Mock()
+
+        self.cli.run_game()
+
+        self.cli.game_controller.make_move.assert_called_once_with(12, 8)
+        self.cli.game_controller.use_dice_move.assert_called_once_with(4)
+
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_welcome")
+    @patch(
+        "backgammon.cli.BackgammonCLI.UserInterface.get_player_name",
+        side_effect=["Player1", "Player2"],
+    )
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_message")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.clear_screen")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_current_player")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_available_moves")
+    def test_run_game_with_failed_move(
+        self,
+        _mock_display_moves,
+        _mock_display_player,
+        _mock_clear,
+        _mock_display_msg,
+        _mock_get_name,
+        mock_display_welcome,
+    ):
+        """Test running game with failed move."""
+        self.cli.game_controller.setup_game = Mock()
+        self.cli.game_controller.is_game_over = Mock(side_effect=[False, True])
+        self.cli.display_board = Mock()
+        self.cli.game_controller.get_current_player = Mock(return_value=Mock())
+        self.cli.game_controller.get_available_moves = Mock(side_effect=[[4], [4]])
+        self.cli.game_controller.has_valid_moves = Mock(return_value=True)
+        self.cli.game_controller.has_moves_remaining = Mock(
+            side_effect=[True, False]
+        )
+        self.cli.get_move_input = Mock(return_value=(12, 8))
+        self.cli.command_parser.get_command_type = Mock(return_value=None)
+        self.cli.game_controller.make_move = Mock(return_value=False)
+        self.cli._display_move_error = Mock()
+        self.cli.game_controller.can_continue_turn = Mock(return_value=False)
+        self.cli.game_controller.complete_turn = Mock()
+        self.cli.game_controller.get_winner = Mock(return_value=Mock(name="Player1"))
+        self.cli.ui.display_winner = Mock()
+
+        self.cli.run_game()
+
+        self.cli.game_controller.make_move.assert_called_once_with(12, 8)
+        self.cli._display_move_error.assert_called_once_with(12, 8)
+
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_welcome")
+    @patch(
+        "backgammon.cli.BackgammonCLI.UserInterface.get_player_name",
+        side_effect=["Player1", "Player2"],
+    )
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_message")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.clear_screen")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_current_player")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_available_moves")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_help")
+    def test_run_game_with_help_command(
+        self,
+        mock_display_help,
+        _mock_display_moves,
+        _mock_display_player,
+        _mock_clear,
+        _mock_display_msg,
+        _mock_get_name,
+        mock_display_welcome,
+    ):
+        """Test running game with help command."""
+        self.cli.game_controller.setup_game = Mock()
+        self.cli.game_controller.is_game_over = Mock(side_effect=[False, True])
+        self.cli.display_board = Mock()
+        self.cli.game_controller.get_current_player = Mock(return_value=Mock())
+        self.cli.game_controller.get_available_moves = Mock(side_effect=[[4], [4], [4], []])
+        self.cli.game_controller.has_valid_moves = Mock(return_value=True)
+        self.cli.game_controller.has_moves_remaining = Mock(
+            side_effect=[True, True, False]
+        )
+        self.cli.get_move_input = Mock(side_effect=[("help", None), (12, 8)])
+        self.cli.command_parser.get_command_type = Mock(
+            side_effect=["help", None]
+        )
+        self.cli.game_controller.make_move = Mock(return_value=True)
+        self.cli.game_controller.calculate_move_distance = Mock(return_value=4)
+        self.cli.game_controller.use_dice_move = Mock()
+        self.cli.game_controller.can_continue_turn = Mock(return_value=False)
+        self.cli.game_controller.complete_turn = Mock()
+        self.cli.game_controller.get_winner = Mock(return_value=Mock(name="Player1"))
+        self.cli.ui.display_winner = Mock()
+
+        self.cli.run_game()
+
+        mock_display_help.assert_called_once()
+
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_welcome")
+    @patch(
+        "backgammon.cli.BackgammonCLI.UserInterface.get_player_name",
+        side_effect=["Player1", "Player2"],
+    )
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_message")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.clear_screen")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_current_player")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_available_moves")
+    def test_run_game_with_moves_command(
+        self,
+        _mock_display_moves,
+        _mock_display_player,
+        _mock_clear,
+        _mock_display_msg,
+        _mock_get_name,
+        mock_display_welcome,
+    ):
+        """Test running game with moves command."""
+        self.cli.game_controller.setup_game = Mock()
+        self.cli.game_controller.is_game_over = Mock(side_effect=[False, True])
+        self.cli.display_board = Mock()
+        self.cli.game_controller.get_current_player = Mock(return_value=Mock())
+        self.cli.game_controller.get_available_moves = Mock(side_effect=[[4], [4], [4], []])
+        self.cli.game_controller.has_valid_moves = Mock(return_value=True)
+        self.cli.game_controller.has_moves_remaining = Mock(
+            side_effect=[True, True, False]
+        )
+        self.cli.get_move_input = Mock(side_effect=[("movimientos", None), (12, 8)])
+        self.cli.command_parser.get_command_type = Mock(
+            side_effect=["moves", None]
+        )
+        self.cli.display_possible_moves = Mock()
+        self.cli.game_controller.make_move = Mock(return_value=True)
+        self.cli.game_controller.calculate_move_distance = Mock(return_value=4)
+        self.cli.game_controller.use_dice_move = Mock()
+        self.cli.game_controller.can_continue_turn = Mock(return_value=False)
+        self.cli.game_controller.complete_turn = Mock()
+        self.cli.game_controller.get_winner = Mock(return_value=Mock(name="Player1"))
+        self.cli.ui.display_winner = Mock()
+
+        self.cli.run_game()
+
+        self.cli.display_possible_moves.assert_called_once()
+
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_welcome")
+    @patch(
+        "backgammon.cli.BackgammonCLI.UserInterface.get_player_name",
+        side_effect=["Player1", "Player2"],
+    )
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_message")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.clear_screen")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_current_player")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_available_moves")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_game_rules")
+    def test_run_game_with_rules_command(
+        self,
+        mock_display_rules,
+        _mock_display_moves,
+        _mock_display_player,
+        _mock_clear,
+        _mock_display_msg,
+        _mock_get_name,
+        mock_display_welcome,
+    ):
+        """Test running game with rules command."""
+        self.cli.game_controller.setup_game = Mock()
+        self.cli.game_controller.is_game_over = Mock(side_effect=[False, True])
+        self.cli.display_board = Mock()
+        self.cli.game_controller.get_current_player = Mock(return_value=Mock())
+        self.cli.game_controller.get_available_moves = Mock(side_effect=[[4], [4], [4], []])
+        self.cli.game_controller.has_valid_moves = Mock(return_value=True)
+        self.cli.game_controller.has_moves_remaining = Mock(
+            side_effect=[True, True, False]
+        )
+        self.cli.get_move_input = Mock(side_effect=[("reglas", None), (12, 8)])
+        self.cli.command_parser.get_command_type = Mock(
+            side_effect=["rules", None]
+        )
+        self.cli.game_controller.make_move = Mock(return_value=True)
+        self.cli.game_controller.calculate_move_distance = Mock(return_value=4)
+        self.cli.game_controller.use_dice_move = Mock()
+        self.cli.game_controller.can_continue_turn = Mock(return_value=False)
+        self.cli.game_controller.complete_turn = Mock()
+        self.cli.game_controller.get_winner = Mock(return_value=Mock(name="Player1"))
+        self.cli.ui.display_winner = Mock()
+
+        self.cli.run_game()
+
+        mock_display_rules.assert_called_once()
+
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_welcome")
+    @patch(
+        "backgammon.cli.BackgammonCLI.UserInterface.get_player_name",
+        side_effect=["Player1", "Player2"],
+    )
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_message")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.clear_screen")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_current_player")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_available_moves")
+    def test_run_game_with_quit_command_confirmed(
+        self,
+        _mock_display_moves,
+        _mock_display_player,
+        _mock_clear,
+        _mock_display_msg,
+        _mock_get_name,
+        mock_display_welcome,
+    ):
+        """Test running game with quit command confirmed."""
+        self.cli.game_controller.setup_game = Mock()
+        self.cli.game_controller.is_game_over = Mock(return_value=False)
+        self.cli.display_board = Mock()
+        self.cli.game_controller.get_current_player = Mock(return_value=Mock())
+        self.cli.game_controller.get_available_moves = Mock(return_value=[4])
+        self.cli.game_controller.has_valid_moves = Mock(return_value=True)
+        self.cli.game_controller.has_moves_remaining = Mock(return_value=True)
+        self.cli.get_move_input = Mock(return_value=("salir", None))
+        self.cli.command_parser.get_command_type = Mock(return_value="quit")
+        self.cli.ui.confirm_action = Mock(return_value=True)
+
+        self.cli.run_game()
+
+        self.cli.ui.confirm_action.assert_called_once()
+
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_welcome")
+    @patch(
+        "backgammon.cli.BackgammonCLI.UserInterface.get_player_name",
+        side_effect=["Player1", "Player2"],
+    )
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_message")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.clear_screen")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_current_player")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_available_moves")
+    def test_run_game_with_quit_command_not_confirmed(
+        self,
+        _mock_display_moves,
+        _mock_display_player,
+        _mock_clear,
+        _mock_display_msg,
+        _mock_get_name,
+        mock_display_welcome,
+    ):
+        """Test running game with quit command not confirmed."""
+        self.cli.game_controller.setup_game = Mock()
+        self.cli.game_controller.is_game_over = Mock(side_effect=[False, True])
+        self.cli.display_board = Mock()
+        self.cli.game_controller.get_current_player = Mock(return_value=Mock())
+        self.cli.game_controller.get_available_moves = Mock(return_value=[4])
+        self.cli.game_controller.has_valid_moves = Mock(return_value=True)
+        self.cli.game_controller.has_moves_remaining = Mock(
+            side_effect=[True, False]
+        )
+        self.cli.get_move_input = Mock(side_effect=[("salir", None), (12, 8)])
+        self.cli.command_parser.get_command_type = Mock(
+            side_effect=["quit", None]
+        )
+        self.cli.ui.confirm_action = Mock(return_value=False)
+        self.cli.game_controller.make_move = Mock(return_value=True)
+        self.cli.game_controller.calculate_move_distance = Mock(return_value=4)
+        self.cli.game_controller.use_dice_move = Mock()
+        self.cli.game_controller.can_continue_turn = Mock(return_value=False)
+        self.cli.game_controller.complete_turn = Mock()
+        self.cli.game_controller.get_winner = Mock(return_value=Mock(name="Player1"))
+        self.cli.ui.display_winner = Mock()
+
+        self.cli.run_game()
+
+        self.cli.ui.confirm_action.assert_called_once()
+
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_welcome")
+    @patch(
+        "backgammon.cli.BackgammonCLI.UserInterface.get_player_name",
+        side_effect=["Player1", "Player2"],
+    )
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_message")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.clear_screen")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_current_player")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_available_moves")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_error")
+    def test_run_game_with_move_exception(
+        self,
+        mock_display_error,
+        _mock_display_moves,
+        _mock_display_player,
+        _mock_clear,
+        _mock_display_msg,
+        _mock_get_name,
+        mock_display_welcome,
+    ):
+        """Test running game with move exception."""
+        self.cli.game_controller.setup_game = Mock()
+        self.cli.game_controller.is_game_over = Mock(side_effect=[False, True])
+        self.cli.display_board = Mock()
+        self.cli.game_controller.get_current_player = Mock(return_value=Mock())
+        self.cli.game_controller.get_available_moves = Mock(side_effect=[[4], [4]])
+        self.cli.game_controller.has_valid_moves = Mock(return_value=True)
+        self.cli.game_controller.has_moves_remaining = Mock(
+            side_effect=[True, False]
+        )
+        self.cli.get_move_input = Mock(return_value=(12, 8))
+        self.cli.command_parser.get_command_type = Mock(return_value=None)
+        self.cli.game_controller.make_move = Mock(
+            side_effect=ValueError("Invalid move")
+        )
+        self.cli.game_controller.can_continue_turn = Mock(return_value=False)
+        self.cli.game_controller.complete_turn = Mock()
+        self.cli.game_controller.get_winner = Mock(return_value=Mock(name="Player1"))
+        self.cli.ui.display_winner = Mock()
+
+        self.cli.run_game()
+
+        mock_display_error.assert_called()
+
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_welcome")
+    @patch(
+        "backgammon.cli.BackgammonCLI.UserInterface.get_player_name",
+        side_effect=["Player1", "Player2"],
+    )
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_message")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.clear_screen")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_current_player")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_error")
+    def test_run_game_with_general_exception(
+        self,
+        mock_display_error,
+        _mock_display_player,
+        _mock_clear,
+        _mock_display_msg,
+        _mock_get_name,
+        mock_display_welcome,
+    ):
+        """Test running game with general exception."""
+        self.cli.game_controller.setup_game = Mock()
+        self.cli.game_controller.is_game_over = Mock(return_value=False)
+        self.cli.display_board = Mock(side_effect=ValueError("General error"))
+
+        self.cli.run_game()
+
+        mock_display_error.assert_called()
+
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_welcome")
+    @patch(
+        "backgammon.cli.BackgammonCLI.UserInterface.get_player_name",
+        side_effect=["Player1", "Player2"],
+    )
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_message")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.clear_screen")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_current_player")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_available_moves")
+    def test_run_game_all_moves_used(
+        self,
+        _mock_display_moves,
+        _mock_display_player,
+        _mock_clear,
+        _mock_display_msg,
+        _mock_get_name,
+        mock_display_welcome,
+    ):
+        """Test running game when all moves are used."""
+        self.cli.game_controller.setup_game = Mock()
+        self.cli.game_controller.is_game_over = Mock(side_effect=[False, True])
+        self.cli.display_board = Mock()
+        self.cli.game_controller.get_current_player = Mock(return_value=Mock())
+        self.cli.game_controller.get_available_moves = Mock(
+            side_effect=[[4], [4], []]
+        )
+        self.cli.game_controller.has_valid_moves = Mock(return_value=True)
+        self.cli.game_controller.has_moves_remaining = Mock(return_value=True)
+        self.cli.get_move_input = Mock(return_value=(12, 8))
+        self.cli.command_parser.get_command_type = Mock(return_value=None)
+        self.cli.game_controller.make_move = Mock(return_value=True)
+        self.cli.game_controller.calculate_move_distance = Mock(return_value=4)
+        self.cli.game_controller.use_dice_move = Mock()
+        self.cli.game_controller.can_continue_turn = Mock(return_value=False)
+        self.cli.game_controller.complete_turn = Mock()
+        self.cli.game_controller.get_winner = Mock(return_value=Mock(name="Player1"))
+        self.cli.ui.display_winner = Mock()
+
+        self.cli.run_game()
+
+        self.cli.game_controller.use_dice_move.assert_called_once_with(4)
+
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_welcome")
+    @patch(
+        "backgammon.cli.BackgammonCLI.UserInterface.get_player_name",
+        side_effect=["Player1", "Player2"],
+    )
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_message")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.clear_screen")
+    @patch("backgammon.cli.BackgammonCLI.UserInterface.display_current_player")
+    def test_run_game_no_valid_moves_skip_turn(
+        self,
+        _mock_display_player,
+        _mock_clear,
+        mock_display_msg,
+        _mock_get_name,
+        mock_display_welcome,
+    ):
+        """Test running game when no valid moves, turn is skipped."""
+        self.cli.game_controller.setup_game = Mock()
+        self.cli.game_controller.is_game_over = Mock(side_effect=[False, True])
+        self.cli.display_board = Mock()
+        self.cli.game_controller.get_current_player = Mock(return_value=Mock())
+        self.cli.game_controller.get_available_moves = Mock(return_value=[4])
+        self.cli.game_controller.has_valid_moves = Mock(return_value=False)
+        self.cli.game_controller.complete_turn = Mock()
+        self.cli.game_controller.get_winner = Mock(return_value=Mock(name="Player1"))
+        self.cli.ui.display_winner = Mock()
+
+        self.cli.run_game()
+
+        mock_display_msg.assert_any_call(
+            "No hay movimientos válidos disponibles. Turno omitido."
+        )
+        self.cli.game_controller.complete_turn.assert_called()
+
 
 if __name__ == "__main__":
     unittest.main()
