@@ -5,6 +5,32 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.7] - 2025-10-30
+
+### Changed
+- **Core Module UML Diagram Update**: Complete update of UML class diagram to reflect actual implementation
+  - **BackgammonGame Class**: Added missing attributes and methods
+    - Added: `is_paused`, `move_count`, `start_time`, `end_time` attributes
+    - Added: `set_ui()`, `has_valid_moves()`, `get_current_player()`, `get_opponent_player()`, `play_turn()`, `can_continue_turn()`, `complete_turn()`, `play_game()`, `reset_game()`, `pause_game()`, `resume_game()`, `get_game_state()`, `set_game_state()`, `validate_move_coordinates()`, `get_game_statistics()`, `undo_last_move()`, `calculate_move_distance()`, `copy()` methods
+  - **Board Class**: Expanded method list
+    - Added: `get_point_count()`, `get_point_top_color()`, `all_checkers_in_home_board()`, `can_bear_off()`, `is_valid_move()`, `get_state()`, `set_state()`, `reset()` methods
+    - Updated type annotations for attributes
+  - **Player Class**: Complete method listing
+    - Added property notation for `color` attribute
+    - Added: `set_name()`, `move_checker_from_bar()`, `has_checkers_on_bar()`, `can_bear_off()`, `get_total_checkers()`, `get_checkers_distribution()`, `reset()`, `get_direction()`, `get_home_board_range()`, `get_starting_position()`, `is_valid_move()`, `get_possible_moves()`, `make_move()`, `get_opponent_color()`, `copy()`, `get_state()`, `set_state()` methods
+    - Added `VALID_COLORS` constant
+  - **Checker Class**: Enhanced with all static methods and utilities
+    - Added: `get_position()`, `move_to_bar()`, `move_off_board()`, `reset_position()`, `get_direction()`, `can_bear_off()`, `is_in_home_board()`, `copy()`, `get_home_board_positions()` (static), `get_opposite_color()` (static) methods
+    - Added constants: `VALID_COLORS`, `VALID_POSITIONS`
+    - Updated position type to `Union[int, str, None]`
+  - **Dice Class**: Complete method documentation
+    - Added: `roll_single()`, `get_moves()`, `can_use_move()`, `get_state()`, `set_state()` methods
+- **Documentation Accuracy**: UML diagram now accurately reflects 100% of implemented functionality
+  - All public methods documented with correct signatures
+  - All attributes listed with proper types
+  - Constants and static methods properly identified
+  - Relationships between classes clearly shown
+
 ## [0.8.6] - 2025-10-30
 
 ### Added

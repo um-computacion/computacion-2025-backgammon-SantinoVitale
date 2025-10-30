@@ -520,239 +520,108 @@ self.game_controller = GameController(game)
 ### Diagrama de Clases - Core Module
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        BackgammonGame                            │
-├─────────────────────────────────────────────────────────────────┤
-│ - board: Board                                                   │
-│ - dice: Dice                                                     │
-│ - players: List[Player]                                          │
-│ - current_player_index: int                                      │
-│ - ui: Optional[UI]                                               │
-│ - is_started: bool                                               │
-│ - move_history: List[Tuple]                                      │
-├─────────────────────────────────────────────────────────────────┤
-│ + setup_board(): None                                            │
-│ + setup_players(name1, name2): None                              │
-│ + start_game(): None                                             │
-│ + roll_dice(): List[int]                                         │
-│ + make_move(from_pos, to_pos): bool                              │
-│ + is_valid_move(from_pos, to_pos): bool                          │
-│ + get_possible_moves(): List[Tuple]                              │
-│ + switch_turns(): None                                           │
-│ + is_game_over(): bool                                           │
-│ + get_winner(): Optional[Player]                                 │
-└─────────────────────────────────────────────────────────────────┘
-                    │
-                    │ uses
-                    ▼
-┌──────────────────────────────┐       ┌──────────────────────────┐
-│         Board                │       │        Player             │
-├──────────────────────────────┤       ├──────────────────────────┤
-│ - points: List[List[Checker]]│       │ - name: str              │
-│ - bar: Dict[str, List]       │       │ - _color: str            │
-│ - off: Dict[str, List]       │       │ - checkers_on_board: int │
-├──────────────────────────────┤       │ - checkers_off_board: int│
-│ + setup_initial_position()   │       │ - checkers_on_bar: int   │
-│ + move_checker(from, to)     │       ├──────────────────────────┤
-│ + move_from_bar(color, to)   │       │ + set_color(color)       │
-│ + bear_off(from, color)      │       │ + move_checker_off()     │
-│ + is_point_available()       │       │ + move_checker_to_bar()  │
-│ + get_possible_moves()       │       │ + has_won(): bool        │
-└──────────────────────────────┘       └──────────────────────────┘
-        │ contains                               │
-        │ 0..*                                   │ has 15
-        ▼                                        ▼
-┌──────────────────────────────┐       ┌──────────────────────────┐
-│        Checker               │       │         Dice              │
-├──────────────────────────────┤       ├──────────────────────────┤
-│ - color: str                 │       │ - last_roll: List[int]   │
-│ - position: Union[int, str]  │       │ - values: List[int]      │
-├──────────────────────────────┤       ├──────────────────────────┤
-│ + set_position(pos)          │       │ + roll(): List[int]      │
-│ + is_on_board(): bool        │       │ + is_double(): bool      │
-│ + is_on_bar(): bool          │       │ + use_move(value): bool  │
-│ + is_in_home_board(): bool   │       │ + has_moves(): bool      │
-└──────────────────────────────┘       │ + get_available_moves()  │
-                                        └──────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│                          BackgammonGame                                  │
+├──────────────────────────────────────────────────────────────────────────┤
+│ - board: Board                                                           │
+│ - dice: Dice                                                             │
+│ - players: List[Player]                                                  │
+│ - current_player_index: int                                              │
+│ - ui: Optional[UI]                                                       │
+│ - is_started: bool                                                       │
+│ - is_paused: bool                                                        │
+│ - move_history: List[Tuple[Union[int,str], Union[int,str], str]]         │
+│ - move_count: int                                                        │
+│ - start_time: Optional[float]                                            │
+│ - end_time: Optional[float]                                              │
+├──────────────────────────────────────────────────────────────────────────┤
+│ + set_ui(ui): None                                                       │
+│ + setup_board(): None                                                    │
+│ + setup_players(player1_name, player2_name): None                        │
+│ + start_game(): None                                                     │
+│ + roll_dice(): List[int]                                                 │
+│ + make_move(from_pos, to_pos): bool                                      │
+│ + is_valid_move(from_pos, to_pos): bool                                  │
+│ + get_possible_moves(): List[Tuple]                                      │
+│ + has_valid_moves(): bool                                                │
+│ + switch_turns(): None                                                   │
+│ + get_current_player(): Player                                           │
+│ + get_opponent_player(): Player                                          │
+│ + is_game_over(): bool                                                   │
+│ + get_winner(): Optional[Player]                                         │
+│ + play_turn(): None                                                      │
+│ + can_continue_turn(): bool                                              │
+│ + complete_turn(): None                                                  │
+│ + play_game(): None                                                      │
+│ + reset_game(): None                                                     │
+│ + pause_game(): None                                                     │
+│ + resume_game(): None                                                    │
+│ + get_game_state(): Dict[str, Any]                                       │
+│ + set_game_state(state): None                                            │
+│ + validate_move_coordinates(from_pos, to_pos): bool                      │
+│ + get_game_statistics(): Dict[str, Any]                                  │
+│ + undo_last_move(): bool                                                 │
+│ + calculate_move_distance(from_pos, to_pos): int                         │
+│ + copy(): BackgammonGame                                                 │
+└──────────────────────────────────────────────────────────────────────────┘
+                          │
+                          │ uses
+                          ▼
+┌───────────────────────────────────┐       ┌──────────────────────────────┐
+│           Board                   │       │          Player              │
+├───────────────────────────────────┤       ├──────────────────────────────┤
+│ - points: List[List[Checker]]     │       │ - name: str                  │
+│ - bar: Dict[str, List[Checker]]   │       │ - _color: str                │
+│ - off: Dict[str, List[Checker]]   │       │ - checkers_on_board: int     │
+├───────────────────────────────────┤       │ - checkers_off_board: int    │
+│ + setup_initial_position(): None  │       │ - checkers_on_bar: int       │
+│ + get_point_count(index): int     │       │ + VALID_COLORS: List[str]    │
+│ + get_point_top_color(index): str │       ├──────────────────────────────┤
+│ + is_point_available(idx, clr)    │       │ + color: str (property)      │
+│ + move_checker(from, to, clr)     │       │ + set_name(name): None       │
+│ + move_from_bar(color, to): bool  │       │ + set_color(color): None     │
+│ + bear_off(from, color): bool     │       │ + move_checker_off(): None   │
+│ + all_checkers_in_home_board(clr) │       │ + move_checker_to_bar(): None│
+│ + get_possible_moves(clr, dice)   │       │ + move_checker_from_bar()    │
+│ + can_bear_off(color): bool       │       │ + has_won(): bool            │
+│ + is_valid_move(from, to, clr)    │       │ + has_checkers_on_bar(): bool│
+│ + get_state(): Dict               │       │ + can_bear_off(board): bool  │
+│ + set_state(state): None          │       │ + get_total_checkers(): int  │
+│ + reset(): None                   │       │ + get_checkers_distribution()│
+└───────────────────────────────────┘       │ + reset(): None              │
+            │ contains                      │ + get_direction(): int       │
+            │ 0..*                          │ + get_home_board_range()     │ 
+            ▼                               │ + get_starting_position()    │
+┌───────────────────────────────────┐       │ + is_valid_move(from, to, bd)│
+│          Checker                  │       │ + get_possible_moves(bd, dc) │
+├───────────────────────────────────┤       │ + make_move(from, to, bd)    │
+│ - color: str                      │       │ + get_opponent_color(): str  │
+│ - position: Union[int, str, None] │       │ + copy(): Player             │
+│ + VALID_COLORS: List[str]         │       │ + get_state(): Dict          │
+│ + VALID_POSITIONS: List           │       │ + set_state(state): None     │
+├───────────────────────────────────┤       └──────────────────────────────┘
+│ + set_position(pos): None         │
+│ + get_position(): Union[int, str] │       ┌──────────────────────────────┐
+│ + is_on_board(): bool             │       │           Dice               │
+│ + is_on_bar(): bool               │       ├──────────────────────────────┤
+│ + is_off_board(): bool            │       │ - last_roll: List[int]       │
+│ + move_to_bar(): None             │       │ - values: List[int]          │
+│ + move_off_board(): None          │       ├──────────────────────────────┤
+│ + reset_position(): None          │       │ + roll_single(): int         │
+│ + get_direction(): int            │       │ + roll(): List[int]          │
+│ + can_bear_off(): bool            │       │ + is_double(): bool          │
+│ + is_in_home_board(): bool        │       │ + get_moves(roll): List[int] │
+│ + copy(): Checker                 │       │ + use_move(value): bool      │
+│ + get_home_board_positions(clr)   │       │ + has_moves(): bool          │
+│ + get_opposite_color(color): str  │       │ + can_use_move(value): bool  │
+└───────────────────────────────────┘       │ + get_available_moves(): List│
+                                            │ + reset(): None              │
+                                            │ + get_state(): Dict          │
+                                            │ + set_state(state): None     │
+                                            └──────────────────────────────┘
 ```
 
-### Diagrama de Clases - CLI Module (Arquitectura SOLID)
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                      BackgammonCLI                               │
-│                      (Coordinator)                               │
-├─────────────────────────────────────────────────────────────────┤
-│ - board_renderer: BoardRenderer                                  │
-│ - command_parser: CommandParser                                  │
-│ - input_validator: InputValidator                                │
-│ - game_controller: GameController                                │
-│ - ui: UserInterface                                              │
-├─────────────────────────────────────────────────────────────────┤
-│ + run_game(): None                                               │
-│ + display_board(): None                                          │
-│ + get_move_input(): Tuple                                        │
-└─────────────────────────────────────────────────────────────────┘
-           │         │         │         │         │
-           │ uses    │ uses    │ uses    │ uses    │ uses
-           ▼         ▼         ▼         ▼         ▼
-    ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
-    │  Board   │ │ Command  │ │  Input   │ │   Game   │ │   User   │
-    │ Renderer │ │  Parser  │ │Validator │ │Controller│ │Interface │
-    └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘
-    │render()   │parse_move()│validate()  │make_move() │display()  │
-                              Single Responsibility per Class
-```
-
-### Diagrama de Clases - Pygame UI Module
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         PygameUI                                 │
-├─────────────────────────────────────────────────────────────────┤
-│ - screen: Surface                                                │
-│ - clock: Clock                                                   │
-│ - board: BackgammonBoard                                         │
-│ - game: BackgammonGame                                           │
-├─────────────────────────────────────────────────────────────────┤
-│ + run_game(): None                                               │
-│ + handle_events(): bool                                          │
-│ + display_board(): None                                          │
-└─────────────────────────────────────────────────────────────────┘
-                    │ uses
-                    ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    BackgammonBoard                               │
-│                    (Visual Coordinator)                          │
-├─────────────────────────────────────────────────────────────────┤
-│ - board_renderer: BoardRenderer                                  │
-│ - interaction: BoardInteraction                                  │
-│ - click_detector: ClickDetector                                  │
-│ - dice_button: Button                                            │
-│ - selected_point: Optional[int]                                  │
-├─────────────────────────────────────────────────────────────────┤
-│ + render(screen): None                                           │
-│ + handle_mouse_click(pos): None                                  │
-│ + update_hover_state(pos): None                                  │
-└─────────────────────────────────────────────────────────────────┘
-        │              │                │              │
-        │ uses         │ uses           │ uses         │ uses
-        ▼              ▼                ▼              ▼
-┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-│    Board     │ │    Board     │ │    Click     │ │    Button    │
-│   Renderer   │ │ Interaction  │ │   Detector   │ │              │
-├──────────────┤ ├──────────────┤ ├──────────────┤ ├──────────────┤
-│+ render()    │ │+ handle_     │ │+ is_point_   │ │+ render()    │
-│              │ │  point_click │ │  clicked()   │ │+ is_clicked()│
-└──────────────┘ │+ calculate_  │ │+ is_bar_     │ └──────────────┘
-                 │  valid_dests │ │  clicked()   │
-                 └──────────────┘ └──────────────┘
-```
-
-### Diagrama de Secuencia - Flujo de Movimiento
-
-```
-Usuario    CLI/UI    BackgammonGame    Board    Dice
-  │          │             │            │        │
-  │ input    │             │            │        │
-  ├─────────>│             │            │        │
-  │          │ make_move() │            │        │
-  │          ├────────────>│            │        │
-  │          │             │is_valid()  │        │
-  │          │             ├───────────>│        │
-  │          │             │<───────────┤        │
-  │          │             │  true      │        │
-  │          │             │            │        │
-  │          │             │move_checker│        │
-  │          │             ├───────────>│        │
-  │          │             │<───────────┤        │
-  │          │             │  success   │        │
-  │          │             │            │        │
-  │          │             │ use_move() │        │
-  │          │             ├───────────────────>│
-  │          │             │<───────────────────┤
-  │          │<────────────┤  true      │        │
-  │          │   true      │            │        │
-  │<─────────┤             │            │        │
-  │ display  │             │            │        │
-```
-
-### Diagrama de Estados - Game Flow
-
-```
-┌─────────────┐
-│             │
-│ NOT_STARTED │
-│             │
-└──────┬──────┘
-       │ start_game()
-       ▼
-┌─────────────┐
-│             │
-│   PLAYING   │◄────────────────┐
-│             │                 │
-└──────┬──────┘                 │
-       │                        │
-       │ roll_dice()            │
-       ▼                        │
-┌─────────────┐                 │
-│             │                 │
-│  TURN_MOVE  │                 │
-│             │                 │
-└──────┬──────┘                 │
-       │                        │
-       │ make_move()            │
-       │ [has more moves]       │
-       ├────────────────────────┘
-       │
-       │ [no more moves]
-       │ switch_turns()
-       │
-       │ [is_game_over()]
-       ▼
-┌─────────────┐
-│             │
-│  GAME_OVER  │
-│             │
-└─────────────┘
-```
-
-### Diagrama de Componentes - Arquitectura General
-
-```
-┌───────────────────────────────────────────────────────────────┐
-│                         Main Entry                             │
-│                         (main.py)                              │
-└────────────────┬──────────────────────┬───────────────────────┘
-                 │                      │
-                 ▼                      ▼
-┌────────────────────────┐    ┌────────────────────────┐
-│      CLI Module        │    │   Pygame UI Module     │
-│  (BackgammonCLI)       │    │    (PygameUI)          │
-└────────┬───────────────┘    └───────┬────────────────┘
-         │                            │
-         │                            │
-         └────────────┬───────────────┘
-                      │
-                      ▼
-         ┌────────────────────────┐
-         │     Core Module        │
-         │  (BackgammonGame)      │
-         └────────┬───────────────┘
-                  │
-         ┌────────┼────────┐
-         ▼        ▼        ▼
-    ┌───────┐┌───────┐┌───────┐
-    │ Board ││Player ││ Dice  │
-    └───────┘└───┬───┘└───────┘
-                 │
-                 ▼
-            ┌─────────┐
-            │ Checker │
-            └─────────┘
-```
-
----
+![Diagrama de clases - Backgammon](/backgammon/assets/UML.png)
 
 **Notas sobre los diagramas**:
 - Los diagramas siguen notación UML estándar adaptada a texto ASCII
