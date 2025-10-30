@@ -5,7 +5,7 @@ Tests game state management functionality following SOLID principles.
 
 import unittest
 from unittest.mock import Mock
-from backgammon.cli.GameController import GameController
+from backgammon.cli.game_controller import GameController
 
 
 class TestGameController(unittest.TestCase):
@@ -31,12 +31,16 @@ class TestGameController(unittest.TestCase):
     def test_setup_game(self):
         """Test setting up the game."""
         self.mock_game.setup_players = Mock()
-        self.mock_game.start_game = Mock()
+        self.mock_game.setup_board = Mock()
+        self.mock_game.is_started = False
+        self.mock_game.start_time = None
 
         self.controller.setup_game("Player1", "Player2")
 
         self.mock_game.setup_players.assert_called_once_with("Player1", "Player2")
-        self.mock_game.start_game.assert_called_once()
+        self.mock_game.setup_board.assert_called_once()
+        self.assertTrue(self.mock_game.is_started)
+        self.assertIsNotNone(self.mock_game.start_time)
 
     def test_setup_game_no_methods(self):
         """Test setup_game when game has no setup methods."""

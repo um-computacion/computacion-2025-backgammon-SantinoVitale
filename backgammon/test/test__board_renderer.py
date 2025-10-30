@@ -5,7 +5,7 @@ Tests board visualization functionality following SOLID principles.
 
 import unittest
 from unittest.mock import Mock
-from backgammon.cli.BoardRenderer import BoardRenderer
+from backgammon.cli.board_renderer import BoardRenderer
 
 
 class TestBoardRenderer(unittest.TestCase):

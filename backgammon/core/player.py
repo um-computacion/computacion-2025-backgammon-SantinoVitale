@@ -4,6 +4,7 @@ Player module for Backgammon game.
 This module contains the Player class which represents a game player,
 manages their checkers, and tracks their state throughout the game.
 """
+
 # pylint: disable=invalid-name  # Player follows PascalCase class naming convention
 
 

@@ -5,6 +5,59 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.9] - 2025-10-30
+
+### Fixed
+- **CLI Game Initialization**: Fixed critical bug where CLI game would freeze after entering player names
+  - **Root Cause**: `BackgammonCLI` was being instantiated without a game instance in `main.py`
+  - **Issue 1**: `start_cli_game()` created CLI without passing `BackgammonGame` instance
+  - **Issue 2**: `GameController.setup_game()` called `start_game()` which reset player names to defaults
+  - **Solution 1**: Modified `main.py` to create `BackgammonGame` instance before `BackgammonCLI`
+  - **Solution 2**: Modified `GameController.setup_game()` to avoid calling `start_game()` which overwrites player names
+    - Now manually calls `setup_board()`, sets `is_started = True`, and sets `start_time`
+    - Preserves custom player names while properly initializing the game
+  - **Files Modified**: 
+    - `main.py`: Added `game = BackgammonGame()` before CLI creation
+    - `backgammon/cli/game_controller.py`: Refactored `setup_game()` method
+  - **Result**: CLI now progresses normally after entering player names, game starts correctly
+
+### Technical Details
+- **Version Increment**: PATCH (0.8.8 → 0.8.9) - Bug fix following versioning rules
+- **Impact**: Critical fix for CLI functionality
+- **Testing**: Verified player name preservation and game initialization flow
+
+## [0.8.8] - 2025-10-30
+
+### Changed
+- **PEP 8 Compliance - Module Names**: Refactored all module file names to follow snake_case convention (PEP 8)
+  - **Core Module Files Renamed**:
+    - `BackgammonGame.py` → `backgammon_game.py`
+    - `Board.py` → `board.py`
+    - `Checker.py` → `checker.py`
+    - `Dice.py` → `dice.py`
+    - `Player.py` → `player.py`
+  - **CLI Module Files Renamed**:
+    - `BackgammonCLI.py` → `backgammon_cli.py`
+    - `BoardRenderer.py` → `board_renderer.py`
+    - `CommandParser.py` → `command_parser.py`
+    - `GameController.py` → `game_controller.py`
+    - `InputValidator.py` → `input_validator.py`
+    - `UserInterface.py` → `user_interface.py`
+  - **Import Updates**: Updated all imports across the entire codebase
+    - Updated `core/__init__.py` with snake_case imports
+    - Updated `cli/__init__.py` with snake_case imports
+    - Updated all internal module imports within core and cli packages
+    - Updated all test file imports (12 test modules updated)
+    - Updated `main.py` imports
+  - **Test Verification**: All 371 unit tests pass successfully after refactoring
+  - **Note**: Class names remain in PascalCase as per PEP 8 convention for classes
+
+### Technical Details
+- **Motivation**: Ensure compliance with PEP 8 style guide for Python code
+- **Impact**: Breaking change for any external code importing these modules directly
+- **Compatibility**: Internal functionality unchanged; only module file names affected
+- **Version Increment**: PATCH (0.8.7 → 0.8.8) - Code refactoring and style improvements per versioning rules
+
 ## [0.8.7] - 2025-10-30
 
 ### Changed

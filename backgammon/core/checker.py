@@ -4,6 +4,7 @@ Checker module for Backgammon game.
 This module contains the Checker class which represents individual
 game pieces with their color, position, and movement capabilities.
 """
+
 # pylint: disable=invalid-name  # Checker follows PascalCase class naming convention
 
 

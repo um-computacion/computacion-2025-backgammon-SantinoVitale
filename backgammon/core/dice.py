@@ -4,6 +4,7 @@ Dice module for Backgammon game.
 This module contains the Dice class which handles dice rolling,
 double detection, and move management for the game.
 """
+
 # pylint: disable=invalid-name  # Dice follows PascalCase class naming convention
 import random
 

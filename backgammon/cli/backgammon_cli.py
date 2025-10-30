@@ -4,11 +4,11 @@ Acts as coordinator, delegating to specialized classes.
 """
 
 from typing import Union
-from .BoardRenderer import BoardRenderer
-from .CommandParser import CommandParser
-from .InputValidator import InputValidator
-from .GameController import GameController
-from .UserInterface import UserInterface
+from .board_renderer import BoardRenderer
+from .command_parser import CommandParser
+from .input_validator import InputValidator
+from .game_controller import GameController
+from .user_interface import UserInterface
 
 
 class BackgammonCLI:
