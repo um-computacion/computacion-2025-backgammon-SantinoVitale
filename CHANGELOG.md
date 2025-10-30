@@ -5,6 +5,34 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.5] - 2025-10-30
+
+### Removed
+- **Pygame UI Tests**: Eliminated all pygame-related test files (7 test files removed)
+  - Removed `test__pygame_ui.py`: Main Pygame UI coordinator tests
+  - Removed `test__backgammon_board.py`: Backgammon board rendering tests
+  - Removed `test__board_dimensions.py`: Board dimension calculation tests
+  - Removed `test__board_interaction.py`: Board interaction handling tests
+  - Removed `test__button.py`: Button component tests
+  - Removed `test__click_detector.py`: Click detection tests
+  - Removed `test__color_scheme.py`: Color scheme tests
+  - Focus shifted to core game logic and CLI components only
+
+### Added
+- **BackgammonCLI Tests**: Comprehensive tests for BackgammonCLI coordinator class
+  - Created `test__backgammon_cli.py` with 23 new tests
+  - Tests for initialization, display methods, move input, and game loop
+  - Tests for command handling (help, rules, moves, quit)
+  - Tests for move validation and error handling
+  - Tests for keyboard interrupt and exception handling
+
+### Changed
+- **Test Suite Focus**: Refined test coverage to core functionality
+  - Test count: 358 tests (down from ~460)
+  - Coverage: 90% on core and CLI components (excluding pygame_ui)
+  - Maintained 100% coverage on critical classes: BoardRenderer, InputValidator, UserInterface
+  - Core game logic coverage: Board (91%), BackgammonGame (89%), Player (99%), Checker (94%), Dice (98%)
+
 ## [0.8.4] - 2025-01-27
 
 ### Added
