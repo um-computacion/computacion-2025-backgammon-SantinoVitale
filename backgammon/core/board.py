@@ -6,7 +6,7 @@ manages checker positions, and handles move validation and execution.
 """
 
 # pylint: disable=invalid-name  # Board follows PascalCase class naming convention
-from .Checker import Checker
+from .checker import Checker
 
 
 class Board:

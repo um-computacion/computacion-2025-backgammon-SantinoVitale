@@ -14,12 +14,12 @@ The package follows SOLID principles with specialized classes:
 - CLI: Legacy class (for backwards compatibility)
 """
 
-from .BackgammonCLI import BackgammonCLI
-from .BoardRenderer import BoardRenderer
-from .CommandParser import CommandParser
-from .InputValidator import InputValidator
-from .GameController import GameController
-from .UserInterface import UserInterface
+from .backgammon_cli import BackgammonCLI
+from .board_renderer import BoardRenderer
+from .command_parser import CommandParser
+from .input_validator import InputValidator
+from .game_controller import GameController
+from .user_interface import UserInterface
 
 __all__ = [
     "BackgammonCLI",

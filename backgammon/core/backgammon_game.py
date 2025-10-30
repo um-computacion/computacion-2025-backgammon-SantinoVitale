@@ -7,9 +7,9 @@ Manages the complete game flow, players, board, dice, and UI interactions.
 
 import time
 from typing import List, Tuple, Union, Dict, Any, Optional
-from .Board import Board
-from .Player import Player
-from .Dice import Dice
+from .board import Board
+from .player import Player
+from .dice import Dice
 
 
 class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-public-methods

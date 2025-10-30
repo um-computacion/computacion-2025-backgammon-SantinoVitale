@@ -4,7 +4,7 @@ Tests command parsing functionality following SOLID principles.
 """
 
 import unittest
-from backgammon.cli.CommandParser import CommandParser
+from backgammon.cli.command_parser import CommandParser
 
 
 class TestCommandParser(unittest.TestCase):

@@ -4,7 +4,7 @@ Tests input validation functionality following SOLID principles.
 """
 
 import unittest
-from backgammon.cli.InputValidator import InputValidator
+from backgammon.cli.input_validator import InputValidator
 
 
 class TestInputValidator(unittest.TestCase):

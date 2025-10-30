@@ -5,7 +5,7 @@ Tests user I/O functionality following SOLID principles.
 
 import unittest
 from unittest.mock import Mock, patch
-from backgammon.cli.UserInterface import UserInterface
+from backgammon.cli.user_interface import UserInterface
 
 
 class TestUserInterface(unittest.TestCase):

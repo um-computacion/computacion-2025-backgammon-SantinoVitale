@@ -1,3 +1,199 @@
+
+---
+
+## Prompt 37
+
+### Modelo: GitHub Copilot (Claude Sonnet 4.5)
+
+### Fecha: 2025-10-30
+
+### Prompt:
+Intente jugar una partida en CLI y cuando pongo los 2 nombres de los jugadores no avanza mas, quiero que con todo esto del Snake Case y el refactoreo quede funcionando
+
+### Respuesta:
+
+#### Contexto
+Después del refactoreo para snake_case, la interfaz CLI se quedaba bloqueada tras ingresar los nombres de los jugadores. El juego no avanzaba a la fase de juego.
+
+**Problema identificado:**
+
+1. **En `main.py`**: La función `start_cli_game()` creaba el CLI sin pasar una instancia del juego:
+   ```python
+   cli = BackgammonCLI()  # Sin juego
+   ```
+   
+2. **En `GameController.setup_game()`**: El método llamaba a `start_game()` después de `setup_players()`:
+   ```python
+   self.game.setup_players(player1_name, player2_name)
+   self.game.start_game()  # Esto reinicia los jugadores con nombres por defecto
+   ```
+
+3. **En `BackgammonGame.start_game()`**: Este método llamaba a `setup_players()` sin argumentos, sobrescribiendo los nombres personalizados:
+   ```python
+   def start_game(self) -> None:
+       self.setup_board()
+       self.setup_players()  # ❌ Reinicia con nombres por defecto
+       self.is_started = True
+   ```
+
+**Solución implementada:**
+
+1. **Fijado en `main.py`**:
+   ```python
+   def start_cli_game() -> None:
+       # Create game instance first
+       game = BackgammonGame()
+       
+       # Create BackgammonCLI with game instance
+       cli = BackgammonCLI(game)
+       
+       cli.run_game()
+   ```
+
+2. **Fijado en `GameController.setup_game()`**:
+   ```python
+   def setup_game(self, player1_name: str, player2_name: str) -> None:
+       # Setup players with custom names
+       if hasattr(self.game, "setup_players"):
+           self.game.setup_players(player1_name, player2_name)
+       
+       # Setup board manually instead of calling start_game()
+       if hasattr(self.game, "setup_board"):
+           self.game.setup_board()
+       
+       # Mark game as started without resetting players
+       if hasattr(self.game, "is_started"):
+           self.game.is_started = True
+       if hasattr(self.game, "start_time"):
+           import time
+           self.game.start_time = time.time()
+   ```
+
+**Archivos modificados:**
+- `main.py`: Agregada creación de instancia de `BackgammonGame` antes de `BackgammonCLI`
+- `backgammon/cli/game_controller.py`: Modificado `setup_game()` para evitar sobrescribir nombres de jugadores
+
+**Resultado:**
+- ✅ CLI recibe correctamente una instancia del juego
+- ✅ Los nombres de jugadores personalizados se preservan
+- ✅ El tablero se configura correctamente
+- ✅ El juego avanza normalmente después de ingresar nombres
+
+## Prompt 36
+
+### Modelo: GitHub Copilot (Claude Sonnet 4.5)
+
+### Fecha: 2025-10-30
+
+### Prompt:
+Me dijeron que tiene que estar todo en Snake Case y no se si lo cumple mi codigo
+
+### Respuesta:
+
+#### Contexto
+El usuario consultó si su código cumplía con la convención snake_case. Tras el análisis, se detectó que los nombres de archivos de módulos Python utilizaban PascalCase, violando PEP 8.
+
+**Problema identificado:**
+- **11 archivos de módulos con PascalCase** en lugar de snake_case:
+  - **Core module**: `BackgammonGame.py`, `Board.py`, `Checker.py`, `Dice.py`, `Player.py`
+  - **CLI module**: `BackgammonCLI.py`, `BoardRenderer.py`, `CommandParser.py`, `GameController.py`, `InputValidator.py`, `UserInterface.py`
+
+**PEP 8 Naming Conventions:**
+- ✅ **Classes**: PascalCase (e.g., `BackgammonGame`, `Player`) - CORRECTO
+- ❌ **Module/File names**: snake_case (e.g., `backgammon_game.py`, not `BackgammonGame.py`) - INCORRECTO
+- ✅ **Functions/Methods**: snake_case (e.g., `roll_dice()`) - CORRECTO
+- ✅ **Variables**: snake_case (e.g., `current_player`) - CORRECTO
+- ✅ **Constants**: UPPER_SNAKE_CASE (e.g., `VALID_COLORS`) - CORRECTO
+
+**Solución implementada:**
+
+1. **Renombrado de archivos del módulo core** (usando git mv para preservar historial):
+   ```
+   BackgammonGame.py → backgammon_game.py
+   Board.py → board.py
+   Checker.py → checker.py
+   Dice.py → dice.py
+   Player.py → player.py
+   ```
+
+2. **Renombrado de archivos del módulo cli**:
+   ```
+   BackgammonCLI.py → backgammon_cli.py
+   BoardRenderer.py → board_renderer.py
+   CommandParser.py → command_parser.py
+   GameController.py → game_controller.py
+   InputValidator.py → input_validator.py
+   UserInterface.py → user_interface.py
+   ```
+
+3. **Actualización sistemática de imports**:
+   - **core/__init__.py**: Actualizado de `.BackgammonGame` a `.backgammon_game`, etc.
+   - **cli/__init__.py**: Actualizado de `.BackgammonCLI` a `.backgammon_cli`, etc.
+   - **Imports internos**: Actualizados en `backgammon_game.py` (Board, Player, Dice)
+   - **Imports internos CLI**: Actualizados en `backgammon_cli.py` (todos los módulos CLI)
+   - **12 archivos de test**: Actualizados todos los imports
+   - **main.py**: Actualizados imports principales
+
+4. **Verificación completa**:
+   - Ejecutados 371 tests unitarios: ✅ **100% PASS**
+   - No se detectaron errores de importación
+   - Funcionalidad preservada al 100%
+
+**Impacto del cambio:**
+- **Breaking change**: Código externo que importe estos módulos directamente necesitará actualización
+- **Funcionalidad interna**: Sin cambios, 100% compatible
+- **Nombres de clases**: Permanecen en PascalCase (correcto según PEP 8)
+- **Legibilidad**: Mejorada, ahora sigue estándares de Python
+- **Mantenibilidad**: Mayor claridad para nuevos desarrolladores
+
+**Archivos modificados:**
+- 11 archivos renombrados (core + cli)
+- 2 archivos __init__.py actualizados
+- 12 archivos de test actualizados
+- 1 archivo main.py actualizado
+- 1 archivo backgammon_cli.py actualizado
+- 2 archivos core (backgammon_game.py, board.py) actualizados
+
+**Comandos ejecutados:**
+```powershell
+# Renombrado en core
+git mv BackgammonGame.py backgammon_game.py
+git mv Board.py board.py
+git mv Checker.py checker.py
+git mv Dice.py dice.py
+git mv Player.py player.py
+
+# Renombrado en cli
+git mv BackgammonCLI.py backgammon_cli.py
+git mv BoardRenderer.py board_renderer.py
+git mv CommandParser.py command_parser.py
+git mv GameController.py game_controller.py
+git mv InputValidator.py input_validator.py
+git mv UserInterface.py user_interface.py
+
+# Verificación de tests
+python -m unittest discover backgammon.test -v
+# Resultado: 371 tests OK
+```
+
+**Versionado:**
+- Versión anterior: 0.8.7
+- Versión actual: 0.8.8 (PATCH increment)
+- Razón: Refactoring de código y mejoras de estilo según reglas de versionado
+
+**Lecciones aprendidas:**
+1. PEP 8 es estricto: módulos (archivos) deben usar snake_case, clases PascalCase
+2. Git mv preserva el historial de cambios al renombrar archivos
+3. Refactoring sistemático requiere actualización cuidadosa de todos los imports
+4. Tests unitarios son críticos para verificar que el refactoring no rompa funcionalidad
+5. Documentar breaking changes es esencial para usuarios del código
+
+**Resultado final:**
+✅ Código 100% conforme con PEP 8 en nombres de módulos  
+✅ Todos los tests pasando  
+✅ Funcionalidad preservada  
+✅ Documentación actualizada (CHANGELOG.md)  
+
 ## Prompt 35
 
 ### Modelo: GitHub Copilot (Claude Sonnet 4.5)

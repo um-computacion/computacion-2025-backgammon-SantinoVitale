@@ -41,8 +41,14 @@ class GameController:
         """
         if hasattr(self.game, "setup_players"):
             self.game.setup_players(player1_name, player2_name)
-        if hasattr(self.game, "start_game"):
-            self.game.start_game()
+        if hasattr(self.game, "setup_board"):
+            self.game.setup_board()
+        # Mark game as started without calling start_game() which would reset players
+        if hasattr(self.game, "is_started"):
+            self.game.is_started = True
+        if hasattr(self.game, "start_time"):
+            import time
+            self.game.start_time = time.time()
 
     def is_game_over(self) -> bool:
         """
