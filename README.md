@@ -1,50 +1,85 @@
-# Backgammon Computacion 2025
-## Alumno: Santino Vitale - 64006
+# Juego de Backgammon
 
-## How to Run the Game
+### Alumno: Santino Vitale - 64006
 
-To start playing Backgammon, you have two options:
+## Prerrequisitos
 
-### Option 1: Direct execution
+1. Instalar Python 3.11+
+2. Crear entorno virtual:
+   ```bash
+   python -m venv env
+   .\env\Scripts\activate  # En Windows
+   source env/bin/activate  # En macOS/Linux
+   ```
+3. Instalar dependencias:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+## Cómo Ejecutar
+
+### Ejecutar la aplicación
+
 ```bash
 python main.py
 ```
 
-### Option 2: Module execution
-```bash
-python -m backgammon
-```
+Elige la opción que desees del menú interactivo:
+1. Interfaz CLI
+2. Interfaz Pygame
+3. Salir
 
-Both commands will launch an interactive menu where you can choose between:
-- **CLI Interface** (✓ Available): Command-line interface for text-based gameplay
-- **Pygame Interface** (⚠️ Coming Soon): Graphical interface (under development)
+### Uso de CLI
 
-### Requirements
+La interfaz CLI proporciona una forma basada en texto para jugar Backgammon. Estos son los comandos disponibles:
 
-Make sure you have Python 3.7+ installed and activate the virtual environment:
+- **ayuda/help**: Muestra el menú de ayuda con todos los comandos disponibles
+- **reglas/rules**: Muestra las reglas del juego
+- **movimientos/moves**: Muestra todos los movimientos posibles para el jugador actual
+- **salir/quit**: Salir del juego
 
-```bash
-# On Windows
-.\env\Scripts\activate
+#### Cómo Realizar un Movimiento:
 
-# On macOS/Linux  
-source env/bin/activate
-```
+Ingresa los movimientos usando el formato: `POSICIÓN_ORIGEN POSICIÓN_DESTINO`
 
-Then run the game with `python main.py`.
+Ejemplos:
+- `1 5` - Mover desde la posición 1 a la posición 5
+- `barra 3` - Ingresar una ficha desde la barra a la posición 3
+- `6 fuera` - Sacar una ficha desde la posición 6
 
-## Resumen del diseño general:
+#### Cómo Jugar en CLI:
 
-## Justificación de las clases elegidas (por qué, responsabilidades):
+1. Inicia el juego con `python main.py` y selecciona la opción 1
+2. Ingresa los nombres de los jugadores cuando se te solicite
+3. El juego lanzará los dados automáticamente al inicio de cada turno
+4. Usa `movimientos` para ver todos los movimientos posibles
+5. Ingresa tu movimiento usando el formato descrito arriba
+6. Continúa hasta que todas las fichas sean sacadas del tablero
 
-## Justificación de atributos (por qué se eligieron):
+### Uso de Pygame
 
-## Decisiones de diseño relevantes:
+La interfaz Pygame proporciona una representación visual del tablero de Backgammon con controles de mouse y teclado.
 
-## Excepciones y manejo de errores (qué excepciones definidas y por qué):
+#### Controles:
 
-## Estrategias de testing y cobertura (qué se probó y por qué):
+- **ESPACIO**: Lanzar dados
+- **R**: Reiniciar juego
+- **ESC**: Salir del juego
+- **Click del Mouse**: Seleccionar fichas y realizar movimientos
 
-## Referencias a requisitos SOLID y cómo se cumplen:
+#### Cómo Jugar en Pygame:
 
-## Anexos: diagramas UML(ej: diagrama de clases):
+1. Inicia el juego con `python main.py` y selecciona la opción 2
+2. Haz click en el botón "Roll Dice" o presiona ESPACIO para lanzar los dados
+3. Haz click en una ficha para seleccionarla (resaltada en verde)
+4. Haz click en un destino válido para mover la ficha (posiciones válidas mostradas en azul)
+5. El juego cambiará de turno automáticamente cuando no haya movimientos disponibles
+6. Gana sacando todas tus fichas del tablero primero
+
+#### Indicadores Visuales:
+
+- **Resaltado verde**: Ficha seleccionada
+- **Resaltado azul**: Destinos válidos para la ficha seleccionada
+- **Visualización de dados**: Muestra el lanzamiento actual y los movimientos restantes
+- **Indicador de turno**: Muestra de quién es el turno
+- **Mensaje de victoria**: Se muestra cuando un jugador gana
