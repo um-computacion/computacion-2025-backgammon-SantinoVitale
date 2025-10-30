@@ -1,4 +1,3 @@
-
 ## Prompt 1
 
 ### Modelo: Claude Sonnet 4
@@ -2558,3 +2557,71 @@ Modifications made:
 Successfully achieved 90% test coverage while removing all pygame-related tests. The test suite is now focused exclusively on core game logic and CLI components, maintaining high quality and reliability while being easier to maintain.
 
 ---
+
+## Prompt 17
+
+### Modelo: Claude Sonnet 4.5
+
+### Prompt: 
+Could you increase the tests for BackgammonCLI to increase coverage?
+
+### Respuesta:
+
+I'll analyze the current test coverage for BackgammonCLI and add more tests to increase coverage.
+
+**Analysis:**
+The current BackgammonCLI tests (18 tests) cover:
+- Initialization (3 tests)
+- Display board functionality (3 tests)
+- Display possible moves (2 tests)
+- Get move input (8 tests)
+- Display move error (3 tests)
+- Run game (2 tests - limited coverage)
+
+The main gap is in the `run_game()` method which has many branches not covered. This complex method includes:
+- Game loop with multiple conditions
+- Dice rolling logic
+- Move execution and validation
+- Command processing (help, moves, rules, quit)
+- Exception handling
+- Turn management
+
+**Solution:**
+I added 15 comprehensive new tests for the `run_game()` method covering:
+
+1. **Dice rolling and turn skipping** - Tests when no dice are rolled and turn is automatically skipped
+2. **Successful move execution** - Tests complete move workflow including dice usage
+3. **Failed move handling** - Tests error display when move is invalid
+4. **Command processing**:
+   - Help command display
+   - Moves command to show possible moves
+   - Rules command display
+   - Quit command with confirmation (confirmed)
+   - Quit command with confirmation (not confirmed)
+5. **Exception handling**:
+   - ValueError during move execution
+   - General exceptions in game loop
+6. **Special scenarios**:
+   - All moves used (dice exhausted)
+   - No valid moves available (turn skipped)
+   - Keyboard interrupt without confirmation
+
+**Testing approach:**
+- Used extensive mocking with `Mock()` and `side_effect` for multi-call scenarios
+- Patched UI methods to avoid actual I/O
+- Tested each branch of the complex game loop independently
+- Verified both success and failure paths
+
+**Results:**
+- Total tests: 33 (increased from 18)
+- Coverage: 100% on BackgammonCLI.py (131 statements, 0 missed)
+- All branches in `run_game()` covered
+- All error handling paths tested
+
+**Key improvements:**
+1. Complete coverage of the main game loop
+2. All command types tested
+3. All exception types handled
+4. Both success and failure paths verified
+
+The tests follow unittest framework (as required), use proper mocking, maintain readability, and comprehensively test all BackgammonCLI functionality.
