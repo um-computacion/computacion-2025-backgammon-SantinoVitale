@@ -34,6 +34,7 @@ backgammon/pygame_ui/pygame_ui.py:111:8: E1101: Module 'pygame' has no 'quit' me
 backgammon/pygame_ui/board_interaction.py:278:4: R0911: Too many return statements (7/6) (too-many-return-statements)
 backgammon/pygame_ui/board_interaction.py:278:4: R0912: Too many branches (15/12) (too-many-branches)
 ************* Module backgammon.pygame_ui.click_detector
+backgammon/pygame_ui/click_detector.py:141:0: C0325: Unnecessary parens after 'not' keyword (superfluous-parens)
 backgammon/pygame_ui/click_detector.py:30:4: R0914: Too many local variables (20/15) (too-many-locals)
 ************* Module backgammon.pygame_ui.color_scheme
 backgammon/pygame_ui/color_scheme.py:9:0: R0903: Too few public methods (0/2) (too-few-public-methods)
@@ -42,10 +43,12 @@ backgammon/pygame_ui/renderers/visual_renderer.py:211:4: R0913: Too many argumen
 backgammon/pygame_ui/renderers/visual_renderer.py:211:4: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
 backgammon/pygame_ui/renderers/visual_renderer.py:595:61: E1101: Module 'pygame' has no 'SRCALPHA' member (no-member)
 backgammon/pygame_ui/renderers/visual_renderer.py:601:59: W0613: Unused argument 'board' (unused-argument)
-backgammon/pygame_ui/renderers/visual_renderer.py:719:4: R0913: Too many arguments (7/5) (too-many-arguments)
-backgammon/pygame_ui/renderers/visual_renderer.py:719:4: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
-backgammon/pygame_ui/renderers/visual_renderer.py:749:4: R0913: Too many arguments (7/5) (too-many-arguments)
-backgammon/pygame_ui/renderers/visual_renderer.py:749:4: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
+backgammon/pygame_ui/renderers/visual_renderer.py:691:0: C0115: Missing class docstring (missing-class-docstring)
+backgammon/pygame_ui/renderers/visual_renderer.py:728:4: W0105: String statement has no effect (pointless-string-statement)
+backgammon/pygame_ui/renderers/visual_renderer.py:755:4: R0913: Too many arguments (7/5) (too-many-arguments)
+backgammon/pygame_ui/renderers/visual_renderer.py:755:4: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
+backgammon/pygame_ui/renderers/visual_renderer.py:785:4: R0913: Too many arguments (7/5) (too-many-arguments)
+backgammon/pygame_ui/renderers/visual_renderer.py:785:4: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
 ************* Module backgammon.pygame_ui.renderers.board_renderer
 backgammon/pygame_ui/renderers/board_renderer.py:23:0: R0902: Too many instance attributes (9/7) (too-many-instance-attributes)
 backgammon/pygame_ui/renderers/board_renderer.py:79:4: R0913: Too many arguments (9/5) (too-many-arguments)
@@ -160,7 +163,7 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
         """ (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 9.70/10
+Your code has been rated at 9.69/10
 
 
 ```
