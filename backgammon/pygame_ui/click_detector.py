@@ -137,15 +137,25 @@ class ClickDetector:
         mouse_x, mouse_y = mouse_pos
         panel_rect = self.dimensions.get_side_panel_rect()
 
-        # Only consider the middle section as the "off" area
-        section_height = panel_rect[3] // 3
-        middle_y_start = panel_rect[1] + section_height
-        middle_y_end = panel_rect[1] + (2 * section_height)
+        # Check if click is in the side panel horizontally
+        if not (panel_rect[0] <= mouse_x <= panel_rect[0] + panel_rect[2]):
+            return False
 
-        return (
-            panel_rect[0] <= mouse_x <= panel_rect[0] + panel_rect[2]
-            and middle_y_start <= mouse_y <= middle_y_end
-        )
+        section_height = panel_rect[3] // 3
+
+        # Top section is for white player bearing off
+        top_section_start = panel_rect[1]
+        top_section_end = panel_rect[1] + section_height
+
+        # Bottom section is for black player bearing off
+        bottom_section_start = panel_rect[1] + (2 * section_height)
+        bottom_section_end = panel_rect[1] + panel_rect[3]
+
+        # Return True if click is in top section or bottom section
+        in_top_section = top_section_start <= mouse_y <= top_section_end
+        in_bottom_section = bottom_section_start <= mouse_y <= bottom_section_end
+
+        return in_top_section or in_bottom_section
 
     def get_clicked_position(
         self, mouse_pos: Tuple[int, int]

@@ -181,5 +181,11 @@ class BoardRenderer:
         # Render checkers that are borne off
         for color in ["white", "black"]:
             off_checkers = board.off[color]
-            for stack_index in range(len(off_checkers)):
+            max_visible_stack = 5
+            for stack_index in range(min(len(off_checkers), max_visible_stack)):
                 self.checker_renderer.render_off_checker(surface, color, stack_index)
+            # Draw indicator if more than max_visible_stack
+            if len(off_checkers) > max_visible_stack:
+                self.text_renderer.render_off_count_indicator(
+                    surface, color, len(off_checkers), max_visible_stack
+                )

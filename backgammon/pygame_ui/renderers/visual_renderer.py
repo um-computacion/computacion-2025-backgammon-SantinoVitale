@@ -689,6 +689,42 @@ class HighlightRenderer:
 
 
 class TextRenderer:
+    def render_off_count_indicator(
+        self, surface: "pygame.Surface", color: str, count: int, max_visible_stack: int
+    ) -> None:
+        """
+        Render a numeric indicator for the number of borne-off checkers.
+
+        Args:
+            surface: Pygame surface to draw on
+            color: Color of the checker ('white' or 'black')
+            count: Total number of borne-off checkers
+            max_visible_stack: Number of checkers shown visually
+        """
+        side_panel_rect = self.dimensions.get_side_panel_rect()
+        center_x = side_panel_rect[0] + (side_panel_rect[2] // 2)
+        section_height = side_panel_rect[3] // 3
+        checker_spacing = 2 * 20 + 2  # Approximate spacing (radius=20)
+        if color == "white":
+            base_y = (
+                side_panel_rect[1]
+                + section_height
+                + 20
+                + (max_visible_stack * checker_spacing)
+            )
+        else:
+            base_y = (
+                side_panel_rect[1]
+                + 2 * section_height
+                + section_height
+                - 20
+                + (max_visible_stack * checker_spacing)
+            )
+        font = pygame.font.Font(None, 32)
+        text_surface = font.render(f"x{count}", True, (255, 255, 255))
+        text_rect = text_surface.get_rect(center=(center_x, base_y))
+        surface.blit(text_surface, text_rect)
+
     """
     Renders text information on the Backgammon board.
 

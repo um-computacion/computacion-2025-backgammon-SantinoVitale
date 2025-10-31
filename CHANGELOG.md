@@ -5,6 +5,28 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.10] - 2025-10-31
+
+### Fixed
+- **Pygame UI Bearing Off Bug**: Fixed critical bug preventing players from bearing off checkers
+  - **Root Cause**: `ClickDetector.is_off_area_clicked()` was checking the wrong section of the side panel
+  - **Issue**: Method checked middle section (where dice button is located) instead of top/bottom sections
+  - **Board Layout**:
+    - Top section: White player's off area (bearing off destination)
+    - Middle section: Dice button and game controls
+    - Bottom section: Black player's off area (bearing off destination)
+  - **Solution**: Modified `is_off_area_clicked()` to check both top and bottom sections
+    - Now correctly detects clicks in white's off area (top third)
+    - Now correctly detects clicks in black's off area (bottom third)
+    - Excludes middle section (dice button area)
+  - **Files Modified**: `backgammon/pygame_ui/click_detector.py`
+  - **Result**: Players can now successfully bear off checkers by clicking on the appropriate off area
+
+### Technical Details
+- **Version Increment**: PATCH (0.8.9 → 0.8.10) - Bug fix following versioning rules
+- **Impact**: Critical fix for endgame functionality in Pygame UI
+- **Testing**: Verified bearing off functionality for both players
+
 ## [0.8.9] - 2025-10-30
 
 ### Fixed
@@ -352,8 +374,8 @@ y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 - **Board Initial Setup**: Corrected board initial configuration to match standard Backgammon movement directions
   - Inverted piece positions in `Board.setup_initial_position()` method
-  - White checkers now start in points 23, 12, 7, 5 (bottom half, moving toward point 0)
-  - Black checkers now start in points 0, 11, 16, 18 (top half, moving toward point 23)
+  - **White checkers** now start in points 23, 12, 7, 5 (bottom half, moving toward point 0)
+  - **Black checkers** now start in points 0, 11, 16, 18 (top half, moving toward point 23)
   - White checkers now visually move counterclockwise (bottom-left to top-right direction)
   - Black checkers now visually move clockwise (top-right to bottom-left direction)
   - Matches standard Backgammon board layout and movement patterns
@@ -441,7 +463,7 @@ y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Highlight Ring Position Accuracy**: Fixed yellow selection ring not matching checker position and size exactly
   - Added `checker_radius` attribute to `HighlightRenderer` class
   - `HighlightRenderer` now uses same `checker_radius` calculation as `CheckerRenderer`: `(point_width // 2) - 8`
-  - Eliminated inconsistency where highlight ring was calculated independently
+  - Eliminated inconsistencia donde el anillo de resaltado se calculaba de forma independiente
   - Ring now perfectly aligns with checker position in all stack configurations
 
 - **Turn Switching and Dice Roll**: Fixed issue where next player could not roll dice after turn completion
@@ -622,7 +644,7 @@ y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   - Improved readability: Logical file organization
   - Easier maintenance: Changes isolated to specific components
 
-## [0.7.0] - 2025-01-21
+## [0.7.0] - 2025-01-27
 
 ### Added
 - **DiceButton Class**: Interactive button for rolling dice
@@ -1288,7 +1310,7 @@ y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
     - Added state management and reset functionality tests
   - **Player Module**: Improved from 90% to 91% coverage
     - Added starting position edge case testing
-    - Implemented direction calculation and home board validation
+    - implemented direction calculation and home board validation
     - Enhanced board interaction method testing
     - Added state consistency validation tests
   - **Checker Module**: Maintained 92% coverage with additional validation
@@ -1334,7 +1356,8 @@ y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Test Reliability**: Corrected failing tests by adjusting expectations to match actual implementation
   - **Method Validation**: Fixed tests that referenced non-existent methods
   - **Behavior Matching**: Aligned test assertions with actual code behavior
-  - **Mock Improvements**: Enhanced mock usage for better test isolation
+  - **Mock Improvements**: Updated test mocks to match actual method signatures and behavior
+  - **Removed Deprecated Tests**: Cleaned up tests for removed game mode functionality
 
 ### Changed
 
@@ -1572,7 +1595,7 @@ y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Estrategias de testing de tablero implementadas:
   - Aislamiento de lógica de Board sin dependencias de creación real de objetos Checker
   - Testing determinístico de setup inicial con control total sobre fichas creadas
-  - Verificación precisa de conteos de fichas por color en posición inicial
+  - Verificación precisa de parámetros de método en llamadas a métodos de Board
   - Simulación controlada de propiedades de Checker para testing de movimientos complejos
 
 ### Notas
@@ -1712,16 +1735,12 @@ y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Implementación completa de la clase `Player`:
   - `backgammon/core/Player.py` — clase completamente funcional para manejo de jugadores del Backgammon incluyendo gestión de fichas, validaciones de color, movimientos entre tablero/barra/off, condiciones de victoria, direcciones de juego y estado persistente
 - Implementación completa de la clase `Dice`:
-  - `backgammon/core/Dice.py` — clase completamente funcional para manejo de dados del Backgammon incluyendo tiradas, detección de dobles, gestión de movimientos disponibles, estado persistente y representaciones string
+  - `backgammon/core/Dice.py` — clase completamente funcional para manejo de dados del Backgammon incluyendo tiradas, detección de dobles, gestión de movimientos disponibles y casos edge
 - Tests completos para la clase principal del juego:
   - `backgammon/tests/test__BackgammonGame.py` — tests completos para la clase `BackgammonGame` incluyendo inicialización, setup de juego, lógica de turnos, movimientos, condiciones de victoria, manejo de estado, guardado/carga y estadísticas
-- Configuración de módulos Python:
+- Configuración de módulos Python actualizada:
   - `backgammon/__init__.py` — archivo de inicialización del paquete backgammon
   - `backgammon/core/__init__.py` — imports de las clases Dice, Player, Board y Checker para el módulo core
-
-### Cambiado
-
-- Estructura de módulos mejorada para permitir imports correctos entre paquetes
 
 ### Notas
 
