@@ -173,7 +173,9 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
                 if from_pos < 1 or from_pos > 24:
                     return False
                 board_pos = from_pos - 1
-                success = self.board.bear_off(board_pos, current_player.color)
+                if self.board.bear_off(board_pos, current_player.color):
+                    current_player.increment_checkers_off_board()
+                    success = True
         else:
             # Normal point-to-point move
             if isinstance(from_pos, int) and isinstance(to_pos, int):
