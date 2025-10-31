@@ -376,19 +376,42 @@ class Board:
                                 possible_moves.append((point_index + 1, to_point + 1))
 
                         # Verificar movimiento de salida (bearing off)
-                        elif self._can_bear_off(color):
-                            # Movimiento exacto para bear off
-                            if (color == "white" and to_point == -1) or (
-                                color == "black" and to_point == 24
+                        elif self._can_bear_off(color) and (
+                            (color == "white" and to_point <= 5)
+                            or (color == "black" and to_point >= 18)
+                        ):
+                            # Un jugador puede retirar una ficha si el resultado del dado
+                            # es igual al número del punto en el que reside la ficha.
+                            if (color == "white" and point_index + 1 == die_value) or (
+                                color == "black" and 24 - point_index == die_value
                             ):
                                 possible_moves.append((point_index + 1, "off"))
-                            # Movimiento mayor al necesario para bear off
-                            elif (color == "white" and to_point < -1) or (
-                                color == "black" and to_point > 24
-                            ):
-                                # Permitir solo si no hay fichas en puntos más altos
-                                if self._is_farthest_checker(color, point_index):
-                                    possible_moves.append((point_index + 1, "off"))
+                            # Si un jugador tira un número para un punto en el que no
+                            # tiene fichas, debe hacer un movimiento legal utilizando una
+                            # ficha en un punto con un número más alto.
+                            else:
+                                if color == "white":
+                                    farthest_checker_point = -1
+                                    for i in range(5, -1, -1):
+                                        if self.get_point_top_color(i) == color:
+                                            farthest_checker_point = i
+                                            break
+                                    if (
+                                        point_index == farthest_checker_point
+                                        and die_value > point_index + 1
+                                    ):
+                                        possible_moves.append((point_index + 1, "off"))
+                                else:  # color == "black"
+                                    farthest_checker_point = -1
+                                    for i in range(18, 24):
+                                        if self.get_point_top_color(i) == color:
+                                            farthest_checker_point = i
+                                            break
+                                    if (
+                                        point_index == farthest_checker_point
+                                        and die_value > 24 - point_index
+                                    ):
+                                        possible_moves.append((point_index + 1, "off"))
 
         return possible_moves
 
@@ -424,29 +447,6 @@ class Board:
                 ):
                     return False
 
-        return True
-
-    def _is_farthest_checker(self, color, point_index):
-        """
-        Verifica si una ficha es la más alejada que tiene un jugador.
-
-        Args:
-            color (str): Color del jugador
-            point_index (int): Índice del punto de la ficha
-
-        Returns:
-            bool: True si es la ficha más alejada
-        """
-        if color == "white":
-            # Para las blancas, el punto más alejado es el de mayor índice
-            for i in range(point_index + 1, 24):
-                if self.get_point_top_color(i) == color:
-                    return False
-        else:
-            # Para las negras, el punto más alejado es el de menor índice
-            for i in range(point_index - 1, -1, -1):
-                if self.get_point_top_color(i) == color:
-                    return False
         return True
 
     def can_bear_off(self, color):
