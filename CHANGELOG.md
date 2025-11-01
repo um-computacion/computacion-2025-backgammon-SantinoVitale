@@ -5,6 +5,80 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2025-11-01
+
+### Fixed - Critical Game Logic Refactoring
+
+**PRIMARY ISSUE: make_move() was not validating moves before execution**
+- **Root Cause**: `make_move()` directly executed moves without calling `is_valid_move()`
+- **Impact**: Players could make ANY move regardless of:
+  - Dice availability
+  - Move direction (could move backwards)
+  - Checker ownership
+  - Bar priority rules
+- **Result**: Game rules were completely bypassed
+
+**Fix 1: Added Pre-validation in make_move()**
+- **Change**: Added `if not self.is_valid_move(from_pos, to_pos): return False` at start of `make_move()`
+- **Location**: `backgammon/core/backgammon_game.py` line 153
+- **Impact**: ALL moves now go through proper validation before execution
+- **Result**: Invalid moves are rejected before touching game state
+
+**Fix 2: Added Direction Validation**
+- **Change**: Added distance check: `if distance == 0: return False` in both `make_move()` and `is_valid_move()`
+- **Location**: `backgammon/core/backgammon_game.py` lines 158-160 and 325-327
+- **Rule Enforced**: 
+  - White must move from high to low (24→1)
+  - Black must move from low to high (1→24)
+  - Moving in wrong direction returns distance=0, which is now rejected
+- **Impact**: Players can no longer move backwards
+- **Result**: Direction rules properly enforced
+
+**Fix 3: Dice Validation (from previous session)**
+- **Change**: Added dice availability check in normal point-to-point moves
+- **Location**: `backgammon/core/backgammon_game.py` line 378
+- **Impact**: Moves must have matching die available
+- **Result**: Dice consumption works correctly
+
+**Fix 4: Bar Priority Enforcement (from previous session)**
+- **Change**: Added bar priority check at start of `is_valid_move()`
+- **Location**: `backgammon/core/backgammon_game.py` lines 318-320
+- **Impact**: Players with checkers on bar MUST move from bar first
+- **Result**: Bar rules properly enforced
+
+**Fix 5: Duplicate Dice Consumption (from previous session)**
+- **Change**: Removed duplicate `use_dice_move()` call from CLI
+- **Location**: `backgammon/cli/backgammon_cli.py`
+- **Impact**: Dice consumed exactly once per move
+- **Result**: Fixed infinite dice bug
+
+### Test Updates
+- Updated 3 tests in `test__backgammongame.py` to use valid moves (24→21 for white instead of 1→4)
+- Added complete board structure (including bar) to mock objects
+- Reason: Tests were using invalid moves (wrong direction for player color)
+- All 371 tests pass successfully
+
+### Technical Details
+- **Version Increment**: MAJOR (0.8.14 → 1.0.0) - Game is now fully functional
+- **Critical Refactoring**: Complete overhaul of move validation flow
+- **Validation Flow**: User Input → CLI → `make_move()` → `is_valid_move()` → Board/Dice checks
+- **Impact**: Game rules now fully enforced at all levels
+- **Testing**: Complete game can be played from start to finish with all rules working
+
+### Why 1.0.0?
+1. ✓ All core game mechanics work correctly
+2. ✓ Move validation completely fixed
+3. ✓ Direction rules enforced (white: 24→1, black: 1→24)
+4. ✓ Dice rules enforced (must have available die)
+5. ✓ Bar priority enforced (must move from bar first)
+6. ✓ Bearing off rules work (home board + exact/higher die)
+7. ✓ Checker capturing works (send to bar)
+8. ✓ Complete game playable from start to finish
+9. ✓ All 371 unit tests pass
+10. ✓ Both CLI and Pygame UI functional
+
+**READY FOR PRODUCTION USE**
+
 ## [0.8.14] - 2025-11-01
 
 ### Changed

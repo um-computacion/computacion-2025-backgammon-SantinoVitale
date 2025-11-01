@@ -162,14 +162,22 @@ class TestBackgammonGame(unittest.TestCase):
     def test_make_move_valid(self):
         """Test making a valid move calls board.move_checker"""
         self.game.board = MagicMock()
+        self.game.dice = MagicMock()
         self.game.board.move_checker.return_value = True
+        self.game.board.bar = {"white": [], "black": []}  # Add bar structure
+        self.game.board.points = [[] for _ in range(24)]
+        self.game.board.points[23] = [MagicMock(color="white")]  # Checker at position 24
+        self.game.board.get_point_top_color = MagicMock(return_value="white")
+        self.game.board.is_point_available = MagicMock(return_value=True)
+        self.game.dice.can_use_move = MagicMock(return_value=True)
         current_player = MagicMock()
         current_player.color = "white"
         self.game.get_current_player = MagicMock(return_value=current_player)
 
-        result = self.game.make_move(1, 4)
+        # White moves 24->21 (distance 3)
+        result = self.game.make_move(24, 21)
 
-        self.game.board.move_checker.assert_called_once_with(0, 3, "white")
+        self.game.board.move_checker.assert_called_once_with(23, 20, "white")
         self.assertTrue(result)
 
     def test_make_move_invalid(self):
@@ -193,17 +201,24 @@ class TestBackgammonGame(unittest.TestCase):
 
         self.game.roll_dice()
 
-        # Mock board to return True for move
+        # Mock board to return True for move - with complete structure
         board_mock = Mock()
         board_mock.move_checker = Mock(return_value=True)
+        board_mock.bar = {"white": [], "black": []}  # Add bar structure
+        board_mock.points = [[] for _ in range(24)]
+        board_mock.points[23] = [Mock(color="white")]  # Checker at position 24
+        board_mock.get_point_top_color = Mock(return_value="white")
+        board_mock.is_point_available = Mock(return_value=True)
         self.game.board = board_mock
 
-        result = self.game.make_move(1, 4)  # Move 3 spaces
+        # White moves 24->21 (distance 3)
+        result = self.game.make_move(24, 21)
 
         self.assertTrue(result)
         # Verify that the board's move_checker was called with correct parameters
+        # 24->21 means indices 23->20
         board_mock.move_checker.assert_called_with(
-            0, 3, self.game.get_current_player().color
+            23, 20, self.game.get_current_player().color
         )
 
     def test_is_valid_move(self):
@@ -215,14 +230,15 @@ class TestBackgammonGame(unittest.TestCase):
         self.game.get_current_player = MagicMock(return_value=current_player)
 
         # Mock the methods that is_valid_move actually uses
+        self.game.board.bar = {"white": [], "black": []}  # Add bar structure
         self.game.dice.can_use_move.return_value = True
-        self.game.board.points = [
-            [MagicMock()] for _ in range(24)
-        ]  # Points with checkers
+        self.game.board.points = [[] for _ in range(24)]
+        self.game.board.points[23] = [MagicMock(color="white")]  # Checker at position 24
         self.game.board.get_point_top_color.return_value = "white"
         self.game.board.is_point_available.return_value = True
 
-        result = self.game.is_valid_move(1, 4)
+        # White moves 24->21 (distance 3, valid direction)
+        result = self.game.is_valid_move(24, 21)
         self.assertTrue(result)
 
     def test_get_possible_moves(self):
