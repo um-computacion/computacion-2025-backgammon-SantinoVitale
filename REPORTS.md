@@ -4,13 +4,13 @@
 Name                                 Stmts   Miss  Cover   Missing
 ------------------------------------------------------------------
 backgammon/core/__init__.py              6      0   100%
-backgammon/core/backgammon_game.py     254     58    77%   167-168, 175-185, 231, 247, 262, 275-294, 315-322, 326-358, 363, 373, 532-534, 558-559, 604
+backgammon/core/backgammon_game.py     264     61    77%   164, 171-176, 179-193, 199, 239, 255, 270, 283-302, 319, 335-338, 345-374, 382, 392, 551-553, 577-578, 623
 backgammon/core/board.py               161     13    92%   146, 153, 185, 189, 196-197, 217, 220, 223, 309, 387, 436, 450
 backgammon/core/checker.py              78      5    94%   126, 136, 142, 152, 158
 backgammon/core/dice.py                 50      1    98%   70
 backgammon/core/player.py              101      4    96%   89-91, 294
 ------------------------------------------------------------------
-TOTAL                                  650     81    88%
+TOTAL                                  660     84    87%
 
 ```
 ## Pylint Report
@@ -58,17 +58,20 @@ backgammon/pygame_ui/renderers/decorative_renderer.py:11:0: R0903: Too few publi
 backgammon/pygame_ui/renderers/decorative_renderer.py:123:0: R0903: Too few public methods (1/2) (too-few-public-methods)
 ************* Module backgammon.cli.backgammon_cli
 backgammon/cli/backgammon_cli.py:133:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
-backgammon/cli/backgammon_cli.py:122:4: R0912: Too many branches (22/12) (too-many-branches)
-backgammon/cli/backgammon_cli.py:122:4: R0915: Too many statements (67/50) (too-many-statements)
+backgammon/cli/backgammon_cli.py:122:4: R0912: Too many branches (21/12) (too-many-branches)
+backgammon/cli/backgammon_cli.py:122:4: R0915: Too many statements (64/50) (too-many-statements)
 ************* Module backgammon.cli.game_controller
 backgammon/cli/game_controller.py:50:12: C0415: Import outside toplevel (time) (import-outside-toplevel)
 ************* Module backgammon.cli.board_renderer
 backgammon/cli/board_renderer.py:17:4: R0912: Too many branches (13/12) (too-many-branches)
 ************* Module backgammon.core.backgammon_game
-backgammon/core/backgammon_game.py:207:4: R0911: Too many return statements (9/6) (too-many-return-statements)
-backgammon/core/backgammon_game.py:275:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
-backgammon/core/backgammon_game.py:296:4: R0911: Too many return statements (15/6) (too-many-return-statements)
-backgammon/core/backgammon_game.py:296:4: R0912: Too many branches (16/12) (too-many-branches)
+backgammon/core/backgammon_game.py:161:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/core/backgammon_game.py:323:0: C0303: Trailing whitespace (trailing-whitespace)
+backgammon/core/backgammon_game.py:142:4: R0912: Too many branches (14/12) (too-many-branches)
+backgammon/core/backgammon_game.py:215:4: R0911: Too many return statements (9/6) (too-many-return-statements)
+backgammon/core/backgammon_game.py:283:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+backgammon/core/backgammon_game.py:304:4: R0911: Too many return statements (18/6) (too-many-return-statements)
+backgammon/core/backgammon_game.py:304:4: R0912: Too many branches (19/12) (too-many-branches)
 ************* Module backgammon.core.board
 backgammon/core/board.py:342:8: R1702: Too many nested blocks (9/5) (too-many-nested-blocks)
 backgammon/core/board.py:342:8: R1702: Too many nested blocks (9/5) (too-many-nested-blocks)
@@ -76,8 +79,8 @@ backgammon/core/board.py:317:4: R0912: Too many branches (20/12) (too-many-branc
 backgammon/core/board.py:342:8: R1702: Too many nested blocks (7/5) (too-many-nested-blocks)
 ************* Module backgammon.test.test__BackgammonGame
 backgammon/test/test__BackgammonGame.py:1:0: C0103: Module name "test__BackgammonGame" doesn't conform to snake_case naming style (invalid-name)
-backgammon/test/test__BackgammonGame.py:541:19: W0212: Access to a protected member _calculate_move_distance of a client class (protected-access)
-backgammon/test/test__BackgammonGame.py:563:19: W0212: Access to a protected member _calculate_move_distance of a client class (protected-access)
+backgammon/test/test__BackgammonGame.py:557:19: W0212: Access to a protected member _calculate_move_distance of a client class (protected-access)
+backgammon/test/test__BackgammonGame.py:579:19: W0212: Access to a protected member _calculate_move_distance of a client class (protected-access)
 ************* Module backgammon.test.test__board
 backgammon/test/test__board.py:16:0: R0904: Too many public methods (30/20) (too-many-public-methods)
 ************* Module backgammon.test.test__user_interface
@@ -100,18 +103,18 @@ backgammon/test/test__game_controller.py:11:0: R0904: Too many public methods (3
 ************* Module backgammon.test.test__backgammon_cli
 backgammon/test/test__backgammon_cli.py:405:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
 backgammon/test/test__backgammon_cli.py:440:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
-backgammon/test/test__backgammon_cli.py:494:8: W0212: Access to a protected member _display_move_error of a client class (protected-access)
-backgammon/test/test__backgammon_cli.py:503:8: W0212: Access to a protected member _display_move_error of a client class (protected-access)
-backgammon/test/test__backgammon_cli.py:481:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
-backgammon/test/test__backgammon_cli.py:523:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
-backgammon/test/test__backgammon_cli.py:567:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
-backgammon/test/test__backgammon_cli.py:614:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
-backgammon/test/test__backgammon_cli.py:658:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
-backgammon/test/test__backgammon_cli.py:692:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
-backgammon/test/test__backgammon_cli.py:735:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
-backgammon/test/test__backgammon_cli.py:775:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
-backgammon/test/test__backgammon_cli.py:802:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
-backgammon/test/test__backgammon_cli.py:840:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
+backgammon/test/test__backgammon_cli.py:491:8: W0212: Access to a protected member _display_move_error of a client class (protected-access)
+backgammon/test/test__backgammon_cli.py:500:8: W0212: Access to a protected member _display_move_error of a client class (protected-access)
+backgammon/test/test__backgammon_cli.py:478:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
+backgammon/test/test__backgammon_cli.py:520:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
+backgammon/test/test__backgammon_cli.py:564:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
+backgammon/test/test__backgammon_cli.py:611:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
+backgammon/test/test__backgammon_cli.py:655:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
+backgammon/test/test__backgammon_cli.py:689:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
+backgammon/test/test__backgammon_cli.py:732:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
+backgammon/test/test__backgammon_cli.py:772:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
+backgammon/test/test__backgammon_cli.py:799:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
+backgammon/test/test__backgammon_cli.py:835:8: W0613: Unused argument 'mock_display_welcome' (unused-argument)
 ************* Module backgammon.test.test__Player
 backgammon/test/test__Player.py:1:0: C0103: Module name "test__Player" doesn't conform to snake_case naming style (invalid-name)
 ************* Module backgammon.test.test__backgammon_board
@@ -155,12 +158,12 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
             return 1
         return 0
 
-    def get_home_board_range(self):
+    def can_bear_off(self):
         """
-        Obtiene el rango del home board para este jugador.
+        Verifica si la ficha puede hacer bearing off desde su posición actual.
 
         Returns:
-          range: Rango de posiciones del home board
+          bool: True si puede hacer bearing off, False en caso contrario
         """ (duplicate-code)
 
 -----------------------------------
