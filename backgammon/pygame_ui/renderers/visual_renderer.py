@@ -592,19 +592,19 @@ class HighlightRenderer:
         bar_rect = self.dimensions.get_bar_rect()
         color = self.selected_color if is_selected else self.valid_move_color
 
-        overlay = pygame.Surface((bar_rect[2], bar_rect[3]), pygame.SRCALPHA)
-        overlay.fill((*color, 80))
+        overlay = pygame.Surface((bar_rect[2], bar_rect[3]))
+        overlay.set_alpha(80)
+        overlay.fill(color)
         surface.blit(overlay, (bar_rect[0], bar_rect[1]))
 
         pygame.draw.rect(surface, color, bar_rect, 4)
 
-    def render_selected_bar(self, surface: pygame.Surface, board: object) -> None:
+    def render_selected_bar(self, surface: pygame.Surface) -> None:
         """
-        Render a highlight for selected bar with checker highlight.
+        Render a highlight for selected bar.
 
         Args:
             surface: Pygame surface to draw on
-            board: Board instance to check checker colors
         """
         self.render_bar_highlight(surface, is_selected=True)
 
@@ -689,6 +689,17 @@ class HighlightRenderer:
 
 
 class TextRenderer:
+    """
+    Renders text information on the Backgammon board.
+
+    Attributes:
+        colors: ColorScheme instance for color definitions
+        dimensions: BoardDimensions instance for layout calculations
+        font_large: Large font for titles
+        font_medium: Medium font for player names
+        font_small: Small font for details
+    """
+
     def render_off_count_indicator(
         self, surface: "pygame.Surface", color: str, count: int, max_visible_stack: int
     ) -> None:
@@ -724,17 +735,6 @@ class TextRenderer:
         text_surface = font.render(f"x{count}", True, (255, 255, 255))
         text_rect = text_surface.get_rect(center=(center_x, base_y))
         surface.blit(text_surface, text_rect)
-
-    """
-    Renders text information on the Backgammon board.
-
-    Attributes:
-        colors: ColorScheme instance for color definitions
-        dimensions: BoardDimensions instance for layout calculations
-        font_large: Large font for titles
-        font_medium: Medium font for player names
-        font_small: Small font for details
-    """
 
     def __init__(self, colors: ColorScheme, dimensions: BoardDimensions) -> None:
         """
@@ -787,7 +787,6 @@ class TextRenderer:
         surface: pygame.Surface,
         player1_name: str,
         player2_name: str,
-        current_player_name: str,
         player1_off: int,
         player2_off: int,
     ) -> None:
@@ -796,9 +795,8 @@ class TextRenderer:
 
         Args:
             surface: Pygame surface to draw on
-            player1_name: Name of player 1
-            player2_name: Name of player 2
-            current_player_name: Name of current player
+            player1_name: Name of player 1 (white)
+            player2_name: Name of player 2 (black)
             player1_off: Number of checkers player 1 has borne off
             player2_off: Number of checkers player 2 has borne off
         """
@@ -810,9 +808,8 @@ class TextRenderer:
         text_y = bottom_section_y + 20
         line_spacing = 30
 
-        player1_color = (
-            (255, 255, 255) if current_player_name == player1_name else (150, 150, 150)
-        )
+        # White player (always white text)
+        player1_color = (255, 255, 255)
         self._render_text(
             surface,
             f"{player1_name}",
@@ -828,9 +825,20 @@ class TextRenderer:
             player1_color,
         )
 
-        player2_color = (
-            (255, 255, 255) if current_player_name == player2_name else (150, 150, 150)
-        )
+        # Black player (always black text with white outline for visibility)
+        player2_color = (20, 20, 20)
+        # Render with white outline for visibility on dark background
+        outline_offset = 1
+        for dx in [-outline_offset, 0, outline_offset]:
+            for dy in [-outline_offset, 0, outline_offset]:
+                if dx != 0 or dy != 0:
+                    self._render_text(
+                        surface,
+                        f"{player2_name}",
+                        (text_x + dx, text_y + line_spacing * 2 + dy),
+                        self.font_medium,
+                        (255, 255, 255),
+                    )
         self._render_text(
             surface,
             f"{player2_name}",
@@ -838,6 +846,18 @@ class TextRenderer:
             self.font_medium,
             player2_color,
         )
+
+        # Outline for "Off" text
+        for dx in [-outline_offset, 0, outline_offset]:
+            for dy in [-outline_offset, 0, outline_offset]:
+                if dx != 0 or dy != 0:
+                    self._render_text(
+                        surface,
+                        f"Off: {player2_off}/15",
+                        (text_x + dx, text_y + line_spacing * 2 + 25 + dy),
+                        self.font_small,
+                        (255, 255, 255),
+                    )
         self._render_text(
             surface,
             f"Off: {player2_off}/15",
@@ -916,3 +936,53 @@ class TextRenderer:
         pygame.draw.rect(surface, color, background_rect, 2)
 
         surface.blit(text_surface, text_rect)
+
+    def render_victory_screen(
+        self, surface: pygame.Surface, winner_name: str, winner_color: str
+    ) -> None:
+        """
+        Render a victory screen overlay when a player wins.
+
+        Args:
+            surface: Pygame surface to draw on
+            winner_name: Name of the winning player
+            winner_color: Color of the winning player ('white' or 'black')
+        """
+        # Semi-transparent overlay
+        overlay = pygame.Surface(
+            (self.dimensions.screen_width, self.dimensions.screen_height)
+        )
+        overlay.set_alpha(200)
+        overlay.fill((0, 0, 0))
+        surface.blit(overlay, (0, 0))
+
+        screen_center_x = self.dimensions.screen_width // 2
+        screen_center_y = self.dimensions.screen_height // 2
+
+        # Victory message
+        victory_text = "VICTORY!"
+        victory_surface = self.font_large.render(victory_text, True, (255, 215, 0))
+        victory_rect = victory_surface.get_rect(
+            center=(screen_center_x, screen_center_y - 60)
+        )
+        surface.blit(victory_surface, victory_rect)
+
+        # Winner announcement text
+        winner_announcement = f"{winner_name} ({winner_color}) wins!"
+        winner_surface = self.font_large.render(
+            winner_announcement, True, (255, 255, 255)
+        )
+        winner_rect = winner_surface.get_rect(
+            center=(screen_center_x, screen_center_y + 20)
+        )
+        surface.blit(winner_surface, winner_rect)
+
+        # Instructions
+        instruction_text = "Press ESC to exit"
+        instruction_surface = self.font_small.render(
+            instruction_text, True, (200, 200, 200)
+        )
+        instruction_rect = instruction_surface.get_rect(
+            center=(screen_center_x, screen_center_y + 100)
+        )
+        surface.blit(instruction_surface, instruction_rect)

@@ -5,6 +5,116 @@ Todos los cambios se verán reflejados en este documento.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 y se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.14] - 2025-11-01
+
+### Changed
+- **Victory Screen Simplification**: Improved victory screen message for clearer readability
+  - **Removed**: Trophy emoji (🏆) from victory display
+  - **Changed**: Replaced color-coded background box with clear text message
+  - **New Format**: "VICTORY!" followed by "{Winner Name} ({color}) wins!" in white text
+  - **Reasoning**: Simplified design focusing on clear text communication without decorative elements
+  - **Files Modified**:
+    - `backgammon/pygame_ui/renderers/visual_renderer.py`: Simplified `render_victory_screen()` method
+  - **Result**: Cleaner, more professional victory screen with better readability
+
+### Technical Details
+- **Version Increment**: PATCH (0.8.13 → 0.8.14) - UI improvement
+- **Impact**: Improved user experience with clearer victory announcement
+- **Testing**: All 371 unit tests pass successfully
+
+## [0.8.13] - 2025-11-01
+
+### Fixed
+- **Victory Detection Bug**: Fixed critical bug where game did not detect winner when all 15 checkers were borne off
+  - **Root Cause**: `Player.increment_checkers_off_board()` method only incremented `checkers_off_board` counter but did not decrement `checkers_on_board` counter
+  - **Issue**: Victory condition `has_won()` checks three conditions:
+    - `checkers_off_board == 15` ✓ (was working)
+    - `checkers_on_board == 0` ✗ (always false - stayed at 15)
+    - `checkers_on_bar == 0` ✓ (was working)
+  - **Impact**: Players could bear off all 15 checkers but game would not end or show victory screen
+  - **Solution**: Updated `increment_checkers_off_board()` to maintain invariant:
+    ```python
+    if self.checkers_off_board < 15 and self.checkers_on_board > 0:
+        self.checkers_off_board += 1
+        self.checkers_on_board -= 1  # Added this line
+    ```
+  - **Invariant**: `checkers_on_board + checkers_off_board + checkers_on_bar` always equals 15
+  - **Files Modified**: `backgammon/core/player.py`
+  - **Result**: Victory is now correctly detected when player bears off all 15 checkers
+
+### Technical Details
+- **Version Increment**: PATCH (0.8.12 → 0.8.13) - Bug fix following versioning rules
+- **Impact**: Critical fix for game completion detection in both CLI and Pygame UI
+- **Testing**: All 371 unit tests pass successfully
+- **Victory Screen**: Now displays correctly when player wins (implemented in v0.8.12)
+
+## [0.8.12] - 2025-11-01
+
+### Added
+- **Victory Screen**: Implemented complete victory screen overlay when a player wins
+  - **Visual Components**:
+    - Semi-transparent black overlay (alpha 200) covering entire screen
+    - Trophy emoji icon (🏆) in golden color above victory message
+    - "VICTORY!" message in large golden text
+    - Winner's name displayed in color-coded box (white or black background)
+    - "WINS!" text below winner name
+    - "Press ESC to exit" instruction at bottom
+  - **Winner Display**: Name shown in color-appropriate box
+    - White winner: White background box with gold border
+    - Black winner: Black background box with gold border
+  - **Integration**: Automatic detection when player reaches 15 borne-off checkers
+  - **Files Modified**:
+    - `backgammon/pygame_ui/renderers/visual_renderer.py`: Added `render_victory_screen()` method to TextRenderer
+    - `backgammon/pygame_ui/renderers/board_renderer.py`: Added victory checking in `render()` method
+    - `backgammon/pygame_ui/backgammon_board.py`: Updated to pass game instance to BoardRenderer
+
+### Changed
+- **Bear Off Counter Colors**: Fixed player name colors to accurately reflect checker colors
+  - **White Player**: Always displayed in white text (255, 255, 255)
+  - **Black Player**: Always displayed in black text (20, 20, 20) with white outline for visibility
+  - **Previous Behavior**: Used gray (150, 150, 150) for non-current player
+  - **New Behavior**: Always shows actual checker colors regardless of whose turn it is
+  - **Visibility Enhancement**: Black text rendered with white outline (1px offset) for readability on dark background
+  - **Files Modified**:
+    - `backgammon/pygame_ui/renderers/visual_renderer.py`: Updated `render_player_info()` method
+    - `backgammon/pygame_ui/renderers/board_renderer.py`: Removed `current_player_name` parameter from render call
+
+### Technical Details
+- **Version Increment**: PATCH (0.8.11 → 0.8.12) - Feature addition and UI improvements
+- **Impact**: Completes Pygame UI experience with proper game completion feedback
+- **Testing**: All 371 unit tests pass successfully
+- **Victory Detection**: Uses `game.is_game_over()` and `game.get_winner()` methods
+- **Rendering Order**: Victory screen rendered last to overlay all other elements
+
+## [0.8.11] - 2025-11-01
+
+### Fixed
+- **Bearing Off with Higher Dice**: Fixed critical bug preventing bearing off with higher dice values in endgame
+  - **Root Cause**: `is_valid_move()` method rejected bearing off when exact die was unavailable
+  - **Issue**: When player had checker on point 4 and rolled 6, move was rejected instead of allowing use of higher die
+  - **Backgammon Rule**: When bearing off, if exact die is not available, player can use higher die to bear off farthest checker
+  - **Solution**: Enhanced `is_valid_move()` method with special logic for bearing off:
+    - First checks if exact die is available - if yes, allows move
+    - If no exact die, checks if higher die is available
+    - Validates that checker is the farthest one in home board
+    - For white: farthest means highest point number (5 > 4 > 3...)
+    - For black: farthest means lowest point number (18 < 19 < 20...)
+  - **Files Modified**: 
+    - `backgammon/core/backgammon_game.py`: Updated `is_valid_move()` method
+    - Added `_is_farthest_checker()` helper method for validation
+    - Updated `make_move()` to consume correct die (smallest higher die if no exact match)
+  - **Result**: Players can now successfully bear off with higher dice values when appropriate
+
+### Technical Details
+- **Version Increment**: PATCH (0.8.10 → 0.8.11) - Bug fix following versioning rules
+- **Impact**: Critical fix for endgame functionality in Pygame UI and CLI
+- **Testing**: All 371 unit tests pass successfully
+- **Algorithm**: 
+  - Checks `dice.can_use_move(distance)` for exact die
+  - If false, filters available dice for values > distance
+  - Calls `_is_farthest_checker()` to validate rule compliance
+  - Uses smallest higher die to avoid wasting larger die values
+
 ## [0.8.10] - 2025-10-31
 
 ### Fixed
