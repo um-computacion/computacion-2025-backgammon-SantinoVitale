@@ -1,10 +1,10 @@
 Name                                 Stmts   Miss  Cover   Missing
 ------------------------------------------------------------------
 backgammon/core/__init__.py              6      0   100%
-backgammon/core/backgammon_game.py     221     25    89%   167-168, 175-176, 222, 238, 253, 273, 278-282, 286-290, 300, 310, 469-471, 495-496, 541
-backgammon/core/board.py               150     14    91%   123, 146, 153, 185, 189, 196-197, 217, 220, 223, 309, 339, 433, 447
+backgammon/core/backgammon_game.py     254     58    77%   167-168, 175-185, 231, 247, 262, 275-294, 315-322, 326-358, 363, 373, 532-534, 558-559, 604
+backgammon/core/board.py               161     13    92%   146, 153, 185, 189, 196-197, 217, 220, 223, 309, 387, 436, 450
 backgammon/core/checker.py              78      5    94%   126, 136, 142, 152, 158
 backgammon/core/dice.py                 50      1    98%   70
-backgammon/core/player.py               97      1    99%   285
+backgammon/core/player.py              101      4    96%   89-91, 294
 ------------------------------------------------------------------
-TOTAL                                  602     46    92%
+TOTAL                                  650     81    88%
