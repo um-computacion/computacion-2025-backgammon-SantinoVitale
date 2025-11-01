@@ -173,7 +173,16 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
                 if from_pos < 1 or from_pos > 24:
                     return False
                 board_pos = from_pos - 1
-                success = self.board.bear_off(board_pos, current_player.color)
+                if self.board.bear_off(board_pos, current_player.color):
+                    current_player.increment_checkers_off_board()
+                    success = True
+                    # For bearing off, we need to determine which die to consume
+                    # If exact die is not available, use the smallest die that is larger
+                    if not self.dice.can_use_move(move_distance):
+                        available_dice = self.dice.get_available_moves()
+                        higher_dice = [d for d in available_dice if d > move_distance]
+                        if higher_dice:
+                            move_distance = min(higher_dice)
         else:
             # Normal point-to-point move
             if isinstance(from_pos, int) and isinstance(to_pos, int):
@@ -252,6 +261,38 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
         """
         return self._calculate_move_distance(from_pos, to_pos)
 
+    def _is_farthest_checker(self, point_index: int, color: str) -> bool:
+        """
+        Check if a checker at the given point is the farthest one in the home board.
+
+        Args:
+            point_index: Board position (0-23)
+            color: Color of the player
+
+        Returns:
+            True if this is the farthest checker in home board, False otherwise
+        """
+        if color == "white":
+            # White home board is points 0-5
+            # Farthest means highest point number
+            for i in range(point_index + 1, 6):
+                if (
+                    len(self.board.points[i]) > 0
+                    and self.board.get_point_top_color(i) == color
+                ):
+                    return False
+            return True
+        else:  # black
+            # Black home board is points 18-23
+            # Farthest means lowest point number
+            for i in range(18, point_index):
+                if (
+                    len(self.board.points[i]) > 0
+                    and self.board.get_point_top_color(i) == color
+                ):
+                    return False
+            return True
+
     def is_valid_move(self, from_pos: Union[int, str], to_pos: Union[int, str]) -> bool:
         """
         Check if a move is valid.
@@ -268,15 +309,14 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
         # Calculate move distance using the proper method
         distance = self._calculate_move_distance(from_pos, to_pos)
 
-        # First check if dice allows this move
-        if not self.dice.can_use_move(distance):
-            return False
-
         # Convert coordinates for board validation
         # For board methods, we need to check the actual move mechanics
         if from_pos == "bar":
             if isinstance(to_pos, int):
                 if to_pos < 1 or to_pos > 24:
+                    return False
+                # First check if dice allows this move
+                if not self.dice.can_use_move(distance):
                     return False
                 board_pos = to_pos - 1
                 return len(
@@ -287,12 +327,35 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
                 if from_pos < 1 or from_pos > 24:
                     return False
                 board_pos = from_pos - 1
-                return (
-                    self.board.can_bear_off(current_player.color)
-                    and len(self.board.points[board_pos]) > 0
-                    and self.board.get_point_top_color(board_pos)
-                    == current_player.color
-                )
+
+                # Basic validations
+                if not self.board.can_bear_off(current_player.color):
+                    return False
+                if len(self.board.points[board_pos]) == 0:
+                    return False
+                if self.board.get_point_top_color(board_pos) != current_player.color:
+                    return False
+
+                # Check if exact die is available
+                if self.dice.can_use_move(distance):
+                    return True
+
+                # If no exact die, check if we can use a higher die
+                # This is allowed only if this is the farthest checker in home board
+                available_dice = self.dice.get_available_moves()
+                if not available_dice:
+                    return False
+
+                # Check if any available die is higher than the distance needed
+                has_higher_die = any(die > distance for die in available_dice)
+                if not has_higher_die:
+                    return False
+
+                # Check if this is the farthest checker
+                if self._is_farthest_checker(board_pos, current_player.color):
+                    return True
+
+                return False
         else:
             # Normal point-to-point move
             if isinstance(from_pos, int) and isinstance(to_pos, int):

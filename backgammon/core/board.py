@@ -326,64 +326,67 @@ class Board:
           list: Lista de tuplas (from_point, to_point) con movimientos posibles
         """
         possible_moves = []
+        unique_dice = sorted(list(set(dice)), reverse=True)
 
-        # Verificar si hay fichas en la barra que deben entrar primero
         if self.bar[color]:
-            # Si hay fichas en la barra, solo se pueden hacer movimientos desde la barra
-            for die_value in dice:
-                if color == "white":
-                    # Las blancas entran desde el punto 24 hacia el 1
-                    to_point = 24 - die_value
-                else:
-                    # Las negras entran desde el punto 1 hacia el 24
-                    to_point = die_value - 1
+            for die_value in unique_dice:
+                to_point = (
+                    24 - die_value if color == "white" else die_value - 1
+                )
+                if self.is_point_available(to_point, color):
+                    possible_moves.append(("bar", to_point + 1))
+            return possible_moves
 
-                # Verificar si el punto de destino es válido
-                if 0 <= to_point <= 23:
-                    # Verificar si el punto está disponible
-                    if (
-                        len(self.points[to_point]) == 0
-                        or self.get_point_top_color(to_point) == color
-                        or len(self.points[to_point]) == 1
+        can_bear_off = self._can_bear_off(color)
+
+        for point_index in range(24):
+            if self.get_point_top_color(point_index) == color:
+                for die_value in unique_dice:
+                    if color == "white":
+                        to_point = point_index - die_value
+                    else:
+                        to_point = point_index + die_value
+
+                    if 0 <= to_point <= 23 and self.is_point_available(
+                        to_point, color
                     ):
-                        possible_moves.append(("bar", to_point))
-        else:
-            # No hay fichas en la barra, buscar movimientos normales
-            for point_index in range(24):
-                if (
-                    len(self.points[point_index]) > 0
-                    and self.get_point_top_color(point_index) == color
-                ):
-
-                    # Intentar cada valor de dado disponible
-                    for die_value in dice:
-                        if color == "white":
-                            # Las blancas se mueven de puntos altos a bajos
-                            to_point = point_index - die_value
-                        else:
-                            # Las negras se mueven de puntos bajos a altos
-                            to_point = point_index + die_value
-
-                        # Verificar movimiento normal
-                        if 0 <= to_point <= 23:
-                            # Verificar si el punto de destino está disponible
-                            if (
-                                len(self.points[to_point]) == 0
-                                or self.get_point_top_color(to_point) == color
-                                or len(self.points[to_point]) == 1
-                            ):
-                                # Convert to human-readable coordinates (1-24)
-                                possible_moves.append((point_index + 1, to_point + 1))
-
-                        # Verificar movimiento de salida (bearing off)
-                        elif self._can_bear_off(color):
-                            if color == "white" and to_point < 0:
-                                # Convert to human-readable coordinates (1-24)
+                        possible_moves.append(
+                            (point_index + 1, to_point + 1)
+                        )
+                    elif can_bear_off:
+                        if (color == "white" and to_point < 0) or (
+                            color == "black" and to_point > 23
+                        ):
+                            is_exact_bear_off = (
+                                color == "white" and point_index + 1 == die_value
+                            ) or (
+                                color == "black"
+                                and 24 - point_index == die_value
+                            )
+                            if is_exact_bear_off:
                                 possible_moves.append((point_index + 1, "off"))
-                            elif color == "black" and to_point > 23:
-                                # Convert to human-readable coordinates (1-24)
-                                possible_moves.append((point_index + 1, "off"))
-
+                            else:
+                                farthest_checker = True
+                                if color == "white":
+                                    for i in range(point_index + 1, 6):
+                                        if (
+                                            self.get_point_top_color(i)
+                                            == color
+                                        ):
+                                            farthest_checker = False
+                                            break
+                                else:
+                                    for i in range(point_index - 1, 17, -1):
+                                        if (
+                                            self.get_point_top_color(i)
+                                            == color
+                                        ):
+                                            farthest_checker = False
+                                            break
+                                if farthest_checker:
+                                    possible_moves.append(
+                                        (point_index + 1, "off")
+                                    )
         return possible_moves
 
     def _can_bear_off(self, color):

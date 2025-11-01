@@ -81,6 +81,15 @@ class Player:  # pylint: disable=too-many-public-methods
         self.checkers_on_board -= 1
         self.checkers_off_board += 1
 
+    def increment_checkers_off_board(self) -> None:
+        """
+        Increment the count of checkers that are off the board.
+        Decrements checkers_on_board to maintain the invariant.
+        """
+        if self.checkers_off_board < 15 and self.checkers_on_board > 0:
+            self.checkers_off_board += 1
+            self.checkers_on_board -= 1
+
     def move_checker_to_bar(self):
         """
         Mueve una ficha del tablero a la barra.

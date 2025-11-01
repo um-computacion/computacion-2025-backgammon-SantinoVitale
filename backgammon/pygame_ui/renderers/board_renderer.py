@@ -86,6 +86,7 @@ class BoardRenderer:
         selected_point: Optional[int] = None,
         valid_move_destinations: Optional[List[Union[int, str]]] = None,
         selected_bar: bool = False,
+        game: Optional[object] = None,
     ) -> None:
         """
         Render the complete Backgammon board.
@@ -101,6 +102,7 @@ class BoardRenderer:
             valid_move_destinations: Optional list of valid destination points
                 or "off" for bearing off
             selected_bar: Boolean indicating if the bar is currently selected
+            game: Optional BackgammonGame instance for checking victory
         """
         # Render background
         self._render_board_background(surface)
@@ -130,7 +132,7 @@ class BoardRenderer:
 
         # Render highlight for selected bar
         if selected_bar and board is not None:
-            self.highlight_renderer.render_selected_bar(surface, board)
+            self.highlight_renderer.render_selected_bar(surface)
 
         if valid_move_destinations is not None and len(valid_move_destinations) > 0:
             self.highlight_renderer.render_valid_moves(surface, valid_move_destinations)
@@ -147,12 +149,22 @@ class BoardRenderer:
         if player_info:
             player1_name, player2_name, current_player, p1_off, p2_off = player_info
             self.text_renderer.render_player_info(
-                surface, player1_name, player2_name, current_player, p1_off, p2_off
+                surface, player1_name, player2_name, p1_off, p2_off
             )
             self.text_renderer.render_turn_indicator(surface, current_player)
 
         # Always render instructions
         self.text_renderer.render_instructions(surface)
+
+        # Check for victory and render victory screen if someone won
+        if game is not None and hasattr(game, 'is_game_over') and hasattr(game, 'get_winner'):
+            if game.is_game_over():
+                winner = game.get_winner()
+                if winner is not None:
+                    self.text_renderer.render_victory_screen(
+                        surface, winner.name, winner.color
+                    )
+
 
     def _render_checkers_from_board(
         self, surface: pygame.Surface, board: object
@@ -178,14 +190,4 @@ class BoardRenderer:
             for stack_index in range(len(bar_checkers)):
                 self.checker_renderer.render_bar_checker(surface, color, stack_index)
 
-        # Render checkers that are borne off
-        for color in ["white", "black"]:
-            off_checkers = board.off[color]
-            max_visible_stack = 5
-            for stack_index in range(min(len(off_checkers), max_visible_stack)):
-                self.checker_renderer.render_off_checker(surface, color, stack_index)
-            # Draw indicator if more than max_visible_stack
-            if len(off_checkers) > max_visible_stack:
-                self.text_renderer.render_off_count_indicator(
-                    surface, color, len(off_checkers), max_visible_stack
-                )
+        # Borne off checkers are displayed as a counter in the player info panel.

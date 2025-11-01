@@ -177,6 +177,7 @@ class BackgammonBoard:
             selected_point=self.interaction.selected_point,
             valid_move_destinations=self.interaction.valid_move_destinations,
             selected_bar=selected_bar,
+            game=self.game,
         )
 
         self.dice_button.render(surface)
