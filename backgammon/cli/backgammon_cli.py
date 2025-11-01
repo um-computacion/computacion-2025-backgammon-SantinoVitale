@@ -190,12 +190,6 @@ class BackgammonCLI:
                                 f"Movimiento realizado: {from_pos} a {to_pos}"
                             )
 
-                            distance = self.game_controller.calculate_move_distance(
-                                from_pos, to_pos
-                            )
-                            if distance > 0:
-                                self.game_controller.use_dice_move(distance)
-
                             self.display_board()
                             remaining_moves = self.game_controller.get_available_moves()
                             if remaining_moves:

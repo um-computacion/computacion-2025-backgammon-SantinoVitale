@@ -150,10 +150,18 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
         Returns:
             True if move was successful, False otherwise
         """
+        # CRITICAL: Validate move BEFORE executing
+        if not self.is_valid_move(from_pos, to_pos):
+            return False
+
         current_player = self.get_current_player()
 
         # Calculate move distance BEFORE executing the move
         move_distance = self._calculate_move_distance(from_pos, to_pos)
+        
+        # If distance is 0, move is invalid (wrong direction)
+        if move_distance == 0:
+            return False
 
         # Handle different types of moves
         success = False
@@ -306,8 +314,16 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
         """
         current_player = self.get_current_player()
 
+        # CRITICAL RULE: If player has checkers on bar, they MUST move from bar first
+        if len(self.board.bar[current_player.color]) > 0 and from_pos != "bar":
+            return False
+
         # Calculate move distance using the proper method
         distance = self._calculate_move_distance(from_pos, to_pos)
+        
+        # CRITICAL: If distance is 0, move is in wrong direction or invalid
+        if distance == 0:
+            return False
 
         # Convert coordinates for board validation
         # For board methods, we need to check the actual move mechanics
@@ -360,6 +376,9 @@ class BackgammonGame:  # pylint: disable=too-many-instance-attributes,too-many-p
             # Normal point-to-point move
             if isinstance(from_pos, int) and isinstance(to_pos, int):
                 if from_pos < 1 or from_pos > 24 or to_pos < 1 or to_pos > 24:
+                    return False
+                # First check if dice allows this move
+                if not self.dice.can_use_move(distance):
                     return False
                 from_board = from_pos - 1
                 to_board = to_pos - 1

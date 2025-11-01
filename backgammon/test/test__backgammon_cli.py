@@ -450,8 +450,6 @@ class TestBackgammonCLIRunGame(unittest.TestCase):
         self.cli.get_move_input = Mock(return_value=(12, 8))
         self.cli.command_parser.get_command_type = Mock(return_value=None)
         self.cli.game_controller.make_move = Mock(return_value=True)
-        self.cli.game_controller.calculate_move_distance = Mock(return_value=4)
-        self.cli.game_controller.use_dice_move = Mock()
         self.cli.game_controller.can_continue_turn = Mock(return_value=False)
         self.cli.game_controller.complete_turn = Mock()
         self.cli.game_controller.get_winner = Mock(return_value=Mock(name="Player1"))
@@ -460,7 +458,6 @@ class TestBackgammonCLIRunGame(unittest.TestCase):
         self.cli.run_game()
 
         self.cli.game_controller.make_move.assert_called_once_with(12, 8)
-        self.cli.game_controller.use_dice_move.assert_called_once_with(4)
 
     @patch("backgammon.cli.backgammon_cli.UserInterface.display_welcome")
     @patch(
@@ -812,8 +809,6 @@ class TestBackgammonCLIRunGame(unittest.TestCase):
         self.cli.get_move_input = Mock(return_value=(12, 8))
         self.cli.command_parser.get_command_type = Mock(return_value=None)
         self.cli.game_controller.make_move = Mock(return_value=True)
-        self.cli.game_controller.calculate_move_distance = Mock(return_value=4)
-        self.cli.game_controller.use_dice_move = Mock()
         self.cli.game_controller.can_continue_turn = Mock(return_value=False)
         self.cli.game_controller.complete_turn = Mock()
         self.cli.game_controller.get_winner = Mock(return_value=Mock(name="Player1"))
@@ -821,7 +816,7 @@ class TestBackgammonCLIRunGame(unittest.TestCase):
 
         self.cli.run_game()
 
-        self.cli.game_controller.use_dice_move.assert_called_once_with(4)
+        self.cli.game_controller.make_move.assert_called_once()
 
     @patch("backgammon.cli.backgammon_cli.UserInterface.display_welcome")
     @patch(
