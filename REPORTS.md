@@ -4,13 +4,13 @@
 Name                                 Stmts   Miss  Cover   Missing
 ------------------------------------------------------------------
 backgammon/core/__init__.py              6      0   100%
-backgammon/core/backgammon_game.py     221     25    89%   167-168, 175-176, 222, 238, 253, 273, 278-282, 286-290, 300, 310, 469-471, 495-496, 541
-backgammon/core/board.py               150     14    91%   123, 146, 153, 185, 189, 196-197, 217, 220, 223, 309, 339, 433, 447
+backgammon/core/backgammon_game.py     254     58    77%   167-168, 175-185, 231, 247, 262, 275-294, 315-322, 326-358, 363, 373, 532-534, 558-559, 604
+backgammon/core/board.py               161     13    92%   146, 153, 185, 189, 196-197, 217, 220, 223, 309, 387, 436, 450
 backgammon/core/checker.py              78      5    94%   126, 136, 142, 152, 158
 backgammon/core/dice.py                 50      1    98%   70
-backgammon/core/player.py               97      1    99%   285
+backgammon/core/player.py              101      4    96%   89-91, 294
 ------------------------------------------------------------------
-TOTAL                                  602     46    92%
+TOTAL                                  650     81    88%
 
 ```
 ## Pylint Report
@@ -41,19 +41,17 @@ backgammon/pygame_ui/color_scheme.py:9:0: R0903: Too few public methods (0/2) (t
 ************* Module backgammon.pygame_ui.renderers.visual_renderer
 backgammon/pygame_ui/renderers/visual_renderer.py:211:4: R0913: Too many arguments (6/5) (too-many-arguments)
 backgammon/pygame_ui/renderers/visual_renderer.py:211:4: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
-backgammon/pygame_ui/renderers/visual_renderer.py:595:61: E1101: Module 'pygame' has no 'SRCALPHA' member (no-member)
-backgammon/pygame_ui/renderers/visual_renderer.py:601:59: W0613: Unused argument 'board' (unused-argument)
-backgammon/pygame_ui/renderers/visual_renderer.py:691:0: C0115: Missing class docstring (missing-class-docstring)
-backgammon/pygame_ui/renderers/visual_renderer.py:728:4: W0105: String statement has no effect (pointless-string-statement)
 backgammon/pygame_ui/renderers/visual_renderer.py:755:4: R0913: Too many arguments (7/5) (too-many-arguments)
 backgammon/pygame_ui/renderers/visual_renderer.py:755:4: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
-backgammon/pygame_ui/renderers/visual_renderer.py:785:4: R0913: Too many arguments (7/5) (too-many-arguments)
-backgammon/pygame_ui/renderers/visual_renderer.py:785:4: R0917: Too many positional arguments (7/5) (too-many-positional-arguments)
+backgammon/pygame_ui/renderers/visual_renderer.py:785:4: R0913: Too many arguments (6/5) (too-many-arguments)
+backgammon/pygame_ui/renderers/visual_renderer.py:785:4: R0917: Too many positional arguments (6/5) (too-many-positional-arguments)
+backgammon/pygame_ui/renderers/visual_renderer.py:785:4: R0914: Too many local variables (17/15) (too-many-locals)
+backgammon/pygame_ui/renderers/visual_renderer.py:940:4: R0914: Too many local variables (16/15) (too-many-locals)
 ************* Module backgammon.pygame_ui.renderers.board_renderer
 backgammon/pygame_ui/renderers/board_renderer.py:23:0: R0902: Too many instance attributes (9/7) (too-many-instance-attributes)
-backgammon/pygame_ui/renderers/board_renderer.py:79:4: R0913: Too many arguments (9/5) (too-many-arguments)
-backgammon/pygame_ui/renderers/board_renderer.py:79:4: R0917: Too many positional arguments (9/5) (too-many-positional-arguments)
-backgammon/pygame_ui/renderers/board_renderer.py:79:4: R0914: Too many local variables (17/15) (too-many-locals)
+backgammon/pygame_ui/renderers/board_renderer.py:79:4: R0913: Too many arguments (10/5) (too-many-arguments)
+backgammon/pygame_ui/renderers/board_renderer.py:79:4: R0917: Too many positional arguments (10/5) (too-many-positional-arguments)
+backgammon/pygame_ui/renderers/board_renderer.py:79:4: R0914: Too many local variables (19/15) (too-many-locals)
 backgammon/pygame_ui/renderers/board_renderer.py:23:0: R0903: Too few public methods (1/2) (too-few-public-methods)
 ************* Module backgammon.pygame_ui.renderers.decorative_renderer
 backgammon/pygame_ui/renderers/decorative_renderer.py:11:0: R0903: Too few public methods (1/2) (too-few-public-methods)
@@ -67,12 +65,15 @@ backgammon/cli/game_controller.py:50:12: C0415: Import outside toplevel (time) (
 ************* Module backgammon.cli.board_renderer
 backgammon/cli/board_renderer.py:17:4: R0912: Too many branches (13/12) (too-many-branches)
 ************* Module backgammon.core.backgammon_game
-backgammon/core/backgammon_game.py:198:4: R0911: Too many return statements (9/6) (too-many-return-statements)
-backgammon/core/backgammon_game.py:255:4: R0911: Too many return statements (8/6) (too-many-return-statements)
+backgammon/core/backgammon_game.py:207:4: R0911: Too many return statements (9/6) (too-many-return-statements)
+backgammon/core/backgammon_game.py:275:8: R1705: Unnecessary "else" after "return", remove the "else" and de-indent the code inside it (no-else-return)
+backgammon/core/backgammon_game.py:296:4: R0911: Too many return statements (15/6) (too-many-return-statements)
+backgammon/core/backgammon_game.py:296:4: R0912: Too many branches (16/12) (too-many-branches)
 ************* Module backgammon.core.board
-backgammon/core/board.py:331:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
-backgammon/core/board.py:317:4: R0912: Too many branches (17/12) (too-many-branches)
-backgammon/core/board.py:331:8: R1702: Too many nested blocks (6/5) (too-many-nested-blocks)
+backgammon/core/board.py:342:8: R1702: Too many nested blocks (9/5) (too-many-nested-blocks)
+backgammon/core/board.py:342:8: R1702: Too many nested blocks (9/5) (too-many-nested-blocks)
+backgammon/core/board.py:317:4: R0912: Too many branches (20/12) (too-many-branches)
+backgammon/core/board.py:342:8: R1702: Too many nested blocks (7/5) (too-many-nested-blocks)
 ************* Module backgammon.test.test__BackgammonGame
 backgammon/test/test__BackgammonGame.py:1:0: C0103: Module name "test__BackgammonGame" doesn't conform to snake_case naming style (invalid-name)
 backgammon/test/test__BackgammonGame.py:541:19: W0212: Access to a protected member _calculate_move_distance of a client class (protected-access)
@@ -147,23 +148,23 @@ backgammon/test/test__input_validator.py:10:0: R0904: Too many public methods (2
 ************* Module backgammon.test.__init__
 backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
 ==backgammon.core.checker:[121:134]
-==backgammon.core.player:[178:191]
+==backgammon.core.player:[187:200]
         if self.color == "white":
             return -1
         if self.color == "black":
             return 1
         return 0
 
-    def can_bear_off(self):
+    def get_home_board_range(self):
         """
-        Verifica si la ficha puede hacer bearing off desde su posición actual.
+        Obtiene el rango del home board para este jugador.
 
         Returns:
-          bool: True si puede hacer bearing off, False en caso contrario
+          range: Rango de posiciones del home board
         """ (duplicate-code)
 
 -----------------------------------
-Your code has been rated at 9.69/10
+Your code has been rated at 9.70/10
 
 
 ```
