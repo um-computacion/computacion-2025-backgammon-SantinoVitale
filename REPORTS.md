@@ -3,6 +3,14 @@
 ```text
 Name                                 Stmts   Miss  Cover   Missing
 ------------------------------------------------------------------
+backgammon/__init__.py                   0      0   100%
+backgammon/cli/__init__.py               7      0   100%
+backgammon/cli/backgammon_cli.py       128      0   100%
+backgammon/cli/board_renderer.py       107      0   100%
+backgammon/cli/command_parser.py        36      1    97%   80
+backgammon/cli/game_controller.py       81      6    93%   95, 117, 167, 184, 198, 209
+backgammon/cli/input_validator.py       20      0   100%
+backgammon/cli/user_interface.py       134      0   100%
 backgammon/core/__init__.py              6      0   100%
 backgammon/core/backgammon_game.py     264     61    77%   164, 171-176, 179-193, 199, 239, 255, 270, 283-302, 319, 335-338, 345-374, 382, 392, 551-553, 577-578, 623
 backgammon/core/board.py               161     13    92%   146, 153, 185, 189, 196-197, 217, 220, 223, 309, 387, 436, 450
@@ -10,7 +18,7 @@ backgammon/core/checker.py              78      5    94%   126, 136, 142, 152, 1
 backgammon/core/dice.py                 50      1    98%   70
 backgammon/core/player.py              101      4    96%   89-91, 294
 ------------------------------------------------------------------
-TOTAL                                  660     84    87%
+TOTAL                                 1173     91    92%
 
 ```
 ## Pylint Report
@@ -158,12 +166,12 @@ backgammon/test/__init__.py:1:0: R0801: Similar lines in 2 files
             return 1
         return 0
 
-    def can_bear_off(self):
+    def get_home_board_range(self):
         """
-        Verifica si la ficha puede hacer bearing off desde su posición actual.
+        Obtiene el rango del home board para este jugador.
 
         Returns:
-          bool: True si puede hacer bearing off, False en caso contrario
+          range: Rango de posiciones del home board
         """ (duplicate-code)
 
 -----------------------------------
