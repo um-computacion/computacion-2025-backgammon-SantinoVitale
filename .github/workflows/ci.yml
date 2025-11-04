@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.10"
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -28,11 +28,11 @@ jobs:
       - name: Run tests and generate coverage report
         run: |
           # Ejecutar coverage con el source correcto
-          coverage run --source=backgammon/core -m unittest discover -s backgammon -p "test_*.py"
+          coverage run --source=backgammon -m unittest discover -s backgammon -p "test_*.py"
           coverage xml -o cobertura.xml
           coverage report -m > coverage_report.txt
           echo "Coverage debug info:"
-          ls -la backgammon/core/ || echo "No backgammon/core/ directory found"
+          ls -la backgammon/ || echo "No backgammon/ directory found"
           coverage report --show-missing
       - name: Run Pylint and generate report
         run: |
